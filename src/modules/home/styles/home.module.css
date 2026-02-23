@@ -261,23 +261,22 @@
 .ourServicesInner {
   max-width: 1200px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.servicesLeft .sectionLabel,
-.servicesRight .sectionLabel {
-  margin-bottom: var(--spacing-md);
+.servicesHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 2rem;
+  margin-bottom: 0.75rem;
 }
 
-.servicesRight {
-  text-align: justify;
-}
-
-.servicesRight .sectionLabel {
-  display: block;
+.servicesList {
+  display: flex;
+  flex-direction: column;
 }
 
 .serviceRow {
@@ -285,11 +284,17 @@
   border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
-  gap: 1rem;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
-.servicesRight .serviceRow {
-  justify-content: flex-end;
+.serviceRowLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+  flex: 1 1 340px;
 }
 
 .serviceNumber {
@@ -303,6 +308,7 @@
   font-size: clamp(1.25rem, 2.5vw, 1.75rem);
   font-weight: 400;
   color: var(--text-primary);
+  min-width: 0;
 }
 
 .serviceTitle[data-service-id='01'] {
@@ -333,6 +339,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .learnMoreBtn:hover {
@@ -355,9 +363,9 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=1920') center/cover no-repeat;
-  opacity: 0.9;
-  filter: saturate(0.95) contrast(1.05) brightness(0.7);
+  background: url('/images/photos/DSC01973.jpg') 50% 8% / cover no-repeat;
+  opacity: 0.92;
+  filter: saturate(0.95) contrast(1.08) brightness(0.72);
   transform: scale(1.02);
 }
 
@@ -375,6 +383,11 @@
   width: min(1400px, 100%);
   margin: 0 auto;
   padding: clamp(2.5rem, 6vw, 4.5rem) clamp(1.25rem, 4vw, 3.25rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.5rem, 4vh, 3rem);
 }
 
 .recentWorkTitle {
@@ -389,27 +402,30 @@
   text-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
   pointer-events: none;
   user-select: none;
+  width: min(1200px, 100%);
 }
 
 .recentWorkTitleTop {
   display: block;
-  text-align: justify;
+  text-align: left;
+  margin-left: 120px;
 }
 
 .recentWorkTitleBottom {
   display: block;
-  text-align: justify;
-  margin-top: -0.12em;
+  text-align: right;
+  margin-right: 180px;
+  margin-top: calc(-0.2em -20px);
 }
 
 .recentWorkCta {
   display: flex;
   justify-content: center;
-  margin-top: clamp(1.75rem, 5vh, 3.25rem);
+  margin-top: 0;
 }
 
 .portfolioBtn {
-  background: rgba(215, 215, 215, 0.92);
+  background: rgba(215, 215, 215, 0.88);
   color: #111;
   border: 1px solid rgba(0, 0, 0, 0.18);
   padding: 0.8rem 2.25rem;
@@ -419,7 +435,7 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -684,15 +700,20 @@
   }
 
   .ourServicesInner {
-    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 
-  .servicesRight {
-    text-align: justify;
+  .servicesHeader {
+    margin-bottom: 0.25rem;
   }
 
-  .servicesRight .serviceRow {
-    justify-content: flex-start;
+  .serviceRow {
+    padding: 1.1rem 0;
+  }
+
+  .learnMoreBtn {
+    padding: 0.55rem 1.25rem;
+    font-size: 0.72rem;
   }
 
   .footerGrid {
