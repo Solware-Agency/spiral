@@ -75,7 +75,12 @@ const Footer = () => {
                 TIKTOK
               </a>
             </div>
-            <p className={styles.footerEmail}>EMAIL: ANDREA@SPIRALMSTUDIO.COM</p>
+            <a
+              className={styles.footerEmail}
+              href="mailto:andrea@spiralmstudio.com"
+            >
+              ANDREA@SPIRALMSTUDIO.COM
+            </a>
           </div>
         </div>
       </div>
