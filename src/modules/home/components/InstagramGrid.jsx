@@ -7,7 +7,14 @@ const InstagramGrid = () => {
   return (
     <section className={styles.instagramSection}>
       <div className={styles.instagramTop}>
-        <span className={styles.instagramHandle}>@SPIRAL.MSTUDIO</span>
+        <a
+          className={styles.instagramHandle}
+          href="https://www.instagram.com/spiral.mstudio/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          @SPIRAL.MSTUDIO
+        </a>
       </div>
       <div className={styles.instagramGrid} aria-hidden>
         {Array.from({ length: GRID_SIZE }).map((_, i) => (

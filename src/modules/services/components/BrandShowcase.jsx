@@ -52,7 +52,14 @@ const BrandShowcase = () => {
 
       <div className={styles.brandStrip}>
         <div className={styles.brandStripInner}>
-          <span className={styles.brandHandle}>@SPIRAL.MSTUDIO</span>
+          <a
+            className={styles.brandHandle}
+            href="https://www.instagram.com/spiral.mstudio/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            @SPIRAL.MSTUDIO
+          </a>
         </div>
         <div className={styles.brandGrid} aria-hidden>
           {Array.from({ length: 6 }).map((_, i) => (
