@@ -1,24 +1,24 @@
 import React from 'react';
 import styles from '../styles/services.module.css';
 
-const CASA_LOGO_WHITE =
-  '/images/spiral%20logos/SPIRAL%20Logos/Casa%20Spiral/Casa.spiral-white.png';
+const SPIRAL_ICON_WHITE =
+  '/images/spiral%20logos/SPIRAL%20Logos/Icon/Spiral-Icon-White.png';
 
 const polaroids = [
   {
-    src: 'https://images.unsplash.com/photo-1520975958225-27d5d70b28ee?auto=format&fit=crop&w=900&q=80',
+    src: '/images/photos/DSC01393.JPG',
     className: styles.polaroidTopLeft,
   },
   {
-    src: 'https://images.unsplash.com/photo-1520975958225-27d5d70b28ee?auto=format&fit=crop&w=900&q=80',
+    src: '/images/photos/DSC04163.jpg',
     className: styles.polaroidTopRight,
   },
   {
-    src: 'https://images.unsplash.com/photo-1520975958225-27d5d70b28ee?auto=format&fit=crop&w=900&q=80',
+    src: '/images/photos/DSC02545.jpg',
     className: styles.polaroidBottomLeft,
   },
   {
-    src: 'https://images.unsplash.com/photo-1520975958225-27d5d70b28ee?auto=format&fit=crop&w=900&q=80',
+    src: '/images/photos/DSC03276.JPG',
     className: styles.polaroidBottomRight,
   },
 ];
@@ -36,7 +36,7 @@ const BrandShowcase = () => {
         <div className={styles.brandCenter}>
           <img
             className={styles.brandMonogram}
-            src={CASA_LOGO_WHITE}
+            src={SPIRAL_ICON_WHITE}
             alt=""
             aria-hidden="true"
             loading="lazy"
