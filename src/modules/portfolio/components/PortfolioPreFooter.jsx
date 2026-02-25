@@ -31,11 +31,13 @@ const PortfolioPreFooter = () => {
           </div>
 
           <div className={styles.testimonialsRight} aria-hidden>
-            <div className={styles.envelope} />
-            <div className={styles.noteCard}>
-              <div className={styles.noteClip} />
-              <div className={styles.noteStars}>★★★★★</div>
-            </div>
+            <img
+              className={styles.testimonialsAsset}
+              src="/images/photos/ENVELOPE.png"
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </div>
       </section>

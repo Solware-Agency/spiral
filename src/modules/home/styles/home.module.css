@@ -363,7 +363,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/images/photos/DSC01973.jpg') 50% 8% / cover no-repeat;
+  background: url('/images/photos/DSC01973.jpg') 50% 21% / cover no-repeat;
   opacity: 0.92;
   filter: saturate(0.95) contrast(1.08) brightness(0.72);
   transform: scale(1.02);
