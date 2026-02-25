@@ -105,18 +105,17 @@
 .mediaWrap {
   width: min(1400px, 100%);
   margin: 0 auto;
-  padding: 0 clamp(1.25rem, 4vw, 3.25rem);
-  margin-top: -0.1rem;
+  padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1.25rem, 4vw, 3.25rem) 0;
+  margin-top: 0;
 }
 
 .mediaBlock {
-  border: 1px solid rgba(255, 255, 255, 0.12);
   overflow: hidden;
 }
 
 .mediaBlockVideos {
   background: #000;
-  border-radius: 24px 24px 0 0;
+  border-radius: 28px 28px 0 0;
   border-bottom: none;
 }
 
@@ -128,8 +127,8 @@
 
 .mediaHeading {
   margin: 0;
-  padding: 0.85rem 1.25rem 0.2rem 1.25rem;
-  text-align: justify;
+  padding: 0.55rem 1.25rem clamp(0.85rem, 2vw, 1.25rem) 1.25rem;
+  text-align: center;
   font-family: 'Luxurious Script', cursive;
   font-weight: 400;
   font-size: clamp(3.2rem, 8vw, 6.1rem);
@@ -137,14 +136,25 @@
   color: rgba(255, 255, 255, 0.95);
 }
 
+.mediaBlockVideos .mediaHeading {
+  margin-top: -0.22em;
+}
+
 .mediaBlockPhotos .mediaHeading {
   color: rgba(0, 0, 0, 0.9);
   margin-top: -0.55rem;
 }
 
+.mediaHeading + .mediaRow {
+  padding-top: clamp(1.1rem, 2.6vw, 1.5rem);
+}
+
 .mediaRow {
-  position: relative;
-  padding: 0.9rem 1rem 1.15rem 1rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  row-gap: 0.8rem;
+  padding: 1rem 1rem 1.25rem 1rem;
 }
 
 .mediaRow + .mediaRow {
@@ -156,14 +166,15 @@
 }
 
 .mediaRowLabel {
-  position: absolute;
-  top: 0.65rem;
-  right: 0.85rem;
   font-family: var(--font-mono);
   font-size: 0.6rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.7);
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  align-self: center;
 }
 
 .mediaBlockPhotos .mediaRowLabel {
@@ -172,22 +183,35 @@
 
 .mediaGridVideos {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.75rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
   align-items: start;
+  grid-column: 1 / -1;
+  grid-row: 2;
 }
 
 .mediaGridPhotos {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.6rem;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
   align-items: start;
+  grid-column: 1 / -1;
+  grid-row: 2;
 }
 
 .mediaThumb {
   background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.55) inset;
+  border-radius: 0;
+  box-shadow: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.mediaThumbImage {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
 }
 
 .mediaThumb[data-variant='video'] {
@@ -195,23 +219,28 @@
 }
 
 .mediaThumb[data-variant='photo'] {
-  aspect-ratio: 1 / 1;
-  background: rgba(255, 255, 255, 0.92);
+  background: transparent;
+}
+
+.mediaThumb[data-variant='photo'] .mediaThumbImage {
+  height: auto;
+  object-fit: contain;
 }
 
 @media (max-width: 420px) {
   .mediaRow {
-    padding: 0.85rem 0.75rem 1.1rem 0.75rem;
+    padding: 0.95rem 0.75rem 1.15rem 0.75rem;
   }
 
   .mediaGridVideos {
-    gap: 0.6rem;
+    gap: 0.7rem;
   }
 
   .mediaGridPhotos {
-    gap: 0.5rem;
+    gap: 0.7rem;
   }
 }
+
 
 /* ----- Pre-footer CTA + testimonials ----- */
 .preFooterWrap {

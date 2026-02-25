@@ -47,14 +47,23 @@ const makePlaceholders = (prefix, count) =>
   Array.from({ length: count }, (_, idx) => ({ id: `${prefix}${idx + 1}` }));
 
 export const portfolioVideosRows = [
-  { id: 'vrow-01', label: '2024', items: makePlaceholders('v01-', 3) },
-  { id: 'vrow-02', label: '2023', items: makePlaceholders('v02-', 3) },
-  { id: 'vrow-03', label: '2022', items: makePlaceholders('v03-', 3) },
+  { id: 'vrow-01', label: '2024', items: makePlaceholders('v01-', 4) },
+  { id: 'vrow-02', label: '2023', items: makePlaceholders('v02-', 4) },
+  { id: 'vrow-03', label: '2022', items: makePlaceholders('v03-', 4) },
 ];
 
+const PUBLIC_PHOTOS_BASE = '/images/photos/Portfolio%20Photos';
+
+// Lista explícita: Vite no puede auto-listar el directorio `public/` en runtime.
+// Si agregás más PNGs a esa carpeta, sumalos acá (o te lo automatizo moviéndolos a `src/assets`).
+const publicPortfolioPngFiles = ['22.png', '23.png', '24.png'];
+
+const publicPortfolioPngs = publicPortfolioPngFiles.map((name) => ({
+  id: `public:${name}`,
+  src: `${PUBLIC_PHOTOS_BASE}/${encodeURIComponent(name)}`,
+}));
+
 export const portfolioPhotosRows = [
-  { id: 'prow-01', label: '2024', items: makePlaceholders('p01-', 4) },
-  { id: 'prow-02', label: '2023', items: makePlaceholders('p02-', 4) },
-  { id: 'prow-03', label: '2022', items: makePlaceholders('p03-', 4) },
+  { id: 'prow-photos', label: '', items: publicPortfolioPngs },
 ];
 

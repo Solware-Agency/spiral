@@ -35,10 +35,25 @@ const PortfolioModule = () => {
           <h2 className={styles.mediaHeading}>Videos</h2>
           {portfolioVideosRows.map((row) => (
             <div key={row.id} className={styles.mediaRow}>
-              <span className={styles.mediaRowLabel}>{row.label}</span>
+              {row.label && <span className={styles.mediaRowLabel}>{row.label}</span>}
               <div className={styles.mediaGridVideos}>
-                {row.items.map((item) => (
-                  <div key={item.id} className={styles.mediaThumb} data-variant="video" />
+                {row.items.map((item, idx) => (
+                  <div
+                    key={item.id}
+                    className={styles.mediaThumb}
+                    data-variant="video"
+                    data-layout={idx + 1}
+                  >
+                    {(item.src || item.imageUrl) && (
+                      <img
+                        className={styles.mediaThumbImage}
+                        src={item.src || item.imageUrl}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
@@ -49,10 +64,25 @@ const PortfolioModule = () => {
           <h2 className={styles.mediaHeading}>Photos</h2>
           {portfolioPhotosRows.map((row) => (
             <div key={row.id} className={styles.mediaRow}>
-              <span className={styles.mediaRowLabel}>{row.label}</span>
+              {row.label && <span className={styles.mediaRowLabel}>{row.label}</span>}
               <div className={styles.mediaGridPhotos}>
-                {row.items.map((item) => (
-                  <div key={item.id} className={styles.mediaThumb} data-variant="photo" />
+                {row.items.map((item, idx) => (
+                  <div
+                    key={item.id}
+                    className={styles.mediaThumb}
+                    data-variant="photo"
+                    data-layout={idx + 1}
+                  >
+                    {(item.src || item.imageUrl) && (
+                      <img
+                        className={styles.mediaThumbImage}
+                        src={item.src || item.imageUrl}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
+                  </div>
                 ))}
               </div>
             </div>
