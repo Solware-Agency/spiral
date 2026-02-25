@@ -103,13 +103,15 @@
 }
 
 .mediaWrap {
-  width: min(1400px, 100%);
-  margin: 0 auto;
-  padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1.25rem, 4vw, 3.25rem) 0;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: clamp(1.25rem, 3vw, 2.25rem) 0 0;
   margin-top: 0;
 }
 
 .mediaBlock {
+  position: relative;
   overflow: hidden;
 }
 
@@ -120,9 +122,34 @@
 }
 
 .mediaBlockPhotos {
-  background: rgba(185, 185, 185, 0.92);
+  background: transparent;
   border-radius: 0 0 24px 24px;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.mediaBlockPhotos::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/images/photos/DSC02285.jpg') center/cover no-repeat;
+  filter: grayscale(1) contrast(1.05) brightness(0.9);
+  transform: scale(1.08);
+  opacity: 0.9;
+  z-index: 0;
+}
+
+.mediaBlockPhotos::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(150, 150, 150, 0.38);
+  z-index: 0;
+}
+
+.mediaBlockPhotos .mediaHeading,
+.mediaBlockPhotos .mediaRow {
+  position: relative;
+  z-index: 1;
 }
 
 .mediaHeading {
