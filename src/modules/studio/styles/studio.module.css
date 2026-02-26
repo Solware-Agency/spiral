@@ -135,22 +135,29 @@
 
 .details {
   background: #000;
-  padding: clamp(2.25rem, 4vh, 3.25rem) clamp(1rem, 4vw, 2.5rem)
-    clamp(4rem, 7vh, 6rem);
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding: clamp(2.25rem, 4vh, 3.25rem) 0 clamp(4rem, 7vh, 6rem);
 }
 
 .detailsInner {
-  width: min(1200px, 100%);
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   margin-top: 0;
-  padding: 0 clamp(0.6rem, 1.6vw, 1.15rem);
+  padding: 0;
 }
 
 .spaceCard {
-  background: rgba(170, 170, 170, 0.92);
+  position: relative;
+  z-index: 0;
+  background: #b5b5b5;
   color: rgba(255, 255, 255, 0.92);
-  border-radius: 34px;
-  padding: clamp(1.1rem, 2.6vw, 1.65rem);
+  border-radius: 34px 34px 0 0;
+  min-height: clamp(14rem, 22vh, 18rem);
+  padding: clamp(1.65rem, 3.2vw, 2.5rem);
+  padding-left: clamp(1rem, 2vw, 1.5rem);
+  padding-right: clamp(1rem, 2vw, 1.5rem);
+  padding-bottom: clamp(4rem, 8vw, 6rem);
   box-shadow:
     0 22px 55px rgba(0, 0, 0, 0.35),
     0 0 0 1px rgba(255, 255, 255, 0.06) inset;
@@ -160,7 +167,7 @@
 .cardLabel {
   margin: 0 0 0.85rem 0;
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.78);
@@ -169,26 +176,43 @@
 .cardBody {
   margin: 0;
   font-family: var(--font-primary);
-  font-size: 0.7rem;
-  line-height: 1.6;
+  font-size: 0.92rem;
+  line-height: 1.65;
   max-width: 110ch;
   text-wrap: pretty;
   color: rgba(255, 255, 255, 0.82);
 }
 
 .amenitiesCard {
-  margin-top: 1.1rem;
-  background: #0b0b0b;
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(-1.35rem, -2.2vw, -0.9rem);
+  background: #000;
   color: #fff;
-  border-radius: 28px;
-  padding: clamp(1.25rem, 3.2vw, 2rem);
-  box-shadow: 0 30px 75px rgba(0, 0, 0, 0.45);
+  border-radius: clamp(2rem, 4.5vw, 3rem) clamp(2rem, 4.5vw, 3rem) 0 0;
+  overflow: hidden;
+  padding: clamp(1.55rem, 3.6vw, 2.35rem);
+  padding-left: clamp(1rem, 2vw, 1.5rem);
+  padding-right: clamp(1rem, 2vw, 1.5rem);
+  padding-top: clamp(1.75rem, 4.4vw, 2.75rem);
+  padding-bottom: clamp(2.15rem, 4.8vw, 3rem);
+}
+
+.amenitiesCard::after {
+  content: '';
+  position: absolute;
+  left: clamp(1rem, 2vw, 1.5rem);
+  right: clamp(1rem, 2vw, 1.5rem);
+  bottom: 0.9rem;
+  height: 1px;
+  background: rgba(111, 23, 32, 0.95);
+  pointer-events: none;
 }
 
 .amenitiesLabel {
   margin: 0 0 0.8rem 0;
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.9);
@@ -197,36 +221,36 @@
 .amenitiesIntro {
   margin: 0 0 0.85rem 0;
   font-family: var(--font-primary);
-  font-size: 0.78rem;
-  line-height: 1.55;
+  font-size: 0.92rem;
+  line-height: 1.6;
   color: rgba(255, 255, 255, 0.72);
 }
 
 .amenitiesGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: clamp(0.85rem, 3vw, 2rem);
+  gap: clamp(1.75rem, 7vw, 5.5rem);
   align-items: start;
 }
 
 .amenitiesList {
   margin: 0;
-  padding-left: 1.1rem;
+  padding-left: 1.15rem;
   font-family: var(--font-primary);
-  font-size: 0.78rem;
-  line-height: 1.6;
+  font-size: 0.92rem;
+  line-height: 1.65;
   color: rgba(255, 255, 255, 0.78);
 }
 
 .amenitiesList li {
-  margin: 0.25rem 0;
+  margin: 0.32rem 0;
 }
 
 .amenitiesOutro {
   margin: 0.95rem 0 0 0;
   font-family: var(--font-primary);
-  font-size: 0.78rem;
-  line-height: 1.55;
+  font-size: 0.92rem;
+  line-height: 1.6;
   color: rgba(255, 255, 255, 0.75);
 }
 
@@ -484,6 +508,11 @@
 
   .cardBody {
     font-size: 0.74rem;
+  }
+
+  .amenitiesCard {
+    margin-top: -0.85rem;
+    border-radius: 2rem 2rem 0 0;
   }
 }
 
