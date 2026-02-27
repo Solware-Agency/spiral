@@ -55,30 +55,43 @@ const ClientMarquee = () => {
       <div className={styles.logosTrack}>
         <div className={styles.logosMarquee}>
           <div className={styles.logosGroup}>
-            {clientLogos.map((logo) => (
-              <div
-                key={logo.src}
-                className={styles.logoItem}
-                role="img"
-                aria-label={logo.alt}
-                style={{
-                  '--client-logo-url': `url("${logo.src}")`,
-                  '--client-logo-scale': logo.scale ?? 1,
-                }}
-              />
-            ))}
+            {clientLogos.map((logo) => {
+              const href = logo.href ?? logo.src;
+              return (
+                <a
+                  key={logo.src}
+                  className={styles.logoItem}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={logo.alt}
+                  style={{
+                    '--client-logo-url': `url("${logo.src}")`,
+                    '--client-logo-scale': logo.scale ?? 1,
+                  }}
+                />
+              );
+            })}
           </div>
           <div className={styles.logosGroup} aria-hidden="true">
-            {clientLogos.map((logo) => (
-              <div
-                key={`${logo.src}-dup`}
-                className={styles.logoItem}
-                style={{
-                  '--client-logo-url': `url("${logo.src}")`,
-                  '--client-logo-scale': logo.scale ?? 1,
-                }}
-              />
-            ))}
+            {clientLogos.map((logo) => {
+              const href = logo.href ?? logo.src;
+              return (
+                <a
+                  key={`${logo.src}-dup`}
+                  className={styles.logoItem}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  style={{
+                    '--client-logo-url': `url("${logo.src}")`,
+                    '--client-logo-scale': logo.scale ?? 1,
+                  }}
+                />
+              );
+            })}
           </div>
         </div>
       </div>

@@ -389,8 +389,23 @@
   flex-shrink: 0;
   position: relative;
   user-select: none;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  border-radius: 6px;
+  outline: none;
+  transition: transform 160ms ease, opacity 160ms ease;
   opacity: 0.98;
+}
+
+.logoItem:hover {
+  opacity: 0.92;
+}
+
+.logoItem:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.78);
+  outline-offset: 4px;
 }
 
 .logoItem::before {

@@ -5,11 +5,11 @@
 
 .hero {
   position: relative;
-  min-height: clamp(16rem, 32vh, 22rem);
+  min-height: clamp(32rem, 78vh, 54rem);
   display: grid;
   place-items: center;
   overflow: hidden;
-  background-position: center;
+  background-position: 30% 22%;
   background-size: cover;
   background-repeat: no-repeat;
   filter: saturate(0.95) contrast(1.05) brightness(0.82);
@@ -78,6 +78,21 @@
   color: rgba(20, 20, 20, 0.75);
 }
 
+.labelButton {
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.labelButton:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.55);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
 .button {
   background: #0b0b0b;
   color: #fff;
@@ -109,6 +124,336 @@
   height: 1px;
   background: rgba(0, 0, 0, 0.12);
   margin: clamp(1rem, 2.6vw, 1.35rem) 0;
+}
+
+.bookingSlide {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: max-height 360ms ease, opacity 240ms ease, transform 240ms ease;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  background: #b5b5b5;
+}
+
+.bookingSlideOpen {
+  max-height: 2200px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bookingSlideInner {
+  padding: 2.15rem clamp(1.35rem, 4.6vw, 3.15rem) 2.75rem;
+}
+
+.bookingTopTitle {
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 1.15vw, 0.85rem);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(20, 20, 20, 0.78);
+  text-align: center;
+  padding: 0.65rem 0 1.35rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  margin: 0 0 1.35rem 0;
+}
+
+.bookingMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.15rem;
+}
+
+.hoursRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: rgba(20, 20, 20, 0.85);
+}
+
+.hoursSelect {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  padding: 0.42rem 1.7rem 0.42rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: clamp(0.66rem, 1.05vw, 0.78rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+}
+
+.hoursSelect:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.55);
+  outline-offset: 3px;
+}
+
+.hoursSuffix {
+  font-size: 0.62rem;
+}
+
+.bookingPrice {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  padding: 0.42rem 0.95rem;
+  font-family: var(--font-mono);
+  font-size: clamp(0.66rem, 1.05vw, 0.78rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(20, 20, 20, 0.88);
+  min-width: 102px;
+  text-align: center;
+}
+
+.bookingDesc {
+  margin: 0 0 1.15rem 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.66rem, 1.05vw, 0.8rem);
+  letter-spacing: 0.06em;
+  color: rgba(20, 20, 20, 0.8);
+  max-width: 78ch;
+}
+
+.bookingPickers {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: clamp(1rem, 2.4vw, 1.6rem);
+  align-items: start;
+  padding: 1.05rem 0 1.45rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  margin-bottom: 1.5rem;
+}
+
+.calendarCard,
+.timeCard {
+  background: transparent;
+}
+
+.calendarHeader {
+  display: grid;
+  grid-template-columns: 32px 1fr 32px;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.calendarNav {
+  appearance: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  color: rgba(20, 20, 20, 0.85);
+  font-size: 0.9rem;
+}
+
+.calendarMonth {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(20, 20, 20, 0.8);
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.35rem;
+}
+
+.calendarDow {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  color: rgba(20, 20, 20, 0.7);
+  padding-bottom: 0.15rem;
+}
+
+.calendarCellEmpty {
+  height: 34px;
+}
+
+.calendarCell {
+  appearance: none;
+  background: transparent;
+  border: none;
+  height: 34px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: clamp(0.62rem, 0.95vw, 0.74rem);
+  color: rgba(20, 20, 20, 0.9);
+}
+
+.calendarCell:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.calendarCellDisabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.calendarCellDisabled:hover {
+  background: transparent;
+}
+
+.calendarCellSelected {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.28);
+}
+
+.calendarCell:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.55);
+  outline-offset: 2px;
+}
+
+.timeHeader {
+  margin-bottom: 0.7rem;
+}
+
+.timeTitle {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(20, 20, 20, 0.82);
+}
+
+.timeZone {
+  margin-top: 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(20, 20, 20, 0.68);
+}
+
+.timeGrid {
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  padding: 1.05rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.65rem;
+}
+
+.timeSlot {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  padding: 0.55rem 0.45rem;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: clamp(0.6rem, 0.95vw, 0.72rem);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(20, 20, 20, 0.88);
+}
+
+.timeSlot:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.timeSlotActive {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.timeSlot:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.55);
+  outline-offset: 2px;
+}
+
+.infoBlock {
+  padding-top: 0.35rem;
+}
+
+.infoTitle {
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 1.15vw, 0.85rem);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(20, 20, 20, 0.78);
+  text-align: center;
+  padding: 1.25rem 0 1.35rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  margin-bottom: 1.35rem;
+}
+
+.infoForm {
+  display: grid;
+  gap: 1.05rem;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.fieldLabel {
+  font-family: var(--font-mono);
+  font-size: clamp(0.62rem, 0.95vw, 0.74rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(20, 20, 20, 0.78);
+}
+
+.fieldInput {
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  padding: 0.35rem 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.66rem, 1.05vw, 0.8rem);
+  letter-spacing: 0.06em;
+  color: rgba(20, 20, 20, 0.9);
+}
+
+.fieldInput:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.35);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.continueButton {
+  margin: 1.5rem auto 0 auto;
+  display: block;
+  background: #000;
+  color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  padding: 0.95rem 1.85rem;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: clamp(0.6rem, 0.95vw, 0.72rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  cursor: pointer;
+  min-width: 300px;
+}
+
+.continueButton:hover {
+  background: #0b0b0b;
+}
+
+.continueButton:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.55);
+  outline-offset: 3px;
 }
 
 .carouselWrap {
@@ -233,6 +578,15 @@
 @media (max-width: 520px) {
   .heroLogo {
     width: min(440px, 78vw);
+  }
+
+  .bookingPickers {
+    grid-template-columns: 1fr;
+  }
+
+  .fieldRow {
+    grid-template-columns: 1fr;
+    gap: 0.55rem;
   }
 }
 
