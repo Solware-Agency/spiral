@@ -5,11 +5,11 @@
 
 .hero {
   position: relative;
-  min-height: clamp(16rem, 32vh, 22rem);
+  min-height: clamp(32rem, 78vh, 54rem);
   display: grid;
   place-items: center;
   overflow: hidden;
-  background-position: center;
+  background-position: center 35%;
   background-size: cover;
   background-repeat: no-repeat;
   filter: saturate(0.95) contrast(1.05) brightness(0.82);
@@ -27,9 +27,11 @@
 .heroLogo {
   position: relative;
   z-index: 1;
-  width: min(520px, 74vw);
+  width: clamp(200px, 32vw, 340px);
+  max-width: 80vw;
   height: auto;
   opacity: 0.95;
+  object-fit: contain;
 }
 
 .intro {
@@ -416,7 +418,8 @@
 .ratesKicker {
   margin: 0 0 1rem 0;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+  line-height: 1.15;
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: rgba(20, 20, 20, 0.7);
@@ -426,14 +429,15 @@
   width: 100%;
   border-collapse: collapse;
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: clamp(0.75rem, 1.05vw, 0.92rem);
+  line-height: 1.25;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .ratesTable th,
 .ratesTable td {
-  padding: 0.55rem 0.6rem;
+  padding: clamp(0.6rem, 1vw, 0.85rem) clamp(0.65rem, 1.2vw, 0.95rem);
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
@@ -453,6 +457,35 @@
   line-height: 1.55;
   color: rgba(0, 0, 0, 0.62);
   max-width: 62ch;
+}
+
+.mapSection {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  background: #0a0a0a;
+}
+
+.mapEmbedWrap {
+  height: clamp(18rem, 52vh, 26rem);
+  background: #fff;
+}
+
+.mapEmbed {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.mapFooter {
+  background: #6f1720;
+  color: rgba(255, 255, 255, 0.95);
+  font-family: var(--font-mono);
+  font-size: clamp(0.78rem, 1.3vw, 0.95rem);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: clamp(0.85rem, 2.2vw, 1.25rem) clamp(1rem, 4vw, 2.5rem);
 }
 
 .polaroid {

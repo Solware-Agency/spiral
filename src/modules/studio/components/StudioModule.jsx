@@ -5,7 +5,7 @@ import styles from '../styles/studio.module.css';
 const CASA_LOGO_WHITE =
   '/images/spiral%20logos/SPIRAL%20Logos/Casa%20Spiral/Casa.spiral-white.png';
 
-const HERO_IMAGE = '/images/photos/DSC02380.jpg';
+const HERO_IMAGE = '/images/photos/DSC01989.jpg';
 
 const features = [
   {
@@ -264,6 +264,22 @@ const StudioModule = () => {
               />
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className={styles.mapSection} aria-label="Google Maps">
+        <div className={styles.mapEmbedWrap}>
+          <iframe
+            className={styles.mapEmbed}
+            title="Casa Spiral on Google Maps"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            allowFullScreen
+            src="https://www.google.com/maps?q=782+NW+42nd+Ave+Miami+FL+33126&output=embed"
+          />
+        </div>
+        <div className={styles.mapFooter}>
+          782 NW 42ND AVE MIAMI FL 33126
         </div>
       </section>
     </section>
