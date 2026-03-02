@@ -456,6 +456,28 @@
   outline-offset: 3px;
 }
 
+.bookingEmail {
+  display: block;
+  margin: 1.15rem auto 0 auto;
+  width: fit-content;
+  font-family: var(--font-mono);
+  font-size: clamp(0.62rem, 1vw, 0.75rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(20, 20, 20, 0.82);
+  text-decoration: none;
+}
+
+.bookingEmail:hover {
+  opacity: 0.8;
+}
+
+.bookingEmail:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.55);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
 .carouselWrap {
   width: 100vw;
   margin-left: calc(50% - 50vw);

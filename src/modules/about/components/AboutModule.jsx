@@ -55,13 +55,15 @@ const AboutModule = () => {
         </div>
 
         <div className={styles.specializePolaroid} aria-hidden="true">
-          <img
-            className={styles.specializePolaroidPhoto}
-            src="/images/photos/IMG_6230.jpg"
-            alt=""
-            loading="lazy"
-            decoding="async"
-          />
+          <div className={styles.specializePolaroidWindow} aria-hidden="true">
+            <img
+              className={styles.specializePolaroidPhoto}
+              src="/images/photos/DSC09031.jpg"
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
           <img
             className={styles.specializePolaroidFrame}
             src="/images/photos/polaroid.png"
@@ -125,8 +127,8 @@ const AboutModule = () => {
               <div className={styles.polaroidClip} aria-hidden />
               <img
                 className={styles.polaroidImage}
-                src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=1400&auto=format&fit=crop&q=70"
-                alt="Equipo de Spiral en sesión de trabajo"
+                src="/images/photos/DSC09041.jpg"
+                alt="Foto del equipo"
                 loading="lazy"
                 decoding="async"
               />
@@ -136,8 +138,8 @@ const AboutModule = () => {
               <div className={styles.polaroidClip} aria-hidden />
               <img
                 className={styles.polaroidImage}
-                src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1400&auto=format&fit=crop&q=70"
-                alt="Detalles detrás de escena"
+                src="/images/photos/DSC09102.jpg"
+                alt="Foto del equipo"
                 loading="lazy"
                 decoding="async"
               />

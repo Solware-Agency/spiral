@@ -5,6 +5,7 @@ const CASA_LOGO_WHITE =
   '/images/spiral%20logos/SPIRAL%20Logos/Casa%20Spiral/Casa.spiral-white.png';
 
 const HERO_IMAGE = '/images/photos/DSC01989.jpg';
+const BOOK_EMAIL = 'andrea@spiralmstudio.com';
 
 const carouselSlides = [
   '/images/photos/DSC02380.jpg',
@@ -115,6 +116,27 @@ const BookNowModule = () => {
     if (activePlan === 'weekend') return entry.weekend;
     return entry.weekday;
   }, [activePlan, hours]);
+
+  const mailtoHref = useMemo(() => {
+    const planLabel = activePlan === 'weekend' ? 'Weekend' : 'Weekday';
+    const subject = `Studio Rental - ${planLabel}`;
+    const dateText = selectedDate ? selectedDate.toDateString() : '(not selected)';
+    const timeText = selectedTime ?? '(not selected)';
+
+    const body = [
+      'Hi Spiral,',
+      '',
+      "I'd like to book the studio.",
+      `Plan: ${planLabel}`,
+      `Hours: ${hours}`,
+      `Date: ${dateText}`,
+      `Time: ${timeText}`,
+      '',
+      'Thanks!',
+    ].join('\n');
+
+    return `mailto:${BOOK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }, [activePlan, hours, selectedDate, selectedTime]);
 
   const monthWeeks = useMemo(() => getMonthGrid(month), [month]);
 
@@ -360,6 +382,10 @@ const BookNowModule = () => {
               <button type="button" className={styles.continueButton}>
                 CONTINUE TO PAYMENT
               </button>
+
+              <a className={styles.bookingEmail} href={mailtoHref}>
+                {BOOK_EMAIL.toUpperCase()}
+              </a>
             </div>
           </div>
         </section>
