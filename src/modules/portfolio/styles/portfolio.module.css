@@ -389,11 +389,17 @@
 .preFooterTestimonialsInner {
   width: min(1200px, 100%);
   margin: 0 auto;
-  padding: clamp(2.2rem, 5.5vh, 3.4rem) clamp(1.25rem, 4vw, 2.5rem);
+  padding: clamp(1.55rem, 4.2vh, 2.25rem) clamp(1.25rem, 4vw, 2.5rem)
+    clamp(0.2rem, 0.8vh, 0.55rem) clamp(1.25rem, 4vw, 2.5rem);
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
+  grid-template-columns: 1fr 1fr;
   gap: clamp(1.5rem, 4vw, 3rem);
-  align-items: center;
+  align-items: start;
+}
+
+.testimonialsLeft {
+  align-self: start;
+  transform: translateX(clamp(-1.25rem, -2.2vw, -2.25rem));
 }
 
 .testimonialsKicker {
@@ -406,30 +412,32 @@
 }
 
 .testimonialsTitle {
-  margin: 0.6rem 0 0 0;
-  font-family: var(--font-display);
+  margin: 0.45rem 0 0 0;
+  font-family: var(--font-loverica, var(--font-display));
   font-weight: 400;
-  font-size: clamp(2.2rem, 4.8vw, 3.6rem);
-  line-height: 1;
-  letter-spacing: 0.04em;
+  font-size: clamp(2.8rem, 5.8vw, 4.6rem);
+  line-height: 0.92;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
   color: #6f1720;
+  max-width: 18ch;
 }
 
 .testimonialsRight {
   position: relative;
-  min-height: clamp(11rem, 26vh, 16rem);
+  min-height: clamp(8rem, 18vh, 12rem);
   display: grid;
-  align-items: center;
-  justify-items: center;
+  align-items: end;
+  justify-items: end;
 }
 
 .testimonialsAsset {
-  width: min(640px, 100%);
+  width: min(1100px, 185%);
+  max-width: none;
   height: auto;
   display: block;
   filter: drop-shadow(0 22px 55px rgba(0, 0, 0, 0.22)) saturate(0.95) contrast(1.02);
-  transform: translate(10%, -4%) rotate(-2deg);
+  transform: translate(14%, -6%) rotate(-2deg);
 }
 
 @media (max-width: 920px) {
@@ -445,7 +453,7 @@
   }
 
   .testimonialsAsset {
-    width: min(560px, 92vw);
+    width: min(820px, 112vw);
     transform: translate(0, 0) rotate(-2deg);
   }
 }
