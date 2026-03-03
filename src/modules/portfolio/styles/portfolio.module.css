@@ -45,27 +45,51 @@
 
 .heroTitle {
   font-family: var(--font-loverica, var(--font-display));
-  font-size: clamp(4.25rem, 10.5vw, 9.75rem);
+  font-size: clamp(6.25rem, 11.5vw, 10.75rem);
   font-weight: 400;
   margin: 0;
   letter-spacing: -0.03em;
-  line-height: 0.88;
+  line-height: 1;
   text-transform: uppercase;
   color: #fff;
   text-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
   pointer-events: none;
   user-select: none;
+  /* Control the meeting axis between the T (RECENT) and W (WORK). */
+  --tw-meet: 50%;
+  --recent-nudge: 0.2em; /* compensate font side-bearings */
+  --work-nudge: -0.3em; /* compensate font side-bearings */
+  width: min(1400px, 100%);
+  display: grid;
+  grid-template-columns: var(--tw-meet) calc(100% - var(--tw-meet));
+  grid-template-rows: auto auto;
+  column-gap: 0;
 }
 
 .heroTitleTop {
   display: block;
-  text-align: center;
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: end;
+  text-align: right;
+  transform: translateX(var(--recent-nudge));
 }
 
 .heroTitleBottom {
   display: block;
-  text-align: center;
-  margin-top: -0.12em;
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: start;
+  text-align: left;
+  margin-top: -0.18em;
+  transform: translateX(var(--work-nudge));
+}
+
+@media (max-width: 560px) {
+  .heroTitle {
+    --recent-nudge: 0.04em;
+    --work-nudge: -0.04em;
+  }
 }
 
 .introBand {
@@ -91,7 +115,7 @@
 
 .introTitle {
   margin: 0.25rem 0 0 0;
-  font-family: var(--font-display);
+  font-family: var(--font-loverica, var(--font-display));
   font-size: clamp(1.35rem, 2.6vw, 2rem);
   font-weight: 400;
   letter-spacing: 0.14em;

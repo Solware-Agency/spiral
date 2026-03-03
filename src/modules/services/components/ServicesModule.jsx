@@ -15,7 +15,6 @@ const ServicesModule = () => {
       <div className={styles.servicesInner}>
         <div className={styles.servicesMetaRow}>
           <span className={styles.kicker}>OUR SERVICES</span>
-          <span className={styles.kickerRight}>OUR SERVICES</span>
         </div>
 
         <div className={styles.servicesList}>

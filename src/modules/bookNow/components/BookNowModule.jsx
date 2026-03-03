@@ -55,9 +55,60 @@ const isWeekend = (d) => {
   return dow === 0 || dow === 6;
 };
 
-const isValidEmail = (value) => /^\S+@\S+\.\S+$/.test(value);
-
 const normalizePhoneDigits = (value) => value.replace(/[^\d]/g, '');
+
+const stripNewlines = (value) => value.replace(/[\r\n]+/g, ' ');
+
+const normalizeName = (value, maxLen = 40) => {
+  const cleaned = stripNewlines(String(value ?? ''))
+    .replace(/[^A-Za-z\u00C0-\u024F\s'-]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/^[-']+/, '')
+    .replace(/[-']+$/, '');
+  return cleaned.slice(0, maxLen);
+};
+
+const normalizeEmail = (value, maxLen = 254) =>
+  stripNewlines(String(value ?? '')).replace(/\s+/g, '').slice(0, maxLen);
+
+const normalizePhone = (value, maxLenDigits = 15) =>
+  normalizePhoneDigits(stripNewlines(String(value ?? ''))).slice(0, maxLenDigits);
+
+const sanitizeEmailInput = (value, maxLen = 254) => {
+  const raw = stripNewlines(String(value ?? '')).slice(0, maxLen);
+  // Only keep characters that are commonly valid in email addresses.
+  const allowed = raw.replace(/[^A-Za-z0-9._%+\-@]/g, '');
+  const atIdx = allowed.indexOf('@');
+  if (atIdx === -1) return allowed;
+  const local = allowed.slice(0, atIdx).replace(/@/g, '');
+  const domain = allowed
+    .slice(atIdx + 1)
+    .replace(/@/g, '')
+    // Domain shouldn't include underscore or plus; keep it strict.
+    .replace(/[^A-Za-z0-9.-]/g, '');
+  return `${local}@${domain}`.slice(0, maxLen);
+};
+
+const isValidName = (value) => {
+  const v = String(value ?? '').trim();
+  if (v.length < 2 || v.length > 40) return false;
+  // Must contain at least one letter; allow spaces, hyphens, apostrophes.
+  return /[A-Za-z\u00C0-\u024F]/.test(v) && /^[A-Za-z\u00C0-\u024F\s'-]+$/.test(v);
+};
+
+const isValidEmailStrict = (value) => {
+  const v = String(value ?? '').trim();
+  if (!v || v.length > 254) return false;
+  if (/\s/.test(v)) return false;
+  // Basic sanity: one @, sensible local+domain, and a TLD of >=2 letters.
+  return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(v);
+};
+
+const isValidPhoneDigits = (digits) => {
+  const d = normalizePhoneDigits(String(digits ?? ''));
+  return d.length >= 10 && d.length <= 15;
+};
 
 const preloadImage = async (src) => {
   if (!src) return false;
@@ -95,6 +146,351 @@ const getMonthGrid = (monthDate) => {
   for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
   return weeks;
 };
+
+const BookingSlide = React.memo(function BookingSlide({
+  plan,
+  activePlan,
+  hours,
+  setHours,
+  money,
+  price,
+  month,
+  setMonth,
+  monthWeeks,
+  selectedDate,
+  setSelectedDate,
+  selectedTime,
+  setSelectedTime,
+  timeSlots,
+  showErrors,
+  validation,
+  formValues,
+  setFormValues,
+  onContinue,
+  mailtoHref,
+}) {
+  const isOpen = activePlan === plan;
+  const planTitle = plan === 'weekday' ? 'STUDIO RENTAL WEEKDAY' : 'STUDIO RENTAL WEEKEND';
+
+  return (
+    <section
+      className={`${styles.bookingSlide} ${isOpen ? styles.bookingSlideOpen : ''}`}
+      aria-label="Booking details"
+      aria-hidden={!isOpen}
+    >
+      <div className={styles.bookingSlideInner}>
+        <div className={styles.bookingSlideContent}>
+          <div className={styles.bookingTopTitle}>{planTitle}</div>
+
+          <div className={styles.bookingMeta}>
+            <div className={styles.bookingMetaLeft}>
+              <label className={styles.hoursRow}>
+                <select
+                  className={styles.hoursSelect}
+                  value={hours}
+                  onChange={(e) => {
+                    const next = Number(e.target.value);
+                    const allowed = rates.some((r) => r.hours === next);
+                    setHours(allowed ? next : rates[0]?.hours ?? 2);
+                  }}
+                  aria-label="Select hours"
+                >
+                  {rates.map((r) => (
+                    <option key={r.hours} value={r.hours}>
+                      {r.hours} HOURS
+                    </option>
+                  ))}
+                </select>
+                <span className={styles.hoursSuffix}>STUDIO RENTAL</span>
+              </label>
+            </div>
+
+            <div className={styles.bookingPrice} aria-label="Price">
+              {money.format(price)}
+            </div>
+          </div>
+
+          <p className={styles.bookingDesc}>
+            Private access to CASA STUDIO including all sets, props, and professional lighting
+            equipment.
+          </p>
+
+          <div className={styles.bookingPickers}>
+            <div className={styles.calendarCard} aria-label="Calendar">
+              <div className={styles.calendarHeader}>
+                <button
+                  type="button"
+                  className={styles.calendarNav}
+                  onClick={() => setMonth((m) => addMonths(m, -1))}
+                  aria-label="Previous month"
+                >
+                  ‹
+                </button>
+                <div className={styles.calendarMonth}>
+                  {monthNames[month.getMonth()]} {month.getFullYear()}
+                </div>
+                <button
+                  type="button"
+                  className={styles.calendarNav}
+                  onClick={() => setMonth((m) => addMonths(m, 1))}
+                  aria-label="Next month"
+                >
+                  ›
+                </button>
+              </div>
+
+              <div className={styles.calendarGrid} role="grid" aria-label="Month days">
+                {dayHeaders.map((d) => (
+                  <div key={d} className={styles.calendarDow} aria-hidden="true">
+                    {d}
+                  </div>
+                ))}
+                {monthWeeks.flat().map((cell, idx) => {
+                  if (!cell) {
+                    return <div key={`empty-${idx}`} className={styles.calendarCellEmpty} />;
+                  }
+                  const selected = isSameDay(cell, selectedDate);
+                  const allowed = plan === 'weekend' ? isWeekend(cell) : !isWeekend(cell);
+                  return (
+                    <button
+                      key={cell.toISOString()}
+                      type="button"
+                      className={`${styles.calendarCell} ${
+                        selected ? styles.calendarCellSelected : ''
+                      } ${!allowed ? styles.calendarCellDisabled : ''}`}
+                      onClick={() => setSelectedDate(cell)}
+                      aria-label={`Select ${cell.toDateString()}`}
+                      aria-pressed={selected}
+                      disabled={!allowed}
+                    >
+                      {cell.getDate()}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.timeCard} aria-label="Time slots">
+            <div className={styles.timeHeader}>
+              <div className={styles.timeTitle}>
+                {selectedDate
+                  ? selectedDate.toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      month: 'long',
+                      day: 'numeric',
+                    })
+                  : 'Select a date'}
+              </div>
+              <div className={styles.timeZone}>TIME ZONE: EASTERN TIME (GMT-05:00)</div>
+            </div>
+
+            <div className={styles.timeGrid} role="list">
+              {timeSlots.map((t) => {
+                const active = t === selectedTime;
+                return (
+                  <button
+                    key={t}
+                    type="button"
+                    className={`${styles.timeSlot} ${active ? styles.timeSlotActive : ''}`}
+                    onClick={() => setSelectedTime(t)}
+                    disabled={!selectedDate}
+                    aria-pressed={active}
+                  >
+                    {t}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.infoBlock} aria-label="Your information">
+          <div className={styles.infoTitle}>YOUR INFORMATION</div>
+
+          <div className={styles.infoForm}>
+            <label className={styles.fieldRow}>
+              <span className={styles.fieldLabel}>FIRST NAME</span>
+              <div className={styles.fieldControl}>
+                <input
+                  className={`${styles.fieldInput} ${
+                    showErrors && validation.errors.firstName ? styles.fieldInputError : ''
+                  }`}
+                  type="text"
+                  name="firstName"
+                  value={formValues.firstName}
+                  onChange={(e) =>
+                    setFormValues((v) => ({
+                      ...v,
+                      firstName: stripNewlines(e.target.value).slice(0, 40),
+                    }))
+                  }
+                  aria-invalid={showErrors && !!validation.errors.firstName}
+                  aria-describedby={validation.errors.firstName ? 'booknow-firstname-error' : undefined}
+                  autoComplete="given-name"
+                  maxLength={40}
+                />
+                {showErrors && validation.errors.firstName ? (
+                  <div id="booknow-firstname-error" className={styles.fieldError} role="alert">
+                    {validation.errors.firstName}
+                  </div>
+                ) : null}
+              </div>
+            </label>
+            <label className={styles.fieldRow}>
+              <span className={styles.fieldLabel}>LAST NAME</span>
+              <div className={styles.fieldControl}>
+                <input
+                  className={`${styles.fieldInput} ${
+                    showErrors && validation.errors.lastName ? styles.fieldInputError : ''
+                  }`}
+                  type="text"
+                  name="lastName"
+                  value={formValues.lastName}
+                  onChange={(e) =>
+                    setFormValues((v) => ({
+                      ...v,
+                      lastName: stripNewlines(e.target.value).slice(0, 40),
+                    }))
+                  }
+                  aria-invalid={showErrors && !!validation.errors.lastName}
+                  aria-describedby={validation.errors.lastName ? 'booknow-lastname-error' : undefined}
+                  autoComplete="family-name"
+                  maxLength={40}
+                />
+                {showErrors && validation.errors.lastName ? (
+                  <div id="booknow-lastname-error" className={styles.fieldError} role="alert">
+                    {validation.errors.lastName}
+                  </div>
+                ) : null}
+              </div>
+            </label>
+            <label className={styles.fieldRow}>
+              <span className={styles.fieldLabel}>PHONE NUMBER</span>
+              <div className={styles.fieldControl}>
+                <input
+                  className={`${styles.fieldInput} ${
+                    showErrors && validation.errors.phone ? styles.fieldInputError : ''
+                  }`}
+                  type="tel"
+                  name="phone"
+                  value={formValues.phone}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  onBeforeInput={(e) => {
+                    // Block any non-digit character input (keeps caret stable).
+                    if (typeof e.data === 'string' && e.data && /\D/.test(e.data)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onPaste={(e) => {
+                    const pasted = e.clipboardData?.getData('text') ?? '';
+                    const digits = normalizePhoneDigits(pasted).slice(0, 15);
+                    if (!digits) {
+                      e.preventDefault();
+                      return;
+                    }
+                    e.preventDefault();
+                    setFormValues((v) => ({ ...v, phone: digits }));
+                  }}
+                  onChange={(e) => {
+                    const digitsOnly = normalizePhoneDigits(stripNewlines(e.target.value)).slice(0, 15);
+                    setFormValues((v) => ({ ...v, phone: digitsOnly }));
+                  }}
+                  aria-invalid={showErrors && !!validation.errors.phone}
+                  aria-describedby={validation.errors.phone ? 'booknow-phone-error' : undefined}
+                  autoComplete="tel"
+                  maxLength={15}
+                />
+                <div className={styles.fieldHint}>SOLO NÚMEROS (10–15 DÍGITOS)</div>
+                {showErrors && validation.errors.phone ? (
+                  <div id="booknow-phone-error" className={styles.fieldError} role="alert">
+                    {validation.errors.phone}
+                  </div>
+                ) : null}
+              </div>
+            </label>
+            <label className={styles.fieldRow}>
+              <span className={styles.fieldLabel}>EMAIL</span>
+              <div className={styles.fieldControl}>
+                <input
+                  className={`${styles.fieldInput} ${
+                    showErrors && validation.errors.email ? styles.fieldInputError : ''
+                  }`}
+                  type="email"
+                  name="email"
+                  value={formValues.email}
+                  inputMode="email"
+                  onBeforeInput={(e) => {
+                    if (typeof e.data !== 'string' || !e.data) return;
+                    if (/[^A-Za-z0-9._%+\-@]/.test(e.data)) {
+                      e.preventDefault();
+                      return;
+                    }
+                    if (e.data.includes('@') && formValues.email.includes('@')) {
+                      e.preventDefault();
+                    }
+                  }}
+                  onPaste={(e) => {
+                    const pasted = e.clipboardData?.getData('text') ?? '';
+                    const cleaned = sanitizeEmailInput(pasted, 254);
+                    e.preventDefault();
+                    setFormValues((v) => ({ ...v, email: cleaned }));
+                  }}
+                  onChange={(e) => {
+                    const cleaned = sanitizeEmailInput(e.target.value, 254);
+                    setFormValues((v) => ({ ...v, email: cleaned }));
+                  }}
+                  aria-invalid={showErrors && !!validation.errors.email}
+                  aria-describedby={[
+                    'booknow-email-hint',
+                    validation.errors.email ? 'booknow-email-error' : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                  autoComplete="email"
+                  maxLength={254}
+                  spellCheck={false}
+                  autoCapitalize="none"
+                />
+                <div id="booknow-email-hint" className={styles.fieldHint}>
+                  EMAIL VÁLIDO (EJ: NOMBRE@DOMINIO.COM)
+                </div>
+                {showErrors && validation.errors.email ? (
+                  <div id="booknow-email-error" className={styles.fieldError} role="alert">
+                    {validation.errors.email}
+                  </div>
+                ) : null}
+              </div>
+            </label>
+          </div>
+
+          {showErrors &&
+          (validation.errors.activePlan || validation.errors.selectedDate || validation.errors.selectedTime) ? (
+            <div className={styles.formSummaryError} role="alert">
+              {validation.errors.activePlan ??
+                validation.errors.selectedDate ??
+                validation.errors.selectedTime}
+            </div>
+          ) : null}
+
+          <button
+            type="button"
+            className={styles.continueButton}
+            onClick={onContinue}
+            disabled={!validation.isValid}
+          >
+            CONTINUE TO PAYMENT
+          </button>
+
+          <a className={styles.bookingEmail} href={mailtoHref}>
+            {BOOK_EMAIL.toUpperCase()}
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+});
 
 const BookNowModule = () => {
   const [slideIdx, setSlideIdx] = useState(0);
@@ -225,7 +621,10 @@ const BookNowModule = () => {
     const subject = `Studio Rental - ${planLabel}`;
     const dateText = selectedDate ? selectedDate.toDateString() : '(not selected)';
     const timeText = selectedTime ?? '(not selected)';
-    const { firstName, lastName, phone, email } = formValues;
+    const firstName = normalizeName(formValues.firstName);
+    const lastName = normalizeName(formValues.lastName);
+    const phone = normalizePhone(formValues.phone);
+    const email = normalizeEmail(formValues.email);
 
     const body = [
       'Hi Spiral,',
@@ -257,19 +656,25 @@ const BookNowModule = () => {
     if (!selectedDate) errors.selectedDate = 'Selecciona una fecha.';
     if (!selectedTime) errors.selectedTime = 'Selecciona una hora.';
 
-    const firstName = formValues.firstName.trim();
-    const lastName = formValues.lastName.trim();
-    const email = formValues.email.trim();
-    const phoneDigits = normalizePhoneDigits(formValues.phone);
+    const firstName = stripNewlines(formValues.firstName).trim();
+    const lastName = stripNewlines(formValues.lastName).trim();
+    const email = stripNewlines(formValues.email).trim();
+    const phoneDigits = normalizePhoneDigits(stripNewlines(formValues.phone));
 
     if (!firstName) errors.firstName = 'Ingresa tu nombre.';
+    else if (!isValidName(firstName))
+      errors.firstName = "Solo letras, espacios, '-' y '’' (2–40 caracteres).";
+
     if (!lastName) errors.lastName = 'Ingresa tu apellido.';
+    else if (!isValidName(lastName))
+      errors.lastName = "Solo letras, espacios, '-' y '’' (2–40 caracteres).";
 
     if (!email) errors.email = 'Ingresa tu email.';
-    else if (!isValidEmail(email)) errors.email = 'Ingresa un email válido.';
+    else if (!isValidEmailStrict(email)) errors.email = 'Ingresa un email válido.';
 
     if (!phoneDigits) errors.phone = 'Ingresa tu teléfono.';
-    else if (phoneDigits.length < 10) errors.phone = 'Ingresa un teléfono válido (mín. 10 dígitos).';
+    else if (!isValidPhoneDigits(phoneDigits))
+      errors.phone = 'Ingresa un teléfono válido (10–15 dígitos).';
 
     return { errors, isValid: Object.keys(errors).length === 0 };
   }, [activePlan, formValues, selectedDate, selectedTime]);
@@ -303,288 +708,6 @@ const BookNowModule = () => {
     ],
     []
   );
-
-  const BookingSlide = ({ plan }) => {
-    const isOpen = activePlan === plan;
-    const planTitle = plan === 'weekday' ? 'STUDIO RENTAL WEEKDAY' : 'STUDIO RENTAL WEEKEND';
-
-    return (
-      <section
-        className={`${styles.bookingSlide} ${isOpen ? styles.bookingSlideOpen : ''}`}
-        aria-label="Booking details"
-        aria-hidden={!isOpen}
-      >
-        <div className={styles.bookingSlideInner}>
-          <div className={styles.bookingSlideContent}>
-            <div className={styles.bookingTopTitle}>{planTitle}</div>
-
-            <div className={styles.bookingMeta}>
-              <div className={styles.bookingMetaLeft}>
-                <label className={styles.hoursRow}>
-                  <select
-                    className={styles.hoursSelect}
-                    value={hours}
-                    onChange={(e) => setHours(Number(e.target.value))}
-                    aria-label="Select hours"
-                  >
-                    {rates.map((r) => (
-                      <option key={r.hours} value={r.hours}>
-                        {r.hours} HOURS
-                      </option>
-                    ))}
-                  </select>
-                  <span className={styles.hoursSuffix}>STUDIO RENTAL</span>
-                </label>
-              </div>
-
-              <div className={styles.bookingPrice} aria-label="Price">
-                {money.format(price)}
-              </div>
-            </div>
-
-            <p className={styles.bookingDesc}>
-              Private access to CASA STUDIO including all sets, props, and professional lighting
-              equipment.
-            </p>
-
-            <div className={styles.bookingPickers}>
-              <div className={styles.calendarCard} aria-label="Calendar">
-                <div className={styles.calendarHeader}>
-                  <button
-                    type="button"
-                    className={styles.calendarNav}
-                    onClick={() => setMonth((m) => addMonths(m, -1))}
-                    aria-label="Previous month"
-                  >
-                    ‹
-                  </button>
-                  <div className={styles.calendarMonth}>
-                    {monthNames[month.getMonth()]} {month.getFullYear()}
-                  </div>
-                  <button
-                    type="button"
-                    className={styles.calendarNav}
-                    onClick={() => setMonth((m) => addMonths(m, 1))}
-                    aria-label="Next month"
-                  >
-                    ›
-                  </button>
-                </div>
-
-                <div className={styles.calendarGrid} role="grid" aria-label="Month days">
-                  {dayHeaders.map((d) => (
-                    <div key={d} className={styles.calendarDow} aria-hidden="true">
-                      {d}
-                    </div>
-                  ))}
-                  {monthWeeks.flat().map((cell, idx) => {
-                    if (!cell) {
-                      return <div key={`empty-${idx}`} className={styles.calendarCellEmpty} />;
-                    }
-                    const selected = isSameDay(cell, selectedDate);
-                    const allowed = plan === 'weekend' ? isWeekend(cell) : !isWeekend(cell);
-                    return (
-                      <button
-                        key={cell.toISOString()}
-                        type="button"
-                        className={`${styles.calendarCell} ${
-                          selected ? styles.calendarCellSelected : ''
-                        } ${!allowed ? styles.calendarCellDisabled : ''}`}
-                        onClick={() => setSelectedDate(cell)}
-                        aria-label={`Select ${cell.toDateString()}`}
-                        aria-pressed={selected}
-                        disabled={!allowed}
-                      >
-                        {cell.getDate()}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.timeCard} aria-label="Time slots">
-              <div className={styles.timeHeader}>
-                <div className={styles.timeTitle}>
-                  {selectedDate
-                    ? selectedDate.toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        month: 'long',
-                        day: 'numeric',
-                      })
-                    : 'Select a date'}
-                </div>
-                <div className={styles.timeZone}>TIME ZONE: EASTERN TIME (GMT-05:00)</div>
-              </div>
-
-              <div className={styles.timeGrid} role="list">
-                {timeSlots.map((t) => {
-                  const active = t === selectedTime;
-                  return (
-                    <button
-                      key={t}
-                      type="button"
-                      className={`${styles.timeSlot} ${active ? styles.timeSlotActive : ''}`}
-                      onClick={() => setSelectedTime(t)}
-                      disabled={!selectedDate}
-                      aria-pressed={active}
-                    >
-                      {t}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-
-            <div className={styles.infoBlock} aria-label="Your information">
-              <div className={styles.infoTitle}>YOUR INFORMATION</div>
-
-              <div className={styles.infoForm}>
-                <label className={styles.fieldRow}>
-                  <span className={styles.fieldLabel}>FIRST NAME</span>
-                  <div className={styles.fieldControl}>
-                    <input
-                      className={`${styles.fieldInput} ${
-                        showErrors && validation.errors.firstName ? styles.fieldInputError : ''
-                      }`}
-                      type="text"
-                      name="firstName"
-                      value={formValues.firstName}
-                      onChange={(e) =>
-                        setFormValues((v) => ({
-                          ...v,
-                          firstName: e.target.value,
-                        }))
-                      }
-                      aria-invalid={showErrors && !!validation.errors.firstName}
-                      aria-describedby={
-                        validation.errors.firstName ? 'booknow-firstname-error' : undefined
-                      }
-                      autoComplete="given-name"
-                    />
-                    {showErrors && validation.errors.firstName ? (
-                      <div id="booknow-firstname-error" className={styles.fieldError} role="alert">
-                        {validation.errors.firstName}
-                      </div>
-                    ) : null}
-                  </div>
-                </label>
-              <label className={styles.fieldRow}>
-                <span className={styles.fieldLabel}>LAST NAME</span>
-                <div className={styles.fieldControl}>
-                  <input
-                    className={`${styles.fieldInput} ${
-                      showErrors && validation.errors.lastName ? styles.fieldInputError : ''
-                    }`}
-                    type="text"
-                    name="lastName"
-                    value={formValues.lastName}
-                    onChange={(e) =>
-                      setFormValues((v) => ({
-                        ...v,
-                        lastName: e.target.value,
-                      }))
-                    }
-                    aria-invalid={showErrors && !!validation.errors.lastName}
-                    aria-describedby={
-                      validation.errors.lastName ? 'booknow-lastname-error' : undefined
-                    }
-                    autoComplete="family-name"
-                  />
-                  {showErrors && validation.errors.lastName ? (
-                    <div id="booknow-lastname-error" className={styles.fieldError} role="alert">
-                      {validation.errors.lastName}
-                    </div>
-                  ) : null}
-                </div>
-              </label>
-              <label className={styles.fieldRow}>
-                <span className={styles.fieldLabel}>PHONE NUMBER</span>
-                <div className={styles.fieldControl}>
-                  <input
-                    className={`${styles.fieldInput} ${
-                      showErrors && validation.errors.phone ? styles.fieldInputError : ''
-                    }`}
-                    type="tel"
-                    name="phone"
-                    value={formValues.phone}
-                    onChange={(e) =>
-                      setFormValues((v) => ({
-                        ...v,
-                        phone: e.target.value,
-                      }))
-                    }
-                    aria-invalid={showErrors && !!validation.errors.phone}
-                    aria-describedby={validation.errors.phone ? 'booknow-phone-error' : undefined}
-                    autoComplete="tel"
-                    inputMode="tel"
-                  />
-                  {showErrors && validation.errors.phone ? (
-                    <div id="booknow-phone-error" className={styles.fieldError} role="alert">
-                      {validation.errors.phone}
-                    </div>
-                  ) : null}
-                </div>
-              </label>
-              <label className={styles.fieldRow}>
-                <span className={styles.fieldLabel}>EMAIL</span>
-                <div className={styles.fieldControl}>
-                  <input
-                    className={`${styles.fieldInput} ${
-                      showErrors && validation.errors.email ? styles.fieldInputError : ''
-                    }`}
-                    type="email"
-                    name="email"
-                    value={formValues.email}
-                    onChange={(e) =>
-                      setFormValues((v) => ({
-                        ...v,
-                        email: e.target.value,
-                      }))
-                    }
-                    aria-invalid={showErrors && !!validation.errors.email}
-                    aria-describedby={validation.errors.email ? 'booknow-email-error' : undefined}
-                    autoComplete="email"
-                    inputMode="email"
-                  />
-                  {showErrors && validation.errors.email ? (
-                    <div id="booknow-email-error" className={styles.fieldError} role="alert">
-                      {validation.errors.email}
-                    </div>
-                  ) : null}
-                </div>
-              </label>
-            </div>
-
-              {showErrors &&
-              (validation.errors.activePlan ||
-                validation.errors.selectedDate ||
-                validation.errors.selectedTime) ? (
-                <div className={styles.formSummaryError} role="alert">
-                  {validation.errors.activePlan ??
-                    validation.errors.selectedDate ??
-                    validation.errors.selectedTime}
-                </div>
-              ) : null}
-
-              <button
-                type="button"
-                className={styles.continueButton}
-                onClick={onContinue}
-                disabled={!validation.isValid}
-              >
-                CONTINUE TO PAYMENT
-              </button>
-
-              <a className={styles.bookingEmail} href={mailtoHref}>
-                {BOOK_EMAIL.toUpperCase()}
-              </a>
-            </div>
-          </div>
-      </section>
-    );
-  };
 
   return (
     <section className={styles.page} aria-label="Book now page">
@@ -628,7 +751,28 @@ const BookNowModule = () => {
             </button>
           </div>
 
-          <BookingSlide plan="weekday" />
+          <BookingSlide
+            plan="weekday"
+            activePlan={activePlan}
+            hours={hours}
+            setHours={setHours}
+            money={money}
+            price={price}
+            month={month}
+            setMonth={setMonth}
+            monthWeeks={monthWeeks}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            selectedTime={selectedTime}
+            setSelectedTime={setSelectedTime}
+            timeSlots={timeSlots}
+            showErrors={showErrors}
+            validation={validation}
+            formValues={formValues}
+            setFormValues={setFormValues}
+            onContinue={onContinue}
+            mailtoHref={mailtoHref}
+          />
 
           <div className={styles.divider} aria-hidden />
 
@@ -651,7 +795,28 @@ const BookNowModule = () => {
             </button>
           </div>
 
-          <BookingSlide plan="weekend" />
+          <BookingSlide
+            plan="weekend"
+            activePlan={activePlan}
+            hours={hours}
+            setHours={setHours}
+            money={money}
+            price={price}
+            month={month}
+            setMonth={setMonth}
+            monthWeeks={monthWeeks}
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            selectedTime={selectedTime}
+            setSelectedTime={setSelectedTime}
+            timeSlots={timeSlots}
+            showErrors={showErrors}
+            validation={validation}
+            formValues={formValues}
+            setFormValues={setFormValues}
+            onContinue={onContinue}
+            mailtoHref={mailtoHref}
+          />
         </div>
       </section>
 

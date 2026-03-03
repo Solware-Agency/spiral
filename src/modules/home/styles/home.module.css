@@ -588,7 +588,7 @@
 
 .recentWorkTitle {
   font-family: var(--font-loverica, var(--font-display));
-  font-size: clamp(4.25rem, 10.5vw, 9.75rem);
+  font-size: clamp(4.25rem, 10.5vw, 11.75rem);
   font-weight: 400;
   margin: 0;
   letter-spacing: -0.03em;
@@ -604,13 +604,13 @@
 .recentWorkTitleTop {
   display: block;
   text-align: left;
-  margin-left: 120px;
+  margin-left: 190px;
 }
 
 .recentWorkTitleBottom {
   display: block;
   text-align: right;
-  margin-right: 180px;
+  margin-right:270px;
   margin-top: calc(-0.2em - 20px);
 }
 
@@ -625,6 +625,7 @@
   color: #111;
   border: 1px solid rgba(0, 0, 0, 0.18);
   padding: 0.8rem 2.25rem;
+  border-radius: 10px;
   font-size: 0.72rem;
   letter-spacing: 0.22em;
   font-weight: 600;
@@ -644,7 +645,7 @@
 
 /* ----- Clients (red band) ----- */
 .clientsSection {
-  background: #b91c3c;
+  background: #6C1622;
   padding: clamp(0.75rem, 1.9vw, 1.15rem) 0;
   min-height: 160px;
   display: flex;

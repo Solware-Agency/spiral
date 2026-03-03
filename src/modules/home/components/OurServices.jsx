@@ -14,7 +14,6 @@ const OurServices = () => {
       <div className={styles.ourServicesInner}>
         <div className={styles.servicesHeader} aria-hidden>
           <h2 className={styles.sectionLabel}>OUR SERVICES</h2>
-          <h2 className={styles.sectionLabel}>OUR SERVICES</h2>
         </div>
 
         <div className={styles.servicesList}>
