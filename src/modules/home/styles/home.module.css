@@ -343,7 +343,7 @@
   padding: 40 px;
   background: transparent;
   border-radius: 0;
-  text-align: justify;
+  text-align: center;
 }
 
 .whatWeDoLabel {
@@ -422,22 +422,17 @@
   margin: 0;
   flex: 0 0 auto;
   width: clamp(140px, 14vw, 240px);
-  height: clamp(110px, 14vh, 170px);
+  height: clamp(220px, 30vh, 420px);
   overflow: hidden;
   background: #111;
-  border-left: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.photoCarouselItem:first-child {
-  border-left: none;
 }
 
 .photoCarouselImg {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover;
-  transform: scale(1.02);
+  object-fit: contain;
+  transform: none;
   filter: contrast(1.02) saturate(0.98);
 }
 
