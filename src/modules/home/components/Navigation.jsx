@@ -63,6 +63,15 @@ const Navigation = () => {
     setIsMenuOpen(false);
   }, [location.pathname, location.hash]);
 
+  useEffect(() => {
+    // Close mobile drawer when switching to desktop breakpoint.
+    const onResize = () => {
+      if (window.innerWidth > 900) setIsMenuOpen(false);
+    };
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+
   const scrollTopIfAlreadyHome = (to) => (e) => {
     if (to !== '/') return;
     if (location.pathname === '/' && !location.hash) {
