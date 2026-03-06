@@ -108,14 +108,14 @@
 }
 
 .specializeCopy {
-  padding-right: min(420px, 42vw);
+  padding-right: min(560px, 54vw);
 }
 
 .specializePolaroid {
   position: absolute;
-  top: clamp(-40px, -2.5vw, -10px);
-  right: clamp(16px, 3vw, 32px);
-  width: min(420px, 44vw);
+  top: clamp(7.25rem, 18vh, 11rem);
+  right: clamp(18px, 4vw, 56px);
+  width: min(520px, 52vw);
   transform: rotate(14deg);
   transform-origin: center;
   z-index: 2;
@@ -123,28 +123,7 @@
   user-select: none;
 }
 
-.specializePolaroidWindow {
-  position: absolute;
-  left: 15.5%;
-  right: 15.5%;
-  top: 20.5%;
-  bottom: 29.5%;
-  overflow: hidden;
-  border-radius: 2px;
-  z-index: 3;
-}
-
-.specializePolaroidPhoto {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 35% 55%;
-  filter: grayscale(75%) contrast(1.05);
-}
-
-.specializePolaroidFrame {
-  position: relative;
-  z-index: 2;
+.specializePolaroidSvg {
   display: block;
   width: 100%;
   height: auto;

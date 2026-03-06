@@ -247,6 +247,24 @@
   grid-row: 2;
 }
 
+@media (max-width: 1100px) {
+  .mediaGridVideos {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .mediaGridVideos {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 380px) {
+  .mediaGridVideos {
+    grid-template-columns: 1fr;
+  }
+}
+
 .mediaGridPhotos {
   display: grid;
   grid-template-columns: 1fr;
@@ -315,8 +333,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=2400&q=80')
-    center/cover no-repeat;
+  background: url('/images/photos/DSC09041.jpg') 50% 29% / cover no-repeat;
   filter: saturate(0.85) contrast(1.05) brightness(0.68);
   transform: scale(1.02);
 }
@@ -384,6 +401,7 @@
 .preFooterTestimonials {
   background: #bdbdbd;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
+  overflow: hidden;
 }
 
 .preFooterTestimonialsInner {
@@ -447,14 +465,20 @@
     text-align: center;
   }
 
+  .testimonialsLeft {
+    transform: none;
+  }
+
   .testimonialsRight {
     min-height: unset;
     width: 100%;
+    justify-items: center;
   }
 
   .testimonialsAsset {
-    width: min(820px, 112vw);
-    transform: translate(0, 0) rotate(-2deg);
+    width: min(720px, 100%);
+    max-width: 100%;
+    transform: rotate(-2deg);
   }
 }
 

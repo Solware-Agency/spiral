@@ -55,22 +55,49 @@ const AboutModule = () => {
         </div>
 
         <div className={styles.specializePolaroid} aria-hidden="true">
-          <div className={styles.specializePolaroidWindow} aria-hidden="true">
-            <img
-              className={styles.specializePolaroidPhoto}
-              src="/images/photos/DSC09031.jpg"
-              alt=""
-              loading="lazy"
-              decoding="async"
+          <svg
+            className={styles.specializePolaroidSvg}
+            viewBox="0 0 1000 1000"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <defs>
+              <clipPath id="specializePhotoWindow">
+                <rect x="160" y="210" width="680" height="490" rx="8" ry="8" />
+              </clipPath>
+
+              {/* Hide the “gray window” part of the PNG frame so the photo shows through. */}
+              <mask id="specializePolaroidFrameMask" maskUnits="userSpaceOnUse">
+                <rect x="0" y="0" width="1000" height="1000" fill="white" />
+                <rect x="164" y="214" width="672" height="482" rx="8" ry="8" fill="black" />
+              </mask>
+            </defs>
+
+            <image
+              href="/images/photos/DSC09031.jpg"
+              x="160"
+              y="210"
+              width="680"
+              height="490"
+              preserveAspectRatio="xMidYMid slice"
+              clipPath="url(#specializePhotoWindow)"
+              style={{
+                filter: 'grayscale(75%) contrast(1.05)',
+              }}
             />
-          </div>
-          <img
-            className={styles.specializePolaroidFrame}
-            src="/images/photos/polaroid.png"
-            alt=""
-            loading="lazy"
-            decoding="async"
-          />
+
+            <image
+              href="/images/photos/polaroid.png"
+              x="0"
+              y="0"
+              width="1000"
+              height="1000"
+              preserveAspectRatio="xMidYMid meet"
+              mask="url(#specializePolaroidFrameMask)"
+            />
+          </svg>
         </div>
       </section>
 

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <!-- Window inside the polaroid frame (relative box units). -->
+    <clipPath id="photoWindow" clipPathUnits="objectBoundingBox">
+      <rect x="0.16" y="0.21" width="0.68" height="0.49" rx="0.01" ry="0.01" />
+    </clipPath>
+  </defs>
+
+  <!-- Photo clipped to the window area. -->
+  <image
+    href="/images/photos/DSC09031.jpg"
+    x="0"
+    y="0"
+    width="1000"
+    height="1000"
+    preserveAspectRatio="xMidYMid slice"
+    clip-path="url(#photoWindow)"
+  />
+
+  <!-- Polaroid frame (raster), placed on top for reliable rendering in <img>. -->
+  <image href="/images/photos/polaroid.png" x="0" y="0" width="1000" height="1000" preserveAspectRatio="xMidYMid meet" />
+</svg>
