@@ -94,7 +94,9 @@ const Footer = () => {
             </div>
             <a
               className={styles.footerEmail}
-              href="mailto:andrea@spiralmstudio.com"
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=andrea%40spiralmstudio.com"
+              target="_blank"
+              rel="noreferrer"
             >
               ANDREA@SPIRALMSTUDIO.COM
             </a>

@@ -177,6 +177,7 @@ const BookingSlide = React.memo(function BookingSlide({
   setFormValues,
   onContinue,
   mailtoHref,
+  gmailHref,
   isSubmitting,
   submitError,
   calendarLink,
@@ -506,7 +507,12 @@ const BookingSlide = React.memo(function BookingSlide({
             </a>
           ) : null}
 
-          <a className={styles.bookingEmail} href={mailtoHref}>
+          <a
+            className={styles.bookingEmail}
+            href={gmailHref || mailtoHref}
+            target="_blank"
+            rel="noreferrer"
+          >
             {BOOK_EMAIL.toUpperCase()}
           </a>
         </div>
@@ -673,6 +679,40 @@ const BookNowModule = () => {
     return `mailto:${BOOK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }, [activePlan, formValues, hours, selectedDate, selectedTime]);
 
+  const gmailHref = useMemo(() => {
+    const planLabel = activePlan === 'weekend' ? 'Weekend' : 'Weekday';
+    const subject = `Studio Rental - ${planLabel}`;
+    const dateText = selectedDate ? selectedDate.toDateString() : '(not selected)';
+    const timeText = selectedTime ?? '(not selected)';
+    const firstName = normalizeName(formValues.firstName);
+    const lastName = normalizeName(formValues.lastName);
+    const phone = normalizePhone(formValues.phone);
+    const email = normalizeEmail(formValues.email);
+
+    const body = [
+      'Hi Spiral,',
+      '',
+      "I'd like to book the studio.",
+      `Plan: ${planLabel}`,
+      `Hours: ${hours}`,
+      `Date: ${dateText}`,
+      `Time: ${timeText}`,
+      '',
+      'My information:',
+      `First name: ${firstName || '(not provided)'}`,
+      `Last name: ${lastName || '(not provided)'}`,
+      `Phone number: ${phone || '(not provided)'}`,
+      `Email: ${email || '(not provided)'}`,
+      '',
+      'Thanks!',
+    ].join('\n');
+
+    const to = encodeURIComponent(BOOK_EMAIL);
+    const su = encodeURIComponent(subject);
+    const b = encodeURIComponent(body);
+    return `https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${su}&body=${b}`;
+  }, [activePlan, formValues, hours, selectedDate, selectedTime]);
+
   const monthWeeks = useMemo(() => getMonthGrid(month), [month]);
 
   const validation = useMemo(() => {
@@ -832,6 +872,7 @@ const BookNowModule = () => {
             setFormValues={setFormValues}
             onContinue={onContinue}
             mailtoHref={mailtoHref}
+            gmailHref={gmailHref}
             isSubmitting={isSubmitting}
             submitError={submitError}
             calendarLink={calendarLink}
@@ -879,6 +920,7 @@ const BookNowModule = () => {
             setFormValues={setFormValues}
             onContinue={onContinue}
             mailtoHref={mailtoHref}
+            gmailHref={gmailHref}
             isSubmitting={isSubmitting}
             submitError={submitError}
             calendarLink={calendarLink}
