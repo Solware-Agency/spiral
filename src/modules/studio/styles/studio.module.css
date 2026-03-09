@@ -563,7 +563,15 @@
   }
 
   .ratesRight {
-    display: none;
+    display: grid;
+    justify-items: center;
+    margin-top: 1.25rem;
+  }
+
+  .polaroid {
+    margin: 0 auto;
+    width: min(320px, 100%);
+    transform: rotate(-6deg);
   }
 
   .carouselStage {

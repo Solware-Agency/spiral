@@ -727,6 +727,16 @@
 }
 
 @media (max-width: 520px) {
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bookingMeta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .heroLogo {
     width: min(440px, 78vw);
   }
