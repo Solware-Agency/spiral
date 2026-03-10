@@ -362,6 +362,12 @@
   align-items: center;
   width: 100%;
   overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.trackDragging {
+  cursor: grabbing;
 }
 
 .logosMarquee {
@@ -370,6 +376,16 @@
   padding-left: 2rem;
   will-change: transform;
   animation: aboutLogosMarqueeScroll 22s linear infinite;
+}
+
+.marqueeDragging {
+  animation-play-state: paused;
+}
+
+.logosMarqueeDrag {
+  display: flex;
+  transform: translateX(var(--marquee-drag-x, 0px));
+  will-change: transform;
 }
 
 .logosGroup {

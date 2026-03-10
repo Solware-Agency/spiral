@@ -1,4 +1,5 @@
 import { google } from 'googleapis';
+import { DateTime } from 'luxon';
 
 const TZ = 'America/New_York';
 
@@ -25,38 +26,15 @@ function parseTime12hTo24h(timeStr) {
   return { hour: h, minute: min };
 }
 
-function pad2(n) {
-  return String(n).padStart(2, '0');
-}
-
-function addMinutesToLocalDateParts({ year, month, day, hour, minute }, minutesToAdd) {
-  const startMinutes = hour * 60 + minute;
-  const total = startMinutes + minutesToAdd;
-  const dayOffset = Math.floor(total / (24 * 60));
-  const endMinutes = ((total % (24 * 60)) + 24 * 60) % (24 * 60);
-  const endHour = Math.floor(endMinutes / 60);
-  const endMinute = endMinutes % 60;
-
-  // Use UTC math to avoid server TZ affecting results; we're only advancing the calendar date.
-  const endDateUtc = new Date(Date.UTC(year, month - 1, day + dayOffset, 12, 0, 0));
-  return {
-    year: endDateUtc.getUTCFullYear(),
-    month: endDateUtc.getUTCMonth() + 1,
-    day: endDateUtc.getUTCDate(),
-    hour: endHour,
-    minute: endMinute,
-  };
-}
-
-function toLocalRfc3339({ year, month, day, hour, minute }) {
-  return `${year}-${pad2(month)}-${pad2(day)}T${pad2(hour)}:${pad2(minute)}:00`;
-}
-
 function isWeekendYMD(year, month, day) {
   // dayOfWeek based on UTC noon to avoid DST edge; weekend definition is calendar day.
   const d = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
   const dow = d.getUTCDay(); // 0 Sun..6 Sat
   return dow === 0 || dow === 6;
+}
+
+function overlaps(aStart, aEnd, bStart, bEnd) {
+  return aStart < bEnd && aEnd > bStart;
 }
 
 export default async function handler(req, res) {
@@ -129,10 +107,12 @@ export default async function handler(req, res) {
     return json(res, 400, { ok: false, error: 'Selected date is not a weekday' });
   }
 
-  const startParts = { year, month, day, hour: t.hour, minute: t.minute };
-  const endParts = addMinutesToLocalDateParts(startParts, Math.round(hours * 60));
-  const startDateTime = toLocalRfc3339(startParts);
-  const endDateTime = toLocalRfc3339(endParts);
+  const dayStart = DateTime.fromObject({ year, month, day }, { zone: TZ }).startOf('day');
+  const start = dayStart.set({ hour: t.hour, minute: t.minute, second: 0, millisecond: 0 });
+  const end = start.plus({ hours });
+  if (!start.isValid || !end.isValid) {
+    return json(res, 400, { ok: false, error: 'Invalid date/time' });
+  }
 
   const auth = new google.auth.JWT({
     email: clientEmail,
@@ -159,6 +139,20 @@ export default async function handler(req, res) {
   ];
 
   try {
+    // Hard block: don't allow overlaps with existing events.
+    const fb = await calendar.freebusy.query({
+      requestBody: {
+        timeMin: start.toUTC().toISO(),
+        timeMax: end.toUTC().toISO(),
+        timeZone: TZ,
+        items: [{ id: calendarId }],
+      },
+    });
+    const busy = fb.data?.calendars?.[calendarId]?.busy ?? [];
+    if (Array.isArray(busy) && busy.length > 0) {
+      return json(res, 409, { ok: false, error: 'Ese horario ya está reservado.' });
+    }
+
     const attendees = [
       ...(email ? [{ email }] : []),
       ...(studioNotificationEmail ? [{ email: studioNotificationEmail }] : []),
@@ -170,8 +164,8 @@ export default async function handler(req, res) {
       requestBody: {
         summary,
         description: descriptionLines.join('\n'),
-        start: { dateTime: startDateTime, timeZone: TZ },
-        end: { dateTime: endDateTime, timeZone: TZ },
+        start: { dateTime: start.toISO(), timeZone: TZ },
+        end: { dateTime: end.toISO(), timeZone: TZ },
         attendees,
         guestsCanInviteOthers: false,
         guestsCanModify: false,

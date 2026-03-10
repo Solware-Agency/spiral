@@ -68,6 +68,13 @@ const toYmdLocal = (d) => {
   return `${y}-${m}-${day}`;
 };
 
+const toYmLocal = (d) => {
+  if (!d) return '';
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  return `${y}-${m}`;
+};
+
 const normalizeName = (value, maxLen = 40) => {
   const cleaned = stripNewlines(String(value ?? ''))
     .replace(/[^A-Za-z\u00C0-\u024F\s'-]/g, '')
@@ -171,6 +178,10 @@ const BookingSlide = React.memo(function BookingSlide({
   selectedTime,
   setSelectedTime,
   timeSlots,
+  availableTimes,
+  isLoadingTimes,
+  availableDays,
+  isLoadingDays,
   showErrors,
   validation,
   formValues,
@@ -264,17 +275,23 @@ const BookingSlide = React.memo(function BookingSlide({
                   }
                   const selected = isSameDay(cell, selectedDate);
                   const allowed = plan === 'weekend' ? isWeekend(cell) : !isWeekend(cell);
+                  const ymd = toYmdLocal(cell);
+                  const dayHasAvailability =
+                    !availableDays || typeof availableDays[ymd] !== 'boolean'
+                      ? true
+                      : availableDays[ymd];
+                  const enabled = allowed && dayHasAvailability && !isLoadingDays;
                   return (
                     <button
                       key={cell.toISOString()}
                       type="button"
                       className={`${styles.calendarCell} ${
                         selected ? styles.calendarCellSelected : ''
-                      } ${!allowed ? styles.calendarCellDisabled : ''}`}
+                      } ${!enabled ? styles.calendarCellDisabled : ''}`}
                       onClick={() => setSelectedDate(cell)}
                       aria-label={`Select ${cell.toDateString()}`}
                       aria-pressed={selected}
-                      disabled={!allowed}
+                      disabled={!enabled}
                     >
                       {cell.getDate()}
                     </button>
@@ -294,18 +311,26 @@ const BookingSlide = React.memo(function BookingSlide({
                     : 'Select a date'}
                 </div>
                 <div className={styles.timeZone}>TIME ZONE: EASTERN TIME (GMT-05:00)</div>
+                {selectedDate && isLoadingTimes ? (
+                  <div className={styles.timeZone}>CHECKING AVAILABILITY…</div>
+                ) : null}
               </div>
 
               <div className={styles.timeGrid} role="list">
                 {timeSlots.map((t) => {
                   const active = t === selectedTime;
+                  const allowed = !selectedDate
+                    ? false
+                    : !availableTimes
+                      ? true
+                      : availableTimes.includes(t);
                   return (
                     <button
                       key={t}
                       type="button"
                       className={`${styles.timeSlot} ${active ? styles.timeSlotActive : ''}`}
                       onClick={() => setSelectedTime(t)}
-                      disabled={!selectedDate}
+                      disabled={!selectedDate || isLoadingTimes || !allowed}
                       aria-pressed={active}
                     >
                       {t}
@@ -538,6 +563,10 @@ const BookNowModule = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [calendarLink, setCalendarLink] = useState(null);
   const [submitError, setSubmitError] = useState(null);
+  const [availableTimes, setAvailableTimes] = useState(null);
+  const [isLoadingTimes, setIsLoadingTimes] = useState(false);
+  const [availableDays, setAvailableDays] = useState(null);
+  const [isLoadingDays, setIsLoadingDays] = useState(false);
 
   const slideCount = carouselSlides.length;
   const activeSlide = carouselSlides[slideIdx] ?? carouselSlides[0];
@@ -715,6 +744,69 @@ const BookNowModule = () => {
 
   const monthWeeks = useMemo(() => getMonthGrid(month), [month]);
 
+  useEffect(() => {
+    if (!activePlan) {
+      setAvailableDays(null);
+      setIsLoadingDays(false);
+      return;
+    }
+    const controller = new AbortController();
+    setIsLoadingDays(true);
+    fetch('/api/month-availability', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ month: toYmLocal(month), hours, plan: activePlan }),
+      signal: controller.signal,
+    })
+      .then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok || !data?.ok) throw new Error(data?.error || 'No se pudo leer disponibilidad.');
+        setAvailableDays(data.availability && typeof data.availability === 'object' ? data.availability : null);
+      })
+      .catch(() => {
+        // Don't block UX if the check fails.
+        setAvailableDays(null);
+      })
+      .finally(() => setIsLoadingDays(false));
+
+    return () => controller.abort();
+  }, [activePlan, month, hours]);
+
+  useEffect(() => {
+    if (!activePlan || !selectedDate) {
+      setAvailableTimes(null);
+      setIsLoadingTimes(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    setIsLoadingTimes(true);
+    fetch('/api/available-time-slots', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date: toYmdLocal(selectedDate), hours }),
+      signal: controller.signal,
+    })
+      .then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok || !data?.ok) throw new Error(data?.error || 'No se pudo leer disponibilidad.');
+        const list = Array.isArray(data.available) ? data.available : [];
+        setAvailableTimes(list);
+      })
+      .catch(() => {
+        // If availability check fails, do not block booking UI.
+        setAvailableTimes(null);
+      })
+      .finally(() => setIsLoadingTimes(false));
+
+    return () => controller.abort();
+  }, [activePlan, selectedDate, hours]);
+
+  useEffect(() => {
+    if (!selectedTime || !availableTimes) return;
+    if (!availableTimes.includes(selectedTime)) setSelectedTime(null);
+  }, [availableTimes, selectedTime]);
+
   const validation = useMemo(() => {
     const errors = {};
 
@@ -866,6 +958,10 @@ const BookNowModule = () => {
             selectedTime={selectedTime}
             setSelectedTime={setSelectedTime}
             timeSlots={timeSlots}
+            availableTimes={availableTimes}
+            isLoadingTimes={isLoadingTimes}
+            availableDays={availableDays}
+            isLoadingDays={isLoadingDays}
             showErrors={showErrors}
             validation={validation}
             formValues={formValues}
@@ -914,6 +1010,10 @@ const BookNowModule = () => {
             selectedTime={selectedTime}
             setSelectedTime={setSelectedTime}
             timeSlots={timeSlots}
+            availableTimes={availableTimes}
+            isLoadingTimes={isLoadingTimes}
+            availableDays={availableDays}
+            isLoadingDays={isLoadingDays}
             showErrors={showErrors}
             validation={validation}
             formValues={formValues}
