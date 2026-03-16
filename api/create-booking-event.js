@@ -1,3 +1,5 @@
+/* eslint-env node */
+/* global process, Buffer */
 import { google } from 'googleapis';
 import { DateTime } from 'luxon';
 
@@ -31,10 +33,6 @@ function isWeekendYMD(year, month, day) {
   const d = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
   const dow = d.getUTCDay(); // 0 Sun..6 Sat
   return dow === 0 || dow === 6;
-}
-
-function overlaps(aStart, aEnd, bStart, bEnd) {
-  return aStart < bEnd && aEnd > bStart;
 }
 
 export default async function handler(req, res) {
