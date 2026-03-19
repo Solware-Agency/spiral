@@ -159,7 +159,7 @@
 
 .serviceTitle[data-service-id='03'] {
   font-family: 'Luxurious Script', cursive;
-  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  font-size: clamp(2.35rem, 4vw, 3.1rem);
   letter-spacing: 0.01em;
   text-transform: none;
 }
@@ -258,11 +258,11 @@
   position: relative;
   background: #6f1720;
   /* More compact hero while keeping breathing room for polaroids + headline. */
-  min-height: clamp(15.5rem, 30vh, 23rem);
+  min-height: clamp(9.5rem, 16vh, 13.5rem);
   overflow: hidden;
   display: grid;
   place-items: center;
-  padding: clamp(1.75rem, 3.2vw, 2.55rem) clamp(0.7rem, 2vw, 1.2rem);
+  padding: clamp(0.7rem, 1.6vw, 1rem) clamp(0.7rem, 2vw, 1.2rem);
 }
 
 .brandCenter {
@@ -271,28 +271,28 @@
   text-align: center;
   color: #fff;
   max-width: 44rem;
-  padding: 0 0.5rem;
+  padding: 0 0.2rem;
 }
 
 .brandMonogram {
-  width: clamp(14px, 1.7vw, 26px);
+  width: clamp(18px, 2.1vw, 32px);
   height: auto;
   display: block;
   object-fit: contain;
   opacity: 0.92;
-  margin: 0 auto 0.6rem auto;
+  margin: 0 auto 0.2rem auto;
 }
 
 .brandHeadline {
   display: grid;
-  gap: 0.25rem;
+  gap: 0.04rem;
 }
 
 .brandScript {
   font-family: 'Luxurious Script', cursive;
   font-size: clamp(4.15rem, 9.4vw, 6.7rem);
   font-weight: 400;
-  line-height: 1;
+  line-height: 0.9;
 }
 
 .brandCaps {
@@ -300,7 +300,7 @@
   font-size: clamp(3rem, 6vw, 4rem);
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  line-height: 1.15;
+  line-height: 1.02;
   white-space: nowrap;
 }
 
@@ -312,7 +312,7 @@
 }
 
 .brandSub {
-  margin-top: 0.7rem;
+  margin-top: 0.18rem;
   font-family: var(--font-mono);
   font-size: 0.66rem;
   letter-spacing: 0.22em;
@@ -322,9 +322,9 @@
 
 .polaroid {
   position: absolute;
-  width: clamp(150px, 20vw, 250px);
+  width: clamp(110px, 14.5vw, 175px);
   background: #fff;
-  padding: 0.55rem 0.55rem 0.95rem 0.55rem;
+  padding: 0.32rem 0.32rem 0.55rem 0.32rem;
   box-shadow: 0 18px 35px rgba(0, 0, 0, 0.35);
   transform-origin: center;
   border-radius: 2px;
@@ -340,26 +340,26 @@
 }
 
 .polaroidTopLeft {
-  top: clamp(1.25rem, 2.8vw, 2.25rem);
-  left: clamp(2.25rem, 5vw, 4.75rem);
+  top: clamp(0.6rem, 1.8vw, 1.15rem);
+  left: clamp(1.15rem, 3.6vw, 3.1rem);
   transform: rotate(-12deg);
 }
 
 .polaroidTopRight {
-  top: clamp(1.25rem, 2.8vw, 2.25rem);
-  right: clamp(2.25rem, 5vw, 4.75rem);
+  top: clamp(0.6rem, 1.8vw, 1.15rem);
+  right: clamp(1.15rem, 3.6vw, 3.1rem);
   transform: rotate(10deg);
 }
 
 .polaroidBottomLeft {
-  bottom: clamp(1.25rem, 3vw, 2.5rem);
-  left: clamp(2.5rem, 5.5vw, 5.25rem);
+  bottom: clamp(0.6rem, 2vw, 1.35rem);
+  left: clamp(1.35rem, 4vw, 3.45rem);
   transform: rotate(10deg);
 }
 
 .polaroidBottomRight {
-  bottom: clamp(1.25rem, 3vw, 2.5rem);
-  right: clamp(2.5rem, 5.5vw, 5.25rem);
+  bottom: clamp(0.6rem, 2vw, 1.35rem);
+  right: clamp(1.35rem, 4vw, 3.45rem);
   transform: rotate(-12deg);
 }
 
@@ -372,8 +372,8 @@
       'tl . tr'
       '. center .'
       'bl . br';
-    column-gap: clamp(0.75rem, 4.8vw, 4.5rem);
-    row-gap: clamp(0.65rem, 2.8vh, 1.5rem);
+    column-gap: clamp(0.6rem, 3.1vw, 3.1rem);
+    row-gap: clamp(0.35rem, 1.8vh, 0.85rem);
     align-items: center;
   }
 
@@ -384,7 +384,7 @@
   .polaroid {
     position: relative;
     inset: auto;
-    width: clamp(140px, 17vw, 230px);
+    width: clamp(105px, 12.4vw, 170px);
   }
 
   .polaroidTopLeft {
@@ -475,14 +475,14 @@
 @media (max-width: 980px) {
   .brandMaroon {
     min-height: unset;
-    padding: clamp(1.75rem, 4.2vw, 2.6rem) clamp(0.85rem, 3.2vw, 1.35rem);
+    padding: clamp(0.7rem, 2.2vw, 1.05rem) clamp(0.85rem, 3.2vw, 1.35rem);
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     grid-template-areas:
       'tl tr'
       'center center'
       'bl br';
-    gap: clamp(0.55rem, 2.1vw, 0.9rem);
+    gap: clamp(0.35rem, 1.25vw, 0.55rem);
     place-items: center;
   }
 
@@ -492,13 +492,13 @@
   }
 
   .brandMonogram {
-    width: clamp(26px, 6vw, 40px);
+    width: clamp(30px, 7vw, 48px);
   }
 
   .polaroid {
     position: relative;
     inset: auto;
-    width: min(100%, 340px);
+    width: min(100%, 260px);
   }
 
   .polaroidTopLeft {
@@ -534,11 +534,11 @@
   }
 
   .brandMonogram {
-    width: clamp(24px, 8vw, 34px);
+    width: clamp(28px, 9vw, 42px);
   }
 
   .polaroid {
-    width: min(100%, 420px);
+    width: min(100%, 280px);
   }
 }
 
