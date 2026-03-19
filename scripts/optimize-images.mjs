@@ -10,7 +10,7 @@ const projectRoot = path.resolve(__dirname, '..');
 const inputDir = path.join(projectRoot, 'public', 'images', 'photos');
 const outputDir = path.join(projectRoot, 'public', 'images', 'optimized');
 
-const TARGET_WIDTHS = [640, 960, 1280, 1600];
+const TARGET_WIDTHS = [640, 960, 1280, 1600, 2560, 3200];
 
 // Only optimize images we actually reference across the app (to keep build time reasonable).
 const SOURCES = [
@@ -81,14 +81,14 @@ async function main() {
           if (regenWebp) {
             await sharp(srcPath)
               .resize({ width: w, withoutEnlargement: true })
-              .webp({ quality: 72 })
+              .webp({ quality: 80 })
               .toFile(webpOut);
           }
 
           if (regenJpg) {
             await sharp(srcPath)
               .resize({ width: w, withoutEnlargement: true })
-              .jpeg({ quality: 74, progressive: true, mozjpeg: true })
+              .jpeg({ quality: 82, progressive: true, mozjpeg: true })
               .toFile(jpgOut);
           }
         })()

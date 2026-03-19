@@ -12,9 +12,34 @@
   background-position: 30% 35%;
   background-size: cover;
   background-repeat: no-repeat;
+  background-image: var(--bg-960);
   filter: saturate(0.95) contrast(1.05) brightness(0.82);
   width: 100vw;
   margin-left: calc(50% - 50vw);
+}
+
+@media (min-width: 900px) {
+  .hero {
+    background-image: var(--bg-1280);
+  }
+}
+
+@media (min-width: 1200px) {
+  .hero {
+    background-image: var(--bg-1600);
+  }
+}
+
+@media (min-width: 1600px) {
+  .hero {
+    background-image: var(--bg-2560);
+  }
+}
+
+@media (min-width: 2200px) {
+  .hero {
+    background-image: var(--bg-3200);
+  }
 }
 
 .heroOverlay {

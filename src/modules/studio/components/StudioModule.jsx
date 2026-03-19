@@ -5,28 +5,36 @@ import styles from '../styles/studio.module.css';
 const CASA_LOGO_WHITE =
   '/images/spiral%20logos/SPIRAL%20Logos/Casa%20Spiral/Casa.spiral-white.png';
 
-const HERO_IMAGE = '/images/optimized/DSC01989_1280.jpg';
+const bgSet = (id, w) =>
+  `image-set(url("/images/optimized/${id}_${w}.webp") type("image/webp"), url("/images/optimized/${id}_${w}.jpg") type("image/jpeg"))`;
+const bgVars = (id) => ({
+  '--bg-960': bgSet(id, 960),
+  '--bg-1280': bgSet(id, 1280),
+  '--bg-1600': bgSet(id, 1600),
+  '--bg-2560': bgSet(id, 2560),
+  '--bg-3200': bgSet(id, 3200),
+});
 
 const features = [
   {
     id: '01',
     title: 'Creative\nAtmosphere',
-    imageUrl: '/images/optimized/DSC01921_1280.jpg',
+    imageId: 'DSC01921',
   },
   {
     id: '02',
     title: 'Effortless\nSetup',
-    imageUrl: '/images/optimized/DSC02521_1280.jpg',
+    imageId: 'DSC02521',
   },
   {
     id: '03',
     title: 'Modern\nAesthetic',
-    imageUrl: '/images/optimized/IMG_6230_1280.jpg',
+    imageId: 'IMG_6230',
   },
   {
     id: '04',
     title: 'Equipment\nIncluded',
-    imageUrl: '/images/photos/DSC02284.jpg',
+    imageId: 'DSC02284',
   },
 ];
 
@@ -89,7 +97,7 @@ const StudioModule = () => {
       <section
         className={styles.hero}
         aria-label="The Studio hero"
-        style={{ backgroundImage: `url(${HERO_IMAGE})` }}
+        style={bgVars('DSC01989')}
       >
         <div className={styles.heroOverlay} aria-hidden />
         <img
@@ -118,7 +126,7 @@ const StudioModule = () => {
             <article
               key={f.id}
               className={styles.featureCard}
-              style={{ backgroundImage: `url(${f.imageUrl})` }}
+              style={bgVars(f.imageId)}
               aria-label={f.title.replace('\n', ' ')}
             >
               <div className={styles.featureOverlay} aria-hidden />

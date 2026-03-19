@@ -5,7 +5,16 @@ import ElfsightInstagramFeed from '../../../components/ElfsightInstagramFeed';
 const CASA_LOGO_WHITE =
   '/images/spiral%20logos/SPIRAL%20Logos/Casa%20Spiral/Casa.spiral-white.png';
 
-const HERO_IMAGE = '/images/optimized/DSC01989_1280.jpg';
+const bgSet = (id, w) =>
+  `image-set(url("/images/optimized/${id}_${w}.webp") type("image/webp"), url("/images/optimized/${id}_${w}.jpg") type("image/jpeg"))`;
+const bgVars = (id) => ({
+  '--bg-960': bgSet(id, 960),
+  '--bg-1280': bgSet(id, 1280),
+  '--bg-1600': bgSet(id, 1600),
+  '--bg-2560': bgSet(id, 2560),
+  '--bg-3200': bgSet(id, 3200),
+});
+
 const BOOK_EMAIL = 'andrea@spiralmstudio.com';
 
 const carouselSlides = [
@@ -579,7 +588,7 @@ const BookNowModule = () => {
 
   useEffect(() => {
     // Preload above-the-fold imagery as early as possible.
-    preloadImage(HERO_IMAGE);
+    preloadImage('/images/optimized/DSC01989_1600.jpg');
     preloadImage(carouselSlides[0]);
 
     const idle = window.requestIdleCallback
@@ -906,7 +915,7 @@ const BookNowModule = () => {
       <section
         className={styles.hero}
         aria-label="Book Now hero"
-        style={{ backgroundImage: `url(${HERO_IMAGE})` }}
+        style={bgVars('DSC01989')}
       >
         <div className={styles.heroOverlay} aria-hidden />
         <img

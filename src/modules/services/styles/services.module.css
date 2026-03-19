@@ -9,15 +9,51 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: url('/images/optimized/DSC09102_1280.jpg') center/cover no-repeat;
+  background: url('/images/optimized/DSC09102_960.jpg') center/cover no-repeat;
   filter: saturate(0.95) contrast(1.05) brightness(0.82);
 }
 
 @supports (background-image: image-set(url('/x.webp') type('image/webp'))) {
   .servicesHero {
     background-image: image-set(
+      url('/images/optimized/DSC09102_960.webp') type('image/webp'),
+      url('/images/optimized/DSC09102_960.jpg') type('image/jpeg')
+    );
+  }
+}
+
+@media (min-width: 900px) {
+  .servicesHero {
+    background-image: image-set(
       url('/images/optimized/DSC09102_1280.webp') type('image/webp'),
       url('/images/optimized/DSC09102_1280.jpg') type('image/jpeg')
+    );
+  }
+}
+
+@media (min-width: 1200px) {
+  .servicesHero {
+    background-image: image-set(
+      url('/images/optimized/DSC09102_1600.webp') type('image/webp'),
+      url('/images/optimized/DSC09102_1600.jpg') type('image/jpeg')
+    );
+  }
+}
+
+@media (min-width: 1600px) {
+  .servicesHero {
+    background-image: image-set(
+      url('/images/optimized/DSC09102_2560.webp') type('image/webp'),
+      url('/images/optimized/DSC09102_2560.jpg') type('image/jpeg')
+    );
+  }
+}
+
+@media (min-width: 2200px) {
+  .servicesHero {
+    background-image: image-set(
+      url('/images/optimized/DSC09102_3200.webp') type('image/webp'),
+      url('/images/optimized/DSC09102_3200.jpg') type('image/jpeg')
     );
   }
 }
