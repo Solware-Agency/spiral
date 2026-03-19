@@ -1,11 +1,11 @@
 .portfolioSection {
   background: #000;
-  padding: 0 0 clamp(4rem, 9vh, 6.5rem) 0;
+  padding: 0;
 }
 
 .hero {
   position: relative;
-  min-height: clamp(34rem, 92vh, 66rem);
+  min-height: clamp(18rem, 42vh, 28rem);
   background: #0b0b0b;
   overflow: hidden;
   display: flex;
@@ -197,7 +197,7 @@
 
 .mediaBlockPhotos {
   background: transparent;
-  border-radius: 0 0 24px 24px;
+  border-radius: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 
@@ -356,10 +356,20 @@
 .mediaGridPhotos {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 0.85rem;
+  gap: clamp(1.1rem, 2.1vw, 1.65rem);
   align-items: start;
   grid-column: 1 / -1;
   grid-row: 2;
+}
+
+.mediaBlockPhotos .mediaRow {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+}
+
+.mediaBlockPhotos .mediaRowLabel {
+  grid-column: 1;
+  justify-self: start;
 }
 
 .mediaThumb {
@@ -377,17 +387,65 @@
   object-fit: cover;
 }
 
+.mediaThumbVideo {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.videoMissing {
+  display: none;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.mediaThumb[data-video-missing='true'] .videoMissing {
+  display: flex;
+}
+
 .mediaThumb[data-variant='video'] {
   aspect-ratio: 3 / 4;
 }
 
 .mediaThumb[data-variant='photo'] {
   background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  aspect-ratio: 2.85 / 1;
+  padding: clamp(0.85rem, 2.1vw, 1.25rem);
+  padding-top: clamp(1.55rem, 3vw, 2.05rem);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
 }
 
 .mediaThumb[data-variant='photo'] .mediaThumbImage {
-  height: auto;
-  object-fit: contain;
+  height: 100%;
+  object-fit: cover;
+  /* Crop away the top strip in the provided portfolio PNGs */
+  object-position: 50% 82%;
+}
+
+.mediaPhotoCaption {
+  position: absolute;
+  top: clamp(1.05rem, 2.25vw, 1.35rem);
+  right: clamp(1.05rem, 2.25vw, 1.35rem);
+  z-index: 3;
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
+  text-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
 }
 
 @media (max-width: 420px) {
@@ -401,6 +459,7 @@
 
   .mediaGridPhotos {
     gap: 0.7rem;
+    grid-template-columns: 1fr;
   }
 }
 
@@ -528,12 +587,12 @@
 .preFooterTestimonialsInner {
   width: min(1200px, 100%);
   margin: 0 auto;
-  padding: clamp(1.55rem, 4.2vh, 2.25rem) clamp(1.25rem, 4vw, 2.5rem)
-    clamp(0.2rem, 0.8vh, 0.55rem) clamp(1.25rem, 4vw, 2.5rem);
+  padding: clamp(0.55rem, 1.4vh, 0.85rem) clamp(1.25rem, 4vw, 2.5rem)
+    0 clamp(1.25rem, 4vw, 2.5rem);
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  align-items: start;
+  grid-template-columns: 1fr auto;
+  gap: clamp(0.65rem, 1.8vw, 1.25rem);
+  align-items: center;
 }
 
 .testimonialsLeft {
@@ -551,7 +610,7 @@
 }
 
 .testimonialsTitle {
-  margin: 0.45rem 0 0 0;
+  margin: 0.25rem 0 0 0;
   font-family: var(--font-loverica, var(--font-display));
   font-weight: 400;
   font-size: clamp(2.8rem, 5.8vw, 4.6rem);
@@ -564,19 +623,20 @@
 
 .testimonialsRight {
   position: relative;
-  min-height: clamp(8rem, 18vh, 12rem);
+  min-height: 0;
   display: grid;
   align-items: end;
   justify-items: end;
 }
 
 .testimonialsAsset {
-  width: min(1100px, 185%);
-  max-width: none;
+  width: auto;
+  max-width: min(520px, 42vw);
+  max-height: clamp(140px, 18vh, 220px);
   height: auto;
   display: block;
   filter: drop-shadow(0 22px 55px rgba(0, 0, 0, 0.22)) saturate(0.95) contrast(1.02);
-  transform: translate(14%, -6%) rotate(-2deg);
+  transform: rotate(-2deg);
 }
 
 @media (max-width: 920px) {
@@ -584,6 +644,8 @@
     grid-template-columns: 1fr;
     justify-items: center;
     text-align: center;
+    padding: clamp(0.65rem, 2.8vw, 1rem) clamp(1.1rem, 4vw, 1.75rem) 0
+      clamp(1.1rem, 4vw, 1.75rem);
   }
 
   .testimonialsLeft {
@@ -597,8 +659,9 @@
   }
 
   .testimonialsAsset {
-    width: min(720px, 100%);
-    max-width: 100%;
+    width: auto;
+    max-width: min(560px, 90%);
+    max-height: clamp(160px, 26vh, 240px);
     transform: rotate(-2deg);
   }
 }

@@ -43,23 +43,52 @@ export const portfolioData = [
   },
 ];
 
-const makePlaceholders = (prefix, count) =>
-  Array.from({ length: count }, (_, idx) => ({ id: `${prefix}${idx + 1}` }));
-
 export const portfolioVideosRows = [
-  { id: 'vrow-01', label: '2024', items: makePlaceholders('v01-', 4) },
-  { id: 'vrow-02', label: '2023', items: makePlaceholders('v02-', 4) },
-  { id: 'vrow-03', label: '2022', items: makePlaceholders('v03-', 4) },
+  {
+    id: 'vrow-sports',
+    label: 'SPORTS',
+    items: [
+      { id: 'v-sports-24', videoSrc: '/videos/videos/Sports/24.mp4' },
+      { id: 'v-sports-26', videoSrc: '/videos/videos/Sports/26.mp4' },
+      { id: 'v-sports-27', videoSrc: '/videos/videos/Sports/27.mp4' },
+      { id: 'v-sports-28', videoSrc: '/videos/videos/Sports/28.mp4' },
+    ],
+  },
+  {
+    id: 'vrow-fashion',
+    label: 'FASHION',
+    items: [
+      { id: 'v-fashion-29', videoSrc: '/videos/videos/Fashion/29.mp4' },
+      { id: 'v-fashion-30', videoSrc: '/videos/videos/Fashion/30.mp4' },
+      { id: 'v-fashion-31', videoSrc: '/videos/videos/Fashion/31.mp4' },
+      { id: 'v-fashion-32', videoSrc: '/videos/videos/Fashion/32.mp4' },
+    ],
+  },
+  {
+    id: 'vrow-drinks',
+    label: 'DRINKS',
+    items: [
+      { id: 'v-drinks-33', videoSrc: '/videos/videos/Drinks/33.mp4' },
+      { id: 'v-drinks-34', videoSrc: '/videos/videos/Drinks/34.mp4' },
+      { id: 'v-drinks-35', videoSrc: '/videos/videos/Drinks/35.mp4' },
+      { id: 'v-drinks-36', videoSrc: '/videos/videos/Drinks/36.mp4' },
+    ],
+  },
 ];
 
 const PUBLIC_PHOTOS_BASE = '/images/photos/Portfolio%20Photos';
 
 // Lista explícita: Vite no puede auto-listar el directorio `public/` en runtime.
 // Si agregás más PNGs a esa carpeta, sumalos acá (o te lo automatizo moviéndolos a `src/assets`).
-const publicPortfolioPngFiles = ['22.png', '23.png', '24.png'];
+const publicPortfolioPngFiles = [
+  { name: '22.png', title: 'Sports' },
+  { name: '23.png', title: 'Fashion' },
+  { name: '24.png', title: 'Drinks' },
+];
 
-const publicPortfolioPngs = publicPortfolioPngFiles.map((name) => ({
+const publicPortfolioPngs = publicPortfolioPngFiles.map(({ name, title }) => ({
   id: `public:${name}`,
+  title,
   src: `${PUBLIC_PHOTOS_BASE}/${encodeURIComponent(name)}`,
 }));
 

@@ -20,7 +20,7 @@ const PortfolioModule = () => {
           <span className={styles.introKicker}>VIEW OUR</span>
           <h2 className={styles.introTitle}>RECENT WORK</h2>
           <p className={styles.introText}>
-            Social media management at Spiral means more than just posting—it&apos;s
+            Social media management at Spiral means more than just posting, it&apos;s
             about building your brand&apos;s voice, engaging your audience, and creating
             a strategy that delivers real results. We handle everything from planning
             and content creation to posting analytics, so your socials always look
@@ -44,7 +44,25 @@ const PortfolioModule = () => {
                     data-variant="video"
                     data-layout={idx + 1}
                   >
-                    {(item.src || item.imageUrl) && (
+                    {item.videoSrc ? (
+                      <video
+                        className={styles.mediaThumbVideo}
+                        src={item.videoSrc}
+                        poster={item.posterSrc || undefined}
+                        preload="metadata"
+                        playsInline
+                        muted
+                        loop
+                        controls
+                        onError={(e) => {
+                          // If the file doesn't exist / can't be decoded, show a clear fallback.
+                          const el = e.currentTarget;
+                          el.style.display = 'none';
+                          const parent = el.parentElement;
+                          if (parent) parent.setAttribute('data-video-missing', 'true');
+                        }}
+                      />
+                    ) : (item.src || item.imageUrl) ? (
                       <img
                         className={styles.mediaThumbImage}
                         src={item.src || item.imageUrl}
@@ -52,7 +70,12 @@ const PortfolioModule = () => {
                         loading="lazy"
                         decoding="async"
                       />
-                    )}
+                    ) : null}
+                    {item.videoSrc ? (
+                      <div className={styles.videoMissing} aria-hidden="true">
+                        VIDEO NOT FOUND
+                      </div>
+                    ) : null}
                   </div>
                 ))}
               </div>
@@ -73,6 +96,9 @@ const PortfolioModule = () => {
                     data-variant="photo"
                     data-layout={idx + 1}
                   >
+                    {item.title ? (
+                      <span className={styles.mediaPhotoCaption}>{item.title}</span>
+                    ) : null}
                     {(item.src || item.imageUrl) && (
                       <img
                         className={styles.mediaThumbImage}
