@@ -24,7 +24,7 @@ const PortfolioPreFooter = () => {
           <div className={styles.testimonialsLeft}>
             <span className={styles.testimonialsKicker}>FROM OUR CLIENTS</span>
             <h3 className={styles.testimonialsTitle}>
-              DON&apos;T JUST TAKE IT
+              <span className={styles.testimonialsTitleLine1}>DON&apos;T JUST TAKE IT</span>
               <br />
               FROM US -
             </h3>
