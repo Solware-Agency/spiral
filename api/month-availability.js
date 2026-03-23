@@ -1,5 +1,6 @@
 import { google } from 'googleapis';
 import { DateTime } from 'luxon';
+import { isAllowedRequestOrigin } from './_origin.js';
 
 const TZ = 'America/New_York';
 
@@ -59,9 +60,7 @@ export default async function handler(req, res) {
     return json(res, 405, { ok: false, error: 'Method not allowed' });
   }
 
-  const origin = req.headers.origin || '';
-  const allowedOrigin = process.env.ALLOWED_ORIGIN || '';
-  if (allowedOrigin && origin && origin !== allowedOrigin) {
+  if (!isAllowedRequestOrigin(req)) {
     return json(res, 403, { ok: false, error: 'Forbidden' });
   }
 
