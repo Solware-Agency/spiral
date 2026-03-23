@@ -66,8 +66,6 @@ export function isAllowedRequestOrigin(req) {
   const allowed = parseAllowedOrigins(allowedRaw);
   if (allowed.length === 0) return true;
 
-  // In Vercel preview/dev, allow preview URLs if user opted-in with "*.vercel.app",
-  // or keep exact matching for stricter configs.
   return matchesAllowed(origin, allowed);
 }
 

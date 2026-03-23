@@ -1,6 +1,6 @@
 import { google } from 'googleapis';
 import { DateTime } from 'luxon';
-import { isAllowedRequestOrigin } from './_origin.js';
+import { isAllowedRequestOrigin } from '../server/origin.js';
 
 const TZ = 'America/New_York';
 
