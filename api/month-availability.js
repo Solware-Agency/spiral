@@ -1,6 +1,7 @@
 import { google } from 'googleapis';
 import { DateTime } from 'luxon';
 import { isAllowedRequestOrigin } from '../server/origin.js';
+import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
 
 const TZ = 'America/New_York';
 
@@ -64,22 +65,15 @@ export default async function handler(req, res) {
     return json(res, 403, { ok: false, error: 'Forbidden' });
   }
 
-  const calendarId = process.env.GOOGLE_CALENDAR_ID;
-  const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const privateKey = (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
-
-  if (!calendarId || !clientEmail || !privateKey) {
-    const missing = [
-      !calendarId ? 'GOOGLE_CALENDAR_ID' : null,
-      !clientEmail ? 'GOOGLE_SERVICE_ACCOUNT_EMAIL' : null,
-      !privateKey ? 'GOOGLE_PRIVATE_KEY' : null,
-    ].filter(Boolean);
+  const { calendarId, clientEmail, privateKey, missing } = getCalendarEnv();
+  if (missing.length) {
     console.error('month-availability: missing env', missing);
-    return json(res, 500, {
-      ok: false,
-      error: 'Calendar integration is not configured',
-      missing,
-    });
+    return json(res, 500, { ok: false, error: 'Calendar integration is not configured', missing });
+  }
+  const keyCheck = validatePrivateKey(privateKey);
+  if (!keyCheck.ok) {
+    console.error('month-availability: invalid private key', keyCheck.details);
+    return json(res, 500, { ok: false, error: keyCheck.error, details: keyCheck.details });
   }
 
   let body = req.body;
@@ -106,12 +100,7 @@ export default async function handler(req, res) {
   if (!monthStart.isValid) return json(res, 400, { ok: false, error: 'Invalid month' });
   const monthEndExclusive = monthStart.plus({ months: 1 });
 
-  const auth = new google.auth.JWT({
-    email: clientEmail,
-    key: privateKey,
-    scopes: ['https://www.googleapis.com/auth/calendar'],
-  });
-  const calendar = google.calendar({ version: 'v3', auth });
+  const calendar = getCalendarClient({ clientEmail, privateKey });
 
   try {
     const fb = await calendar.freebusy.query({

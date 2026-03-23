@@ -3,6 +3,7 @@
 import { google } from 'googleapis';
 import { DateTime } from 'luxon';
 import { isAllowedRequestOrigin } from '../server/origin.js';
+import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
 
 const TZ = 'America/New_York';
 
@@ -46,24 +47,22 @@ export default async function handler(req, res) {
     return json(res, 403, { ok: false, error: 'Forbidden' });
   }
 
-  const calendarId = process.env.GOOGLE_CALENDAR_ID;
-  const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const privateKey = (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
+  const { calendarId, clientEmail, privateKey, missing } = getCalendarEnv();
   const studioNotificationEmail =
     (process.env.STUDIO_NOTIFICATION_EMAIL || '').trim() || 'andrea@spiralmstudio.com';
 
-  if (!calendarId || !clientEmail || !privateKey) {
-    const missing = [
-      !calendarId ? 'GOOGLE_CALENDAR_ID' : null,
-      !clientEmail ? 'GOOGLE_SERVICE_ACCOUNT_EMAIL' : null,
-      !privateKey ? 'GOOGLE_PRIVATE_KEY' : null,
-    ].filter(Boolean);
+  if (missing.length) {
     console.error('create-booking-event: missing env', missing);
     return json(res, 500, {
       ok: false,
       error: 'Calendar integration is not configured',
       missing,
     });
+  }
+  const keyCheck = validatePrivateKey(privateKey);
+  if (!keyCheck.ok) {
+    console.error('create-booking-event: invalid private key', keyCheck.details);
+    return json(res, 500, { ok: false, error: keyCheck.error, details: keyCheck.details });
   }
 
   let body = req.body;
@@ -118,12 +117,7 @@ export default async function handler(req, res) {
     return json(res, 400, { ok: false, error: 'Invalid date/time' });
   }
 
-  const auth = new google.auth.JWT({
-    email: clientEmail,
-    key: privateKey,
-    scopes: ['https://www.googleapis.com/auth/calendar'],
-  });
-  const calendar = google.calendar({ version: 'v3', auth });
+  const calendar = getCalendarClient({ clientEmail, privateKey });
 
   const planLabel = plan === 'weekend' ? 'Weekend' : 'Weekday';
   const displayName = [firstName, lastName].filter(Boolean).join(' ').trim();
