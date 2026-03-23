@@ -64,7 +64,17 @@ export default async function handler(req, res) {
   const privateKey = (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
 
   if (!calendarId || !clientEmail || !privateKey) {
-    return json(res, 500, { ok: false, error: 'Calendar integration is not configured' });
+    const missing = [
+      !calendarId ? 'GOOGLE_CALENDAR_ID' : null,
+      !clientEmail ? 'GOOGLE_SERVICE_ACCOUNT_EMAIL' : null,
+      !privateKey ? 'GOOGLE_PRIVATE_KEY' : null,
+    ].filter(Boolean);
+    console.error('available-time-slots: missing env', missing);
+    return json(res, 500, {
+      ok: false,
+      error: 'Calendar integration is not configured',
+      missing,
+    });
   }
 
   let body = req.body;
@@ -128,6 +138,7 @@ export default async function handler(req, res) {
 
     return json(res, 200, { ok: true, available });
   } catch (e) {
+    console.error('available-time-slots: failed', e);
     return json(res, 500, {
       ok: false,
       error: 'Failed to read calendar availability',

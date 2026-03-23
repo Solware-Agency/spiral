@@ -769,11 +769,24 @@ const BookNowModule = () => {
     })
       .then(async (r) => {
         const data = await r.json().catch(() => ({}));
-        if (!r.ok || !data?.ok) throw new Error(data?.error || 'No se pudo leer disponibilidad.');
+        if (!r.ok || !data?.ok) {
+          const msg = [
+            data?.error || 'No se pudo leer disponibilidad.',
+            data?.details ? `Detalles: ${data.details}` : null,
+            Array.isArray(data?.missing) && data.missing.length > 0
+              ? `Faltan variables: ${data.missing.join(', ')}`
+              : null,
+          ]
+            .filter(Boolean)
+            .join(' | ');
+          console.error('month-availability failed', { status: r.status, data });
+          throw new Error(msg);
+        }
         setAvailableDays(data.availability && typeof data.availability === 'object' ? data.availability : null);
       })
-      .catch(() => {
+      .catch((e) => {
         // Don't block UX if the check fails.
+        console.error(e);
         setAvailableDays(null);
       })
       .finally(() => setIsLoadingDays(false));
@@ -798,12 +811,25 @@ const BookNowModule = () => {
     })
       .then(async (r) => {
         const data = await r.json().catch(() => ({}));
-        if (!r.ok || !data?.ok) throw new Error(data?.error || 'No se pudo leer disponibilidad.');
+        if (!r.ok || !data?.ok) {
+          const msg = [
+            data?.error || 'No se pudo leer disponibilidad.',
+            data?.details ? `Detalles: ${data.details}` : null,
+            Array.isArray(data?.missing) && data.missing.length > 0
+              ? `Faltan variables: ${data.missing.join(', ')}`
+              : null,
+          ]
+            .filter(Boolean)
+            .join(' | ');
+          console.error('available-time-slots failed', { status: r.status, data });
+          throw new Error(msg);
+        }
         const list = Array.isArray(data.available) ? data.available : [];
         setAvailableTimes(list);
       })
-      .catch(() => {
+      .catch((e) => {
         // If availability check fails, do not block booking UI.
+        console.error(e);
         setAvailableTimes(null);
       })
       .finally(() => setIsLoadingTimes(false));
@@ -874,7 +900,17 @@ const BookNowModule = () => {
       .then(async (r) => {
         const data = await r.json().catch(() => ({}));
         if (!r.ok || !data?.ok) {
-          throw new Error(data?.error || 'No se pudo crear el evento en el calendario.');
+          const msg = [
+            data?.error || 'No se pudo crear el evento en el calendario.',
+            data?.details ? `Detalles: ${data.details}` : null,
+            Array.isArray(data?.missing) && data.missing.length > 0
+              ? `Faltan variables: ${data.missing.join(', ')}`
+              : null,
+          ]
+            .filter(Boolean)
+            .join(' | ');
+          console.error('create-booking-event failed', { status: r.status, data });
+          throw new Error(msg);
         }
         if (data?.htmlLink) setCalendarLink(data.htmlLink);
       })

@@ -53,9 +53,16 @@ export default async function handler(req, res) {
     (process.env.STUDIO_NOTIFICATION_EMAIL || '').trim() || 'andrea@spiralmstudio.com';
 
   if (!calendarId || !clientEmail || !privateKey) {
+    const missing = [
+      !calendarId ? 'GOOGLE_CALENDAR_ID' : null,
+      !clientEmail ? 'GOOGLE_SERVICE_ACCOUNT_EMAIL' : null,
+      !privateKey ? 'GOOGLE_PRIVATE_KEY' : null,
+    ].filter(Boolean);
+    console.error('create-booking-event: missing env', missing);
     return json(res, 500, {
       ok: false,
       error: 'Calendar integration is not configured',
+      missing,
     });
   }
 
@@ -176,6 +183,7 @@ export default async function handler(req, res) {
       htmlLink: resp.data.htmlLink,
     });
   } catch (e) {
+    console.error('create-booking-event: failed', e);
     return json(res, 500, {
       ok: false,
       error: 'Failed to create calendar event',
