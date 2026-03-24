@@ -91,7 +91,7 @@
 }
 
 .heroKicker {
-  margin: 0;
+  margin: 0 0 clamp(1.35rem, 4.5vh, 3.25rem) 0;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.26em;
@@ -140,7 +140,7 @@
 }
 
 .specializeInner {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -168,7 +168,7 @@
 .specializePolaroid {
   position: absolute;
   top: auto;
-  bottom: clamp(-4.25rem, -8vh, -3.1rem);
+  bottom: calc(clamp(-6.25rem, -11vh, -4.6rem) - 60px);
   right: clamp(24px, 4.5vw, 74px);
   width: min(520px, 50vw);
   transform: rotate(18deg);
@@ -191,13 +191,14 @@
 }
 
 .label {
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-family: 'Andale Mono', var(--font-mono), ui-monospace, monospace;
+  font-size: 0.74rem;
   letter-spacing: 0.26em;
   color: #111;
   text-transform: uppercase;
   margin: 0 0 1.15rem 0;
   font-weight: 500;
+  transform: translateX(3px);
 }
 
 .lead {
@@ -205,8 +206,9 @@
   font-size: clamp(1.55rem, 2.45vw, 2.1rem);
   line-height: 1.55;
   color: #111;
-  max-width: 78ch;
+  max-width: none;
   margin: 0 0 1.05rem 0;
+  text-wrap: pretty;
 }
 
 .lead strong {
@@ -215,11 +217,11 @@
 
 .body {
   font-family: var(--font-primary);
-  font-size: 0.68rem;
-  line-height: 1.6;
+  font-size: clamp(0.82rem, 0.95vw, 0.94rem);
+  line-height: 1.72;
   color: rgba(17, 17, 17, 0.9);
-  max-width: 60ch;
-  margin: 0 0 1.5rem 0;
+  max-width: 94ch;
+  margin: 0 0 2rem 0;
   text-wrap: pretty;
 }
 
@@ -278,6 +280,7 @@
   background: #e6e6e6;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
   border: 1px solid #cfcfcf;
+  z-index: 2;
 }
 
 .polaroidImage {
@@ -288,6 +291,8 @@
   aspect-ratio: 1 / 1.15;
   object-fit: cover;
   opacity: 1;
+  position: relative;
+  z-index: 1;
 }
 
 /* ----- Founder ----- */
@@ -299,44 +304,52 @@
 }
 
 .founderGrid {
-  width: min(1200px, 100%);
+  width: min(1400px, 100%);
   margin: 0 auto;
-  padding: clamp(2.25rem, 5vw, 3.75rem) clamp(1.25rem, 4vw, 3.25rem);
+  padding: clamp(3rem, 6vw, 4.25rem) clamp(1.25rem, 4vw, 3.25rem);
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(2rem, 5vw, 4.25rem);
-  align-items: center;
-  min-height: clamp(34rem, 68vh, 46rem);
+  grid-template-columns: minmax(320px, 520px) minmax(0, 1fr);
+  gap: clamp(2.25rem, 5vw, 4.75rem);
+  align-items: start;
+  min-height: auto;
 }
 
 .founderPhotoWrap {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  max-width: 520px;
+  margin-inline: 0;
+  overflow: hidden;
+  border-radius: 10px;
 }
 
 .founderPhoto {
-  width: min(520px, 100%);
-  height: auto;
+  width: 100%;
+  height: 100%;
   display: block;
   aspect-ratio: 4 / 5;
   object-fit: cover;
-  object-position: 50% 30%;
+  object-position: 50% 12%;
   background: #f0f0f0;
   box-shadow:
     0 22px 70px rgba(0, 0, 0, 0.45),
     0 0 0 1px rgba(255, 255, 255, 0.08);
+  transform: scale(1.45);
+  transform-origin: 50% 40%;
 }
 
 .founderContent {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   text-align: left;
+  padding-top: 0;
 }
 
 .founderKicker {
-  margin: 0 0 0.75rem 0;
+  margin: 0 0 0.6rem 0;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.22em;
@@ -345,20 +358,20 @@
 }
 
 .founderName {
-  margin: 0 0 1.75rem 0;
-  font-family: var(--font-display);
+  margin: 0 0 1.25rem 0;
+  font-family: var(--font-loverica);
   font-weight: 400;
-  font-size: clamp(3rem, 6vw, 5.4rem);
-  letter-spacing: 0.04em;
-  line-height: 0.92;
+  font-size: clamp(2.9rem, 5vw, 5rem);
+  letter-spacing: 0.03em;
+  line-height: 0.9;
 }
 
 .founderText {
   font-family: var(--font-primary);
-  font-size: 0.95rem;
-  line-height: 1.75;
+  font-size: clamp(0.82rem, 0.95vw, 0.92rem);
+  line-height: 1.68;
   color: rgba(255, 255, 255, 0.86);
-  max-width: 48ch;
+  max-width: 70ch;
   text-align: left;
 }
 
@@ -373,15 +386,17 @@
 
 /* ----- Brand strip (polaroids + logo marquee) ----- */
 .brandStrip {
-  background: #7b2430;
+  background: #6C1622;
   padding: clamp(3.25rem, 7vw, 4.75rem) 0 0 0;
   overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .brandStripInner {
   width: min(1400px, 100%);
   margin: 0 auto;
   padding: 0 clamp(1.25rem, 4vw, 3.25rem);
+  overflow: visible;
 }
 
 .polaroidRow {
@@ -391,22 +406,27 @@
   align-items: start;
   justify-items: center;
   padding: 0 0 clamp(2rem, 5vw, 3rem) 0;
+  margin-top: clamp(-2.25rem, -4vw, -1.25rem);
+  overflow: visible;
 }
 
 .polaroidLeft {
-  transform: rotate(-10deg);
+  transform: rotate(-12deg) translateY(-10px);
   transform-origin: center;
 }
 
 .polaroidRight {
-  transform: rotate(10deg);
+  transform: rotate(12deg) translateY(10px);
   transform-origin: center;
 }
 
 /* ----- Logo marquee (About variant of Home clients marquee) ----- */
 .logosSection {
   background: transparent;
-  padding: clamp(1.25rem, 2.6vw, 1.75rem) 0;
+  padding: clamp(0.75rem, 1.9vw, 1.15rem) 0;
+  min-height: 160px;
+  display: flex;
+  align-items: center;
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
@@ -428,9 +448,9 @@
 .logosMarquee {
   display: flex;
   width: max-content;
-  padding-left: 2rem;
+  padding-left: 1rem;
   will-change: transform;
-  animation: aboutLogosMarqueeScroll 22s linear infinite;
+  animation: aboutLogosMarqueeScroll 36s linear infinite;
 }
 
 .marqueeDragging {
@@ -446,8 +466,8 @@
 .logosGroup {
   display: flex;
   align-items: center;
-  gap: clamp(1.4rem, 3vw, 2.75rem);
-  padding-right: 2rem;
+  gap: clamp(0.75rem, 1.8vw, 1.6rem);
+  padding-right: 1rem;
 }
 
 .logoItem {
@@ -463,7 +483,6 @@
   border-radius: 6px;
   outline: none;
   transition: transform 160ms ease, opacity 160ms ease;
-  opacity: 0.98;
 }
 
 .logoItem:hover {
@@ -471,7 +490,7 @@
 }
 
 .logoItem:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.78);
+  outline: 2px solid rgba(255, 255, 255, 0.85);
   outline-offset: 4px;
 }
 
@@ -543,7 +562,7 @@
 
 @media (min-width: 981px) {
   .specializeGrid {
-    grid-template-columns: minmax(0, 1.35fr) minmax(240px, 460px);
+    grid-template-columns: minmax(0, 2.6fr) minmax(80px, 220px);
     column-gap: clamp(2.25rem, 5vw, 4.25rem);
   }
 
@@ -552,7 +571,38 @@
   }
 
   .specializeCopy {
-    max-width: 980px;
+    max-width: none;
+  }
+
+  .lead,
+  .body {
+    max-width: none;
+  }
+
+  .founderContent {
+    padding-top: clamp(7.5rem, 14vh, 10.5rem);
+  }
+
+  .founderKicker {
+    padding-left: calc(clamp(0.8rem, 2.5vw, 3rem) - 30px);
+    font-size: calc(0.7rem + 3px);
+  }
+
+  /* Give the polaroid room to overlap the next section. */
+  .founderGrid {
+    padding-top: calc(clamp(3rem, 6vw, 4.25rem) + 140px);
+  }
+}
+
+@media (min-width: 620px) {
+  .founderName {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 420px) {
+  .founderName {
+    white-space: normal;
   }
 }
 

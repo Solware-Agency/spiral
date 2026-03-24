@@ -40,11 +40,15 @@ const AboutModule = () => {
               </p>
 
               <p className={styles.body}>
-                We specialize in social media management, content creation, and
-                graphic design, offering a la carte and customizable packages to
-                fit every brand’s unique needs. Whether you want to be hands-on
-                or step back and let us manage it all, making sure your brand is
-                seen, heard, and remembered.
+                We specialize in social media management, content creation, and graphic design, offering a la carte
+                <br />
+                and customizable packages to fit every brand’s unique needs. Whether you want to be hands-on
+                <br />
+                or step back and let us manage it all, we’ll make sure your brand is always
+                <br />
+                seen, heard, and remembered in a way that feels true to you.
+                <br />
+                {/* spacer line via <br/> requirement */}
               </p>
 
               <Link to="/#contact-us" className={styles.cta}>
