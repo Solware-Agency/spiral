@@ -96,9 +96,15 @@ const PortfolioModule = () => {
                     data-variant="photo"
                     data-layout={idx + 1}
                   >
-                    {item.title ? (
-                      <span className={styles.mediaPhotoCaption}>{item.title}</span>
-                    ) : null}
+                    {item.title ? (() => {
+                      const caption = String(item.title)
+                        .replace(/^spiral(?:\s+mstudio|\s+studio)?\s+/i, '')
+                        .replace(/^studio\s+/i, '')
+                        .trim();
+                      return caption ? (
+                        <span className={styles.mediaPhotoCaption}>{caption}</span>
+                      ) : null;
+                    })() : null}
                     {(item.src || item.imageUrl) && (
                       <img
                         className={styles.mediaThumbImage}
