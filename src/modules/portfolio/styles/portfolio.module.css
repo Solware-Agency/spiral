@@ -144,8 +144,8 @@
 .introInner {
   width: min(1200px, 100%);
   margin: 0 auto;
-  padding: clamp(3.75rem, 9vh, 6rem) clamp(2rem, 6vw, 4rem);
-  text-align: justify;
+  padding: clamp(4.75rem, 11vh, 7.25rem) clamp(2rem, 6vw, 4rem);
+  text-align: center;
 }
 
 .introKicker {
@@ -305,8 +305,8 @@
   z-index: 5;
   pointer-events: none;
   margin: 0;
-  font-size: 150px;
-  transform: translateY(-220px);
+  font-size: calc(clamp(3.2rem, 8vw, 6.1rem) + 150px);
+  transform: translateY(-180px);
   height: var(--videos-heading-h);
   display: flex;
   align-items: center;
@@ -337,6 +337,7 @@
 
 .mediaBlockVideos .mediaHeading + .mediaRow {
   padding-top: 0;
+  margin-top: -30px;
 }
 
 .mediaBlockPhotos .mediaHeading + .mediaRow {
@@ -353,7 +354,11 @@
 
 .mediaBlockVideos .mediaRow {
   row-gap: 0.2rem;
-  padding: 0.25rem 0.4rem 0.2rem 0.4rem;
+  padding: 0.25rem clamp(16px, 2.2vw, 24px) 30px clamp(16px, 2.2vw, 24px);
+}
+
+.mediaBlockVideos .mediaRow + .mediaRow {
+  padding-top: 30px;
 }
 
 .mediaBlockVideos .mediaRow:last-child {
@@ -394,7 +399,7 @@
 }
 
 .mediaBlockVideos .mediaGridVideos {
-  gap: 0.6rem;
+  gap: 30px;
 }
 
 @media (max-width: 1100px) {
