@@ -56,7 +56,7 @@ const rates = [
 ];
 
 const spaceDescription =
-  'A photo studio in Miami designed for creative freedom—giving you everything you need in one private content space. Our backdrop section offers the three basics: white, black, and beige, with more colors coming soon. Enjoy a gorgeous sofa setup styled to fit any vibe, plus a director chair, side tables, and a creative corner for extra inspiration. You’ll also find props to enhance every shoot, from decorative plates and magazines to blankets, coffee mugs, and more. Whether you’re shooting a campaign, creating content, or just exploring new ideas, the studio is ready for you to walk in and create. Perfect for photographers, videographers, content creators, and influencers.';
+  'A photo studio in Miami designed for creative freedom, giving you everything you need in one private content space. Our backdrop section offers the three basics: white, black, and beige, with more colors coming soon. Enjoy a gorgeous sofa setup styled to fit any vibe, plus a director chair, side tables, and a creative corner for extra inspiration. You’ll also find props to enhance every shoot, from decorative plates and magazines to blankets, coffee mugs, and more. Whether you’re shooting a campaign, creating content, or just exploring new ideas, the studio is ready for you to walk in and create. Perfect for photographers, videographers, content creators, and influencers.';
 
 const amenitiesLeft = [
   '2 GVM 150W continuous lights',
@@ -152,8 +152,8 @@ const StudioModule = () => {
             <p className={styles.cardBody}>{spaceDescription}</p>
           </section>
 
-          <section className={styles.amenitiesCard} aria-label="Amenities">
-            <h2 className={styles.amenitiesLabel}>AMENITIES</h2>
+          <section className={styles.amenitiesCard} aria-label="Equipment">
+            <h2 className={styles.amenitiesLabel}>EQUIPMENT</h2>
             <p className={styles.amenitiesIntro}>
               Our studio comes fully equipped to make your shoot seamless and
               professional:
@@ -173,7 +173,7 @@ const StudioModule = () => {
             </div>
 
             <p className={styles.amenitiesOutro}>
-              Everything you need is ready and waiting—just bring your vision!
+              Everything you need is ready and waiting, just bring your vision!
             </p>
           </section>
         </div>

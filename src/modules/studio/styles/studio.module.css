@@ -197,7 +197,7 @@
   background: #000;
   width: 100vw;
   margin-left: calc(50% - 50vw);
-  padding: clamp(2.25rem, 4vh, 3.25rem) 0 clamp(4rem, 7vh, 6rem);
+  padding: 0 0 clamp(4rem, 7vh, 6rem);
   --studioCardRadius: clamp(2.35rem, 5.6vw, 4rem);
 }
 
