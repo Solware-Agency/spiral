@@ -119,7 +119,9 @@ export default async function handler(req, res) {
 
   const planLabel = plan === 'weekend' ? 'Weekend' : 'Weekday';
   const displayName = [firstName, lastName].filter(Boolean).join(' ').trim();
-  const summary = `Studio Rental (${planLabel})${displayName ? ` - ${displayName}` : ''}`;
+  const summary = displayName
+    ? `Reserva Studio Spiral — ${displayName}`
+    : 'Reserva Studio Spiral';
   const descriptionLines = [
     'Booking request from website.',
     '',
