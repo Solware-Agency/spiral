@@ -39,6 +39,48 @@ function maybeDecodeBase64(raw) {
   return null;
 }
 
+/** Remove invisible characters that break OpenSSL PEM parsing after copy-paste. */
+function stripInvisibleUtf8(s) {
+  return String(s ?? '')
+    .replace(/\uFEFF/g, '')
+    .replace(/[\u200B-\u200D\u2060]/g, '')
+    .replace(/\u00A0/g, ' ');
+}
+
+/**
+ * Rebuild a PEM so Node's createPrivateKey accepts it.
+ * Hosting env vars often flatten newlines or insert spaces inside the base64 body.
+ */
+function reformatPemPrivateKey(key) {
+  const k = String(key ?? '').trim();
+  const rsaBegin = '-----BEGIN RSA PRIVATE KEY-----';
+  const rsaEnd = '-----END RSA PRIVATE KEY-----';
+  const pkBegin = '-----BEGIN PRIVATE KEY-----';
+  const pkEnd = '-----END PRIVATE KEY-----';
+
+  let beginMark;
+  let endMark;
+  if (k.includes(rsaBegin) && k.includes(rsaEnd)) {
+    beginMark = rsaBegin;
+    endMark = rsaEnd;
+  } else if (k.includes(pkBegin) && k.includes(pkEnd)) {
+    beginMark = pkBegin;
+    endMark = pkEnd;
+  } else {
+    return key;
+  }
+
+  const start = k.indexOf(beginMark);
+  const end = k.indexOf(endMark);
+  if (start === -1 || end === -1 || end <= start) return key;
+
+  const afterBegin = start + beginMark.length;
+  const body = k.slice(afterBegin, end).replace(/\s+/g, '');
+  if (!body.length) return key;
+
+  return `${beginMark}\n${body}\n${endMark}\n`;
+}
+
 export function normalizeGooglePrivateKey(envValue) {
   let key = stripWrappingQuotes(envValue);
 
@@ -48,10 +90,16 @@ export function normalizeGooglePrivateKey(envValue) {
   const fromB64 = maybeDecodeBase64(key);
   if (fromB64) key = fromB64;
 
-  key = String(key ?? '').trim();
-  key = key.replace(/\\n/g, '\n'); // support "\n" sequences
+  key = stripInvisibleUtf8(String(key ?? '').trim());
+
+  // Env panels often store "\n" as two chars; hosting may double-escape
+  for (let i = 0; i < 4 && key.includes('\\n'); i += 1) {
+    key = key.replace(/\\n/g, '\n');
+  }
   key = key.replace(/\r\n/g, '\n');
-  return key;
+
+  key = reformatPemPrivateKey(key);
+  return key.trim();
 }
 
 export function getCalendarEnv() {
