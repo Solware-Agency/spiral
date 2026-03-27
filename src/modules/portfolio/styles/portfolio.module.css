@@ -458,7 +458,7 @@
 
   .mediaBlockPhotos .mediaHeading {
     font-size: calc(clamp(2.4rem, 12vw, 4.2rem) + 64px);
-    transform: translateY(66px);
+    transform: translateY(55px);
   }
 
   .mediaBlockVideos .mediaHeading + .mediaRow {
@@ -619,7 +619,7 @@
 
   .mediaBlockPhotos .mediaHeading {
     font-size: calc(clamp(2rem, 12.5vw, 3.4rem) + 34px);
-    transform: translateY(40px);
+    transform: translateY(29px);
   }
 
   .mediaGridPhotos {
