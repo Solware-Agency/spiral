@@ -61,7 +61,7 @@
 
 .intro {
   background: #000;
-  padding: clamp(3rem, 6vh, 4.5rem) clamp(1.25rem, 4vw, 2.5rem);
+  padding: clamp(4.25rem, 9vh, 6.25rem) clamp(1.5rem, 5vw, 3rem);
   text-align: center;
 }
 
@@ -109,7 +109,7 @@
 
 .featureCard {
   position: relative;
-  min-height: clamp(22rem, 60vh, 42rem);
+  min-height: clamp(34rem, 78vh, 62rem);
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -581,7 +581,7 @@
 
 @media (max-width: 520px) {
   .featureCard {
-    min-height: clamp(18rem, 44vh, 26rem);
+    min-height: clamp(24rem, 52vh, 34rem);
   }
 
   .featureTitle {
@@ -661,7 +661,7 @@
   }
 
   .featureCard {
-    min-height: clamp(16rem, 45vh, 23rem);
+    min-height: clamp(22rem, 54vh, 30rem);
     border-left: none;
     border-top: 1px solid rgba(255, 255, 255, 0.14);
   }

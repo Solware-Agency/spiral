@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from '../styles/bookNow.module.css';
 import ElfsightInstagramFeed from '../../../components/ElfsightInstagramFeed';
 
@@ -17,12 +17,8 @@ const bgVars = (id) => ({
 
 const BOOK_EMAIL = 'andrea@spiralmstudio.com';
 
-const carouselSlides = [
-  '/images/optimized/DSC02380_1280.jpg',
-  '/images/optimized/DSC02040_1280.jpg',
-  '/images/optimized/DSC01963_1280.jpg',
-  '/images/optimized/DSC04163_1280.jpg',
-];
+/** Single static hero image below the booking panel (no carousel). */
+const STUDIO_GALLERY_IMAGE = '/images/optimized/DSC02380_1280.jpg';
 
 const rates = [
   { hours: 2, weekday: 160, weekend: 170 },
@@ -448,7 +444,7 @@ const BookingSlide = React.memo(function BookingSlide({
                   autoComplete="tel"
                   maxLength={15}
                 />
-                <div className={styles.fieldHint}>SOLO NÚMEROS (10–15 DÍGITOS)</div>
+                <div className={styles.fieldHint}>NUMBERS ONLY (10–15 DIGITS)</div>
                 {showErrors && validation.errors.phone ? (
                   <div id="booknow-phone-error" className={styles.fieldError} role="alert">
                     {validation.errors.phone}
@@ -500,7 +496,7 @@ const BookingSlide = React.memo(function BookingSlide({
                   autoCapitalize="none"
                 />
                 <div id="booknow-email-hint" className={styles.fieldHint}>
-                  EMAIL VÁLIDO (EJ: NOMBRE@DOMINIO.COM)
+                  VALID EMAIL (E.G. NAME@DOMAIN.COM)
                 </div>
                 {showErrors && validation.errors.email ? (
                   <div id="booknow-email-error" className={styles.fieldError} role="alert">
@@ -537,7 +533,7 @@ const BookingSlide = React.memo(function BookingSlide({
 
           {calendarLink ? (
             <a className={styles.bookingEmail} href={calendarLink} target="_blank" rel="noreferrer">
-              VER EN GOOGLE CALENDAR
+              VIEW IN GOOGLE CALENDAR
             </a>
           ) : null}
 
@@ -556,7 +552,6 @@ const BookingSlide = React.memo(function BookingSlide({
 });
 
 const BookNowModule = () => {
-  const [slideIdx, setSlideIdx] = useState(0);
   const [activePlan, setActivePlan] = useState(null); // 'weekday' | 'weekend' | null
   const [hours, setHours] = useState(2);
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
@@ -577,89 +572,10 @@ const BookNowModule = () => {
   const [availableDays, setAvailableDays] = useState(null);
   const [isLoadingDays, setIsLoadingDays] = useState(false);
 
-  const slideCount = carouselSlides.length;
-  const activeSlide = carouselSlides[slideIdx] ?? carouselSlides[0];
-  const loadedSlidesRef = useRef(new Set());
-  const [renderedSlide, setRenderedSlide] = useState(activeSlide);
-  const [incomingSlide, setIncomingSlide] = useState(null);
-  const [isCarouselLoading, setIsCarouselLoading] = useState(false);
-  const goPrev = () => setSlideIdx((i) => (i - 1 + slideCount) % slideCount);
-  const goNext = () => setSlideIdx((i) => (i + 1) % slideCount);
-
   useEffect(() => {
-    // Preload above-the-fold imagery as early as possible.
     preloadImage('/images/optimized/DSC01989_1600.jpg');
-    preloadImage(carouselSlides[0]);
-
-    const idle = window.requestIdleCallback
-      ? window.requestIdleCallback(
-          () => {
-            carouselSlides.forEach((src) => {
-              if (!loadedSlidesRef.current.has(src)) {
-                preloadImage(src).then((ok) => {
-                  if (ok) loadedSlidesRef.current.add(src);
-                });
-              }
-            });
-          },
-          { timeout: 1800 }
-        )
-      : window.setTimeout(() => {
-          carouselSlides.forEach((src) => {
-            if (!loadedSlidesRef.current.has(src)) {
-              preloadImage(src).then((ok) => {
-                if (ok) loadedSlidesRef.current.add(src);
-              });
-            }
-          });
-        }, 900);
-
-    return () => {
-      if (window.cancelIdleCallback) window.cancelIdleCallback(idle);
-      else window.clearTimeout(idle);
-    };
+    preloadImage(STUDIO_GALLERY_IMAGE);
   }, []);
-
-  useEffect(() => {
-    let cancelled = false;
-    let fadeTimer = null;
-
-    const current = activeSlide;
-    const next = carouselSlides[(slideIdx + 1) % slideCount];
-    const prev = carouselSlides[(slideIdx - 1 + slideCount) % slideCount];
-
-    [current, next, prev].forEach((src) => {
-      if (!src || loadedSlidesRef.current.has(src)) return;
-      preloadImage(src).then((ok) => {
-        if (ok) loadedSlidesRef.current.add(src);
-      });
-    });
-
-    if (!current || renderedSlide === current) return () => {};
-    setIsCarouselLoading(true);
-
-    preloadImage(current).then((ok) => {
-      if (cancelled) return;
-      if (ok) loadedSlidesRef.current.add(current);
-      setIncomingSlide(current);
-      // Let the browser paint the new layer before transitioning opacity.
-      window.requestAnimationFrame(() => {
-        if (cancelled) return;
-        setRenderedSlide(current);
-        setIsCarouselLoading(false);
-      });
-
-      fadeTimer = window.setTimeout(() => {
-        if (cancelled) return;
-        setIncomingSlide(null);
-      }, 320);
-    });
-
-    return () => {
-      cancelled = true;
-      if (fadeTimer) window.clearTimeout(fadeTimer);
-    };
-  }, [activeSlide, renderedSlide, slideIdx, slideCount]);
 
   const money = useMemo(
     () =>
@@ -1073,62 +989,14 @@ const BookNowModule = () => {
         </div>
       </section>
 
-      <section className={styles.carouselWrap} aria-label="Studio carousel">
+      <section className={styles.carouselWrap} aria-label="Studio photo">
         <div className={styles.carousel}>
-          <button
-            type="button"
-            className={`${styles.carouselArrow} ${styles.carouselArrowLeft}`}
-            onClick={goPrev}
-            aria-label="Previous photo"
-          >
-            ‹
-          </button>
-
           <div
-            className={`${styles.carouselStage} ${
-              isCarouselLoading ? styles.carouselStageLoading : ''
-            }`}
-            aria-label="Carousel image"
-            aria-busy={isCarouselLoading}
-          >
-            <div
-              className={styles.carouselLayer}
-              style={{ backgroundImage: `url(${renderedSlide})` }}
-              aria-hidden="true"
-            />
-            {incomingSlide ? (
-              <div
-                className={`${styles.carouselLayer} ${styles.carouselLayerIncoming}`}
-                style={{ backgroundImage: `url(${incomingSlide})` }}
-                aria-hidden="true"
-              />
-            ) : null}
-          </div>
-
-          <button
-            type="button"
-            className={`${styles.carouselArrow} ${styles.carouselArrowRight}`}
-            onClick={goNext}
-            aria-label="Next photo"
-          >
-            ›
-          </button>
-
-          <div className={styles.carouselDots} role="tablist" aria-label="Carousel dots">
-            {carouselSlides.map((_, idx) => (
-              <button
-                key={idx}
-                type="button"
-                className={`${styles.carouselDot} ${
-                  idx === slideIdx ? styles.carouselDotActive : ''
-                }`}
-                onClick={() => setSlideIdx(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
-                aria-selected={idx === slideIdx}
-                role="tab"
-              />
-            ))}
-          </div>
+            className={styles.carouselStage}
+            style={{ backgroundImage: `url(${STUDIO_GALLERY_IMAGE})` }}
+            role="img"
+            aria-label="Studio interior"
+          />
         </div>
       </section>
 
