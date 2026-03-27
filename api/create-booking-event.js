@@ -48,8 +48,6 @@ export default async function handler(req, res) {
   }
 
   const { calendarId, clientEmail, privateKey, missing } = getCalendarEnv();
-  const studioNotificationEmail =
-    (process.env.STUDIO_NOTIFICATION_EMAIL || '').trim() || 'andrea@spiralmstudio.com';
 
   if (missing.length) {
     console.error('create-booking-event: missing env', missing);
@@ -151,20 +149,16 @@ export default async function handler(req, res) {
       return json(res, 409, { ok: false, error: 'Ese horario ya está reservado.' });
     }
 
-    const attendees = [
-      ...(email ? [{ email }] : []),
-      ...(studioNotificationEmail ? [{ email: studioNotificationEmail }] : []),
-    ];
-
+    // Service accounts cannot set `attendees` (Calendar invites) without Google
+    // Workspace domain-wide delegation. Contact data stays in `description`.
     const resp = await calendar.events.insert({
       calendarId,
-      sendUpdates: 'all',
+      sendUpdates: 'none',
       requestBody: {
         summary,
         description: descriptionLines.join('\n'),
         start: { dateTime: start.toISO(), timeZone: TZ },
         end: { dateTime: end.toISO(), timeZone: TZ },
-        attendees,
         guestsCanInviteOthers: false,
         guestsCanModify: false,
         guestsCanSeeOtherGuests: false,

@@ -688,7 +688,7 @@ const BookNowModule = () => {
         if (!r.ok || !data?.ok) {
           const msg = [
             data?.error || 'No se pudo leer disponibilidad.',
-            data?.details ? `Detalles: ${data.details}` : null,
+            data?.details ? `Details: ${data.details}` : null,
             Array.isArray(data?.missing) && data.missing.length > 0
               ? `Faltan variables: ${data.missing.join(', ')}`
               : null,
@@ -730,7 +730,7 @@ const BookNowModule = () => {
         if (!r.ok || !data?.ok) {
           const msg = [
             data?.error || 'No se pudo leer disponibilidad.',
-            data?.details ? `Detalles: ${data.details}` : null,
+            data?.details ? `Details: ${data.details}` : null,
             Array.isArray(data?.missing) && data.missing.length > 0
               ? `Faltan variables: ${data.missing.join(', ')}`
               : null,
@@ -818,7 +818,7 @@ const BookNowModule = () => {
         if (!r.ok || !data?.ok) {
           const msg = [
             data?.error || 'No se pudo crear el evento en el calendario.',
-            data?.details ? `Detalles: ${data.details}` : null,
+            data?.details ? `Details: ${data.details}` : null,
             Array.isArray(data?.missing) && data.missing.length > 0
               ? `Faltan variables: ${data.missing.join(', ')}`
               : null,

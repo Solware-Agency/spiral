@@ -28,8 +28,8 @@ En Vercel → Project → Settings → Environment Variables:
   - Pega el private key tal cual (Vercel lo guarda como string; el código soporta `\n`).
 - `ALLOWED_ORIGIN` (opcional pero recomendado)
   - Ej: `https://tu-dominio.com`
-- `STUDIO_NOTIFICATION_EMAIL` (recomendado)
-  - Email del studio que debe recibir la confirmación (ej: `andrea@spiralmstudio.com`).
+- `STUDIO_NOTIFICATION_EMAIL` (opcional)
+  - Reservado para otros flujos; las invitaciones de Calendar no salen por service account sin domain-wide delegation.
 
 ### 4) Endpoint
 
@@ -48,8 +48,9 @@ Payload (JSON):
 - Si el evento se crea correctamente, se muestra un link **“VER EN GOOGLE CALENDAR”**.
 - Si falla, se usa el fallback existente de `mailto:` para no perder la reserva.
 
-### 6) Emails de confirmación (cliente + studio)
+### 6) Invitaciones por correo (limitación de service account)
 
-El endpoint crea el evento con `attendees` (cliente + studio) y usa `sendUpdates: "all"`,
-lo que hace que **Google Calendar envíe automáticamente** los correos de invitación/confirmación.
+Sin **domain-wide delegation** en Google Workspace, una service account **no puede** añadir `attendees` ni enviar invitaciones de Calendar.
+
+El evento se crea en el calendario compartido con **cliente y datos de contacto en la descripción**. Para correos automáticos al cliente, usa otro canal (por ejemplo el flujo `mailto:` del sitio o un servicio de email).
 
