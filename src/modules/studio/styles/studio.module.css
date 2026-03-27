@@ -595,20 +595,45 @@
     margin-top: 0;
   }
 
+  .details {
+    padding-bottom: clamp(2rem, 5vh, 3rem);
+  }
+
   .amenitiesGrid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .cardBody {
-    font-size: 0.74rem;
+    font-size: 0.93rem;
+    line-height: 1.6;
+  }
+
+  .amenitiesList {
+    font-size: 0.93rem;
+    line-height: 1.55;
+  }
+
+  .amenitiesIntro,
+  .amenitiesOutro {
+    font-size: 0.92rem;
   }
 
   .amenitiesCard {
     margin-top: -1.15rem;
+    padding-bottom: 1.6rem;
+  }
+
+  .ctaBanner {
+    padding: clamp(2.2rem, 6vh, 3.2rem) clamp(1rem, 4vw, 1.4rem);
   }
 }
 
 @media (max-width: 900px) {
+  .featuresGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .ratesInner {
     grid-template-columns: 1fr;
   }
@@ -627,6 +652,36 @@
 
   .carouselStage {
     height: clamp(13.5rem, 30vh, 18rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .featuresGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .featureCard {
+    min-height: clamp(16rem, 45vh, 23rem);
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .featureCard:first-child {
+    border-top: none;
+  }
+
+  .ratesTable {
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+  }
+
+  .ratesTable th,
+  .ratesTable td {
+    padding: 0.62rem 0.45rem;
+  }
+
+  .mapEmbedWrap {
+    height: clamp(15rem, 44vh, 20rem);
   }
 }
 

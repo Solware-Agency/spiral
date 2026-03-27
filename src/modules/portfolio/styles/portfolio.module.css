@@ -196,7 +196,7 @@
   border-radius: 28px 28px 0 0;
   border-bottom: none;
   padding-top: var(--videos-heading-h);
-  padding-bottom: clamp(0.15rem, 0.6vw, 0.45rem);
+  padding-bottom: 0;
   /* Allow the Videos heading to overlap the section above */
   overflow: visible;
   /* Add breathing room from the section above */
@@ -213,6 +213,18 @@
   overflow: visible;
   /* Add breathing room from Videos */
   margin-top: clamp(2rem, 5vw, 4rem);
+}
+
+@media (min-width: 761px) {
+  .mediaBlockPhotos {
+    --photos-heading-h: calc(clamp(78px, 7.6vw, 140px) + 18px);
+    margin-top: 0;
+  }
+
+  .mediaBlockVideos {
+    --videos-heading-h: calc(clamp(72px, 8vw, 128px) + 0px);
+    margin-top: clamp(0.75rem, 2.5vw, 2.25rem);
+  }
 }
 
 .mediaBlockPhotos::before {
@@ -314,6 +326,13 @@
   padding: 0 clamp(1rem, 3vw, 2.25rem);
 }
 
+@media (min-width: 761px) {
+  .mediaBlockVideos .mediaHeading {
+    font-size: calc(clamp(3.2rem, 8vw, 6.1rem) + 85px);
+    transform: translateY(-122px);
+  }
+}
+
 .mediaBlockPhotos .mediaHeading {
   position: absolute;
   inset: 0 0 auto 0;
@@ -329,6 +348,12 @@
   text-shadow: 0 22px 70px rgba(0, 0, 0, 0.65);
   z-index: 2;
   pointer-events: none;
+}
+
+@media (min-width: 761px) {
+  .mediaBlockPhotos .mediaHeading {
+    transform: translateY(78px);
+  }
 }
 
 .mediaHeading + .mediaRow {
@@ -406,9 +431,52 @@
   .mediaGridVideos {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+
+  .mediaBlockVideos .mediaGridVideos {
+    gap: 20px;
+  }
 }
 
 @media (max-width: 760px) {
+  .mediaBlockVideos {
+    --videos-heading-h: calc(clamp(90px, 12vw, 140px) + 6px);
+    padding-top: calc(var(--videos-heading-h) - 76px);
+    padding-bottom: 0;
+    margin-bottom: -18px;
+    margin-top: clamp(1.2rem, 3.8vw, 2rem);
+  }
+
+  .mediaBlockPhotos {
+    --photos-heading-h: calc(clamp(56px, 8.8vw, 86px) + 12px);
+    margin-top: 0.1rem;
+  }
+
+  .mediaBlockVideos .mediaHeading {
+    font-size: calc(clamp(2.4rem, 12vw, 4.2rem) + 64px);
+    transform: translateY(-112px);
+  }
+
+  .mediaBlockPhotos .mediaHeading {
+    font-size: calc(clamp(2.4rem, 12vw, 4.2rem) + 64px);
+    transform: translateY(66px);
+  }
+
+  .mediaBlockVideos .mediaHeading + .mediaRow {
+    margin-top: -14px;
+  }
+
+  .mediaBlockVideos .mediaRow {
+    padding: 0.25rem 0.9rem 1.1rem 0.9rem;
+  }
+
+  .mediaBlockVideos .mediaRow + .mediaRow {
+    padding-top: 1.1rem;
+  }
+
+  .mediaBlockVideos .mediaGridVideos {
+    gap: 12px;
+  }
+
   .mediaGridVideos {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -521,12 +589,37 @@
 }
 
 @media (max-width: 420px) {
+  .mediaBlockPhotos {
+    --photos-heading-h: calc(clamp(50px, 8.5vw, 72px) + 8px);
+    margin-top: 0;
+  }
+
+  .mediaBlockVideos {
+    padding-top: calc(var(--videos-heading-h) - 62px);
+    padding-bottom: 0;
+    margin-bottom: -22px;
+  }
+
   .mediaRow {
     padding: 0.95rem 0.75rem 1.15rem 0.75rem;
   }
 
   .mediaGridVideos {
     gap: 0.7rem;
+  }
+
+  .mediaBlockVideos .mediaGridVideos {
+    gap: 0.7rem;
+  }
+
+  .mediaBlockVideos .mediaHeading {
+    font-size: calc(clamp(2rem, 12.5vw, 3.4rem) + 34px);
+    transform: translateY(-82px);
+  }
+
+  .mediaBlockPhotos .mediaHeading {
+    font-size: calc(clamp(2rem, 12.5vw, 3.4rem) + 34px);
+    transform: translateY(40px);
   }
 
   .mediaGridPhotos {
