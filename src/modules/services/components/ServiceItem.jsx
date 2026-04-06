@@ -1,32 +1,102 @@
-import React from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/services.module.css';
 
-const ServiceItem = ({ id, title, description, imageUrl }) => {
+const ServiceItem = ({ id, title, description, imageUrl, packageDetail }) => {
+  const [isPackageOpen, setIsPackageOpen] = useState(false);
+  const detailsId = useId();
+
+  useEffect(() => {
+    if (!isPackageOpen) return () => {};
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setIsPackageOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isPackageOpen]);
+
+  const hasPackages = Boolean(packageDetail?.length);
+
   return (
     <article className={styles.serviceItem}>
-      <div className={styles.serviceInfo}>
-        <div className={styles.serviceTop}>
-          <span className={styles.serviceNumber}>{id}</span>
-          <h3 className={styles.serviceTitle} data-service-id={id}>
-            {title}
-          </h3>
+      <div className={styles.serviceItemMain}>
+        <div className={styles.serviceInfo}>
+          <div className={styles.serviceTop}>
+            <span className={styles.serviceNumber}>{id}</span>
+            <h3 className={styles.serviceTitle} data-service-id={id}>
+              {title}
+            </h3>
+          </div>
+          <p className={styles.serviceDescription}>{description}</p>
         </div>
-        <p className={styles.serviceDescription}>{description}</p>
+
+        <div className={styles.serviceMedia}>
+          <img
+            className={styles.serviceImage}
+            src={imageUrl}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+          <button
+            type="button"
+            className={styles.packagesBtn}
+            onClick={() => hasPackages && setIsPackageOpen((v) => !v)}
+            aria-expanded={isPackageOpen}
+            aria-controls={hasPackages ? detailsId : undefined}
+            disabled={!hasPackages}
+          >
+            PACKAGES
+          </button>
+        </div>
       </div>
 
-      <div className={styles.serviceMedia}>
-        <img
-          className={styles.serviceImage}
-          src={imageUrl}
-          alt=""
-          loading="lazy"
-          decoding="async"
-        />
-        <Link to="/book-now" className={styles.packagesBtn}>
-          PACKAGES
-        </Link>
-      </div>
+      {hasPackages ? (
+        <div
+          className={`${styles.packageSlideRegion} ${isPackageOpen ? styles.packageSlideRegionOpen : ''}`}
+        >
+          <div className={styles.packageSlideInner}>
+            <div
+              id={detailsId}
+              className={styles.packageSlidePanel}
+              role="region"
+              aria-labelledby={`${detailsId}-heading`}
+              aria-hidden={!isPackageOpen}
+              inert={!isPackageOpen}
+            >
+              <div className={styles.packageSlideHeader}>
+                <span className={styles.packageSlideKicker}>Package details</span>
+                <h2
+                  id={`${detailsId}-heading`}
+                  className={styles.packageSlideTitle}
+                  data-service-id={id}
+                >
+                  {title}
+                </h2>
+              </div>
+              <div className={styles.packageSlideBody}>
+                {packageDetail.map((paragraph, i) => (
+                  <p key={i} className={styles.packageSlideParagraph}>
+                    {paragraph}
+                  </p>
+                ))}
+              </div>
+              <div className={styles.packageSlideFooter}>
+                <Link to="/book-now" className={styles.packageSlideBook}>
+                  Book now
+                </Link>
+                <button
+                  type="button"
+                  className={styles.packageSlideCollapse}
+                  onClick={() => setIsPackageOpen(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </article>
   );
 };

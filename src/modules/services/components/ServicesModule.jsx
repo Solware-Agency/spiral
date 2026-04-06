@@ -25,6 +25,7 @@ const ServicesModule = () => {
               title={s.title}
               description={s.description}
               imageUrl={s.imageUrl}
+              packageDetail={s.packageDetail}
             />
           ))}
         </div>
