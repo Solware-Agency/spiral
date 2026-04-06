@@ -81,16 +81,27 @@ const PUBLIC_PHOTOS_BASE = '/images/photos/Portfolio%20Photos';
 // Lista explícita: Vite no puede auto-listar el directorio `public/` en runtime.
 // Si agregás más PNGs a esa carpeta, sumalos acá (o te lo automatizo moviéndolos a `src/assets`).
 const publicPortfolioPngFiles = [
-  { name: '22.png', title: 'Sports' },
-  { name: '23.png', title: 'Fashion' },
-  { name: '24.png', title: 'Drinks' },
+  { title: 'Sports', src: '/images/photos/DSC03276.JPG', focusY: '50%' },
+  { name: '23.png', title: 'Fashion', focusY: '88%' },
+  { name: '24.png', title: 'Drinks', focusY: '90%' },
 ];
 
-const publicPortfolioPngs = publicPortfolioPngFiles.map(({ name, title }) => ({
-  id: `public:${name}`,
-  title,
-  src: `${PUBLIC_PHOTOS_BASE}/${encodeURIComponent(name)}`,
-}));
+const publicPortfolioPngs = publicPortfolioPngFiles.map((item, index) => {
+  const base =
+    item.src != null
+      ? {
+          id: `public:photo-${index}`,
+          title: item.title,
+          src: item.src,
+        }
+      : {
+          id: `public:${item.name}`,
+          title: item.title,
+          src: `${PUBLIC_PHOTOS_BASE}/${encodeURIComponent(item.name)}`,
+        };
+  if (item.focusY != null) base.focusY = item.focusY;
+  return base;
+});
 
 export const portfolioPhotosRows = [
   { id: 'prow-photos', label: '', items: publicPortfolioPngs },

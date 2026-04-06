@@ -555,21 +555,29 @@
   background: transparent;
   border-radius: 0;
   box-shadow: none;
-  /* Push collage down to fully hide the baked-in top label */
-  --photo-crop-y: 99%;
-  /* Prevent caption clipping after manual offsets */
   overflow: visible;
-  aspect-ratio: 2 / 1;
+  aspect-ratio: 5 / 3;
+  min-height: clamp(11rem, 32vw, 22rem);
   padding: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.28);
 }
 
+.mediaPhotoImageClip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 1;
+}
+
 .mediaThumb[data-variant='photo'] .mediaThumbImage {
+  width: 100%;
   height: 100%;
+  min-height: 100%;
   object-fit: cover;
-  object-position: 50% var(--photo-crop-y);
+  object-position: 50% 50%;
   background: transparent;
-  transform: scale(1.01);
+  transform: scale(1.14);
+  transform-origin: center center;
 }
 
 .mediaPhotoCaption {

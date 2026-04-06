@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/studio.module.css';
 
@@ -38,11 +38,45 @@ const features = [
   },
 ];
 
-const carouselSlides = [
-  '/images/photos/DSC02380.jpg',
-  '/images/photos/DSC02040.jpg',
-  '/images/photos/DSC01963.jpg',
-  '/images/photos/DSC04163.jpg',
+const galleryPhotos = [
+  {
+    src: '/images/photos/DSC02380.jpg',
+    alt: 'Casa Spiral studio space',
+  },
+  {
+    src: '/images/photos/DSC02040.jpg',
+    alt: 'Studio content setup',
+  },
+  {
+    src: '/images/photos/DSC01963.jpg',
+    alt: 'Studio lighting and backdrop',
+  },
+  {
+    src: '/images/photos/DSC04163.jpg',
+    alt: 'Studio detail',
+  },
+  {
+    src: '/images/photos/DSC09041.jpg',
+    alt: 'Casa Spiral studio session',
+  },
+  {
+    src: '/images/photos/DSC02545.jpg',
+    alt: 'Studio creative corner',
+  },
+  {
+    src: '/images/photos/DSC09102.jpg',
+    alt: 'Casa Spiral studio detail',
+  },
+];
+
+const galleryLayouts = [
+  styles.galleryPos0,
+  styles.galleryPos1,
+  styles.galleryPos2,
+  styles.galleryPos3,
+  styles.galleryPos4,
+  styles.galleryPos5,
+  styles.galleryPos6,
 ];
 
 const rates = [
@@ -74,14 +108,6 @@ const amenitiesRight = [
 ];
 
 const StudioModule = () => {
-  const [slideIdx, setSlideIdx] = useState(0);
-
-  const slideCount = carouselSlides.length;
-  const activeSlide = carouselSlides[slideIdx] ?? carouselSlides[0];
-
-  const goPrev = () => setSlideIdx((i) => (i - 1 + slideCount) % slideCount);
-  const goNext = () => setSlideIdx((i) => (i + 1) % slideCount);
-
   const money = useMemo(
     () =>
       new Intl.NumberFormat('en-US', {
@@ -191,45 +217,22 @@ const StudioModule = () => {
         </div>
       </section>
 
-      <section className={styles.carouselWrap} aria-label="Studio carousel">
-        <div className={styles.carousel}>
-          <button
-            type="button"
-            className={`${styles.carouselArrow} ${styles.carouselArrowLeft}`}
-            onClick={goPrev}
-            aria-label="Previous photo"
-          >
-            ‹
-          </button>
-
-          <div
-            className={styles.carouselStage}
-            style={{ backgroundImage: `url(${activeSlide})` }}
-            aria-label="Carousel image"
-          />
-
-          <button
-            type="button"
-            className={`${styles.carouselArrow} ${styles.carouselArrowRight}`}
-            onClick={goNext}
-            aria-label="Next photo"
-          >
-            ›
-          </button>
-
-          <div className={styles.carouselDots} role="tablist" aria-label="Carousel dots">
-            {carouselSlides.map((_, idx) => (
-              <button
-                key={idx}
-                type="button"
-                className={`${styles.carouselDot} ${idx === slideIdx ? styles.carouselDotActive : ''}`}
-                onClick={() => setSlideIdx(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
-                aria-selected={idx === slideIdx}
-                role="tab"
+      <section className={styles.galleryWrap} aria-label="Studio gallery">
+        <div className={styles.galleryGrid}>
+          {galleryPhotos.map((photo, idx) => (
+            <figure
+              key={`${photo.src}-${idx}`}
+              className={`${styles.galleryFigure} ${galleryLayouts[idx] ?? ''}`}
+            >
+              <img
+                className={styles.galleryImg}
+                src={photo.src}
+                alt={photo.alt}
+                loading="lazy"
+                decoding="async"
               />
-            ))}
-          </div>
+            </figure>
+          ))}
         </div>
       </section>
 

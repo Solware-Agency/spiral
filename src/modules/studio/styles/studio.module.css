@@ -98,6 +98,8 @@
 }
 
 .features {
+  position: relative;
+  z-index: 0;
   background: #000;
 }
 
@@ -109,7 +111,7 @@
 
 .featureCard {
   position: relative;
-  min-height: clamp(34rem, 78vh, 62rem);
+  min-height: clamp(40rem, 86vh, 72rem);
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -164,10 +166,11 @@
 .featureCopy {
   position: absolute;
   left: clamp(0.85rem, 2vw, 1.25rem);
-  bottom: clamp(0.85rem, 2vw, 1.25rem);
+  /* Más alto para que las líneas (spans) no queden bajo el bloque gris superpuesto */
+  bottom: clamp(3.25rem, 8vw, 8.5rem);
   z-index: 1;
   display: grid;
-  gap: 0.35rem;
+  gap: 0.45rem;
   max-width: 18ch;
   text-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
 }
@@ -185,7 +188,7 @@
   font-size: clamp(0.85rem, 1.35vw, 1.05rem);
   letter-spacing: 0.14em;
   text-transform: none;
-  line-height: 1.2;
+  line-height: 1.35;
   color: rgba(255, 255, 255, 0.92);
 }
 
@@ -194,9 +197,13 @@
 }
 
 .details {
-  background: #000;
+  position: relative;
+  z-index: 2;
+  background: transparent;
   width: 100vw;
   margin-left: calc(50% - 50vw);
+  /* Sube el bloque gris (THE SPACE) para que quede montado sobre la parte baja de las fotos */
+  margin-top: clamp(-4rem, -8vw, -11rem);
   padding: 0 0 clamp(4rem, 7vh, 6rem);
   --studioCardRadius: clamp(2.35rem, 5.6vw, 4rem);
 }
@@ -220,6 +227,7 @@
   padding-right: clamp(1.25rem, 4vw, 2.5rem);
   padding-bottom: clamp(4rem, 8vw, 6rem);
   box-shadow:
+    0 -12px 40px rgba(0, 0, 0, 0.28),
     0 22px 55px rgba(0, 0, 0, 0.35),
     0 0 0 1px rgba(255, 255, 255, 0.06) inset;
   backdrop-filter: blur(6px);
@@ -382,82 +390,84 @@
   outline-offset: 4px;
 }
 
-.carouselWrap {
-  background: #bdb7b2;
+.galleryWrap {
+  background: #a39a93;
   padding: clamp(2rem, 5vh, 3.25rem) clamp(1.25rem, 4vw, 2.5rem);
 }
 
-.carousel {
-  width: min(1100px, 100%);
-  margin: 0 auto;
-  position: relative;
-}
-
-.carouselStage {
-  height: clamp(14rem, 32vh, 20rem);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 22px 65px rgba(0, 0, 0, 0.25);
-}
-
-.carouselArrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  border: none;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 1.6rem;
-  cursor: pointer;
+.galleryGrid {
   display: grid;
-  place-items: center;
-  z-index: 2;
+  gap: clamp(0.45rem, 1vw, 0.65rem);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-auto-rows: minmax(100px, 12vw);
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
-.carouselArrowLeft {
-  left: 10px;
+.galleryFigure {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 6px;
+  box-shadow: 0 14px 42px rgba(0, 0, 0, 0.22);
 }
 
-.carouselArrowRight {
-  right: 10px;
+.galleryImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: saturate(0.96) contrast(1.03) brightness(0.97);
+  transition: transform 0.45s ease, filter 0.35s ease;
 }
 
-.carouselArrow:hover {
-  background: rgba(255, 255, 255, 0.14);
+.galleryFigure:hover .galleryImg {
+  transform: scale(1.03);
+  filter: saturate(1) contrast(1.05) brightness(1);
 }
 
-.carouselArrow:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.75);
-  outline-offset: 3px;
+/* Mosaico: celdas de distinto tamaño (6 columnas) */
+.galleryPos0 {
+  grid-column: 1 / 5;
+  grid-row: 1 / 3;
+  min-height: 0;
 }
 
-.carouselDots {
-  position: absolute;
-  left: 50%;
-  bottom: 12px;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 10px;
-  z-index: 2;
+.galleryPos1 {
+  grid-column: 5 / 7;
+  grid-row: 1 / 2;
+  min-height: 0;
 }
 
-.carouselDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  border: none;
-  background: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-  padding: 0;
+.galleryPos2 {
+  grid-column: 5 / 7;
+  grid-row: 2 / 4;
+  min-height: 0;
 }
 
-.carouselDotActive {
-  background: rgba(255, 255, 255, 0.95);
+.galleryPos3 {
+  grid-column: 1 / 3;
+  grid-row: 3 / 4;
+  min-height: 0;
+}
+
+.galleryPos4 {
+  grid-column: 3 / 5;
+  grid-row: 3 / 5;
+  min-height: 0;
+}
+
+.galleryPos5 {
+  grid-column: 5 / 7;
+  grid-row: 4 / 5;
+  min-height: 0;
+}
+
+/* Hueco inferior izquierdo del mosaico (fila 4, cols 1–2) */
+.galleryPos6 {
+  grid-column: 1 / 3;
+  grid-row: 4 / 5;
+  min-height: 0;
 }
 
 .rates {
@@ -581,12 +591,17 @@
 
 @media (max-width: 520px) {
   .featureCard {
-    min-height: clamp(24rem, 52vh, 34rem);
+    min-height: clamp(30rem, 62vh, 42rem);
+  }
+
+  .featureCopy {
+    bottom: clamp(2.75rem, 10vw, 5.5rem);
   }
 
   .featureTitle {
     font-size: 0.72rem;
     letter-spacing: 0.1em;
+    line-height: 1.4;
   }
 }
 
@@ -596,6 +611,7 @@
   }
 
   .details {
+    margin-top: clamp(-2.5rem, -6vw, -4.25rem);
     padding-bottom: clamp(2rem, 5vh, 3rem);
   }
 
@@ -634,6 +650,14 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .featureCard {
+    min-height: clamp(36rem, 72vh, 56rem);
+  }
+
+  .featureCopy {
+    bottom: clamp(3rem, 9vw, 7rem);
+  }
+
   .ratesInner {
     grid-template-columns: 1fr;
   }
@@ -650,8 +674,54 @@
     transform: rotate(-6deg);
   }
 
-  .carouselStage {
-    height: clamp(13.5rem, 30vh, 18rem);
+  .galleryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: minmax(140px, 26vw);
+    gap: 0.5rem;
+  }
+
+  .galleryPos0 {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    min-height: clamp(11rem, 38vw, 15rem);
+  }
+
+  .galleryPos1,
+  .galleryPos2,
+  .galleryPos3,
+  .galleryPos4,
+  .galleryPos5,
+  .galleryPos6 {
+    grid-column: auto;
+    grid-row: auto;
+    min-height: clamp(9.5rem, 32vw, 13rem);
+  }
+
+  .galleryPos1 {
+    grid-column: 1 / 2;
+  }
+
+  .galleryPos2 {
+    grid-column: 2 / 3;
+  }
+
+  .galleryPos3 {
+    grid-column: 1 / 2;
+  }
+
+  .galleryPos4 {
+    grid-column: 2 / 3;
+    min-height: clamp(11rem, 40vw, 15rem);
+  }
+
+  .galleryPos5 {
+    grid-column: 1 / -1;
+    min-height: clamp(9rem, 30vw, 12rem);
+  }
+
+  .galleryPos6 {
+    grid-column: 1 / -1;
+    min-height: clamp(9rem, 30vw, 12rem);
   }
 }
 
@@ -661,9 +731,13 @@
   }
 
   .featureCard {
-    min-height: clamp(22rem, 54vh, 30rem);
+    min-height: clamp(28rem, 64vh, 40rem);
     border-left: none;
     border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+
+  .featureCopy {
+    bottom: clamp(2.85rem, 11vw, 6rem);
   }
 
   .featureCard:first-child {
@@ -682,6 +756,41 @@
 
   .mapEmbedWrap {
     height: clamp(15rem, 44vh, 20rem);
+  }
+
+  .galleryGrid {
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+  }
+
+  .galleryPos0,
+  .galleryPos1,
+  .galleryPos2,
+  .galleryPos3,
+  .galleryPos4,
+  .galleryPos5,
+  .galleryPos6 {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+
+  .galleryPos0 {
+    min-height: clamp(11rem, 48vw, 15rem);
+  }
+
+  .galleryPos1,
+  .galleryPos3 {
+    min-height: clamp(9rem, 40vw, 12rem);
+  }
+
+  .galleryPos2,
+  .galleryPos4 {
+    min-height: clamp(10.5rem, 46vw, 14rem);
+  }
+
+  .galleryPos5,
+  .galleryPos6 {
+    min-height: clamp(9.5rem, 42vw, 13rem);
   }
 }
 
