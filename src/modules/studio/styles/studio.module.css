@@ -5,7 +5,7 @@
 
 .hero {
   position: relative;
-  min-height: clamp(26rem, 62vh, 44rem);
+  min-height: clamp(34rem, 78vh, 56rem);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -61,40 +61,51 @@
 
 .intro {
   background: #000;
-  padding: clamp(4.25rem, 9vh, 6.25rem) clamp(1.5rem, 5vw, 3rem);
+  min-height: clamp(36rem, 68vh, 56rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(6rem, 14vh, 10rem) clamp(1.5rem, 5vw, 3rem);
   text-align: center;
+  box-sizing: border-box;
 }
 
 .introInner {
   width: min(920px, 100%);
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .introKicker {
-  margin: 0 0 0.65rem 0;
+  margin: 0;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.28em;
+  font-size: clamp(0.58rem, 1vw, 0.68rem);
+  letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.7);
+  color: #fff;
 }
 
 .introTitle {
-  margin: 0;
+  margin: clamp(0.85rem, 2vh, 1.35rem) 0 0 0;
   font-family: var(--font-loverica, var(--font-display));
-  font-size: clamp(2.2rem, 5.6vw, 4.1rem);
+  font-size: clamp(2.85rem, 7.5vw, 5rem);
   font-weight: 400;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
+  line-height: 1.05;
   text-transform: uppercase;
+  color: #fff;
 }
 
 .introBody {
-  margin: 1.05rem auto 0 auto;
-  font-family: var(--font-primary);
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.78);
-  max-width: 62ch;
+  margin: clamp(1.35rem, 2.8vh, 2.15rem) auto 0 auto;
+  font-family: var(--font-display), 'Times New Roman', serif;
+  font-size: clamp(0.92rem, 1.45vw, 1.12rem);
+  font-weight: 400;
+  line-height: 1.65;
+  color: #fff;
+  max-width: 38rem;
 }
 
 .features {

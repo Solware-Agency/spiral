@@ -140,8 +140,7 @@ const StudioModule = () => {
           <p className={styles.introKicker}>WELCOME TO</p>
           <h1 className={styles.introTitle}>CASA SPIRAL</h1>
           <p className={styles.introBody}>
-            A creative space designed for photoshoots, content creation, and bold
-            ideas.
+            A creative space designed for photoshoots, content creation, and bold ideas.
           </p>
         </div>
       </section>
