@@ -52,20 +52,20 @@ const galleryPhotos = [
     alt: 'Studio lighting and backdrop',
   },
   {
-    src: '/images/photos/DSC04163.jpg',
-    alt: 'Studio detail',
+    src: '/images/photos/DSC01393.JPG',
+    alt: 'Detalle creativo en Casa Spiral',
   },
   {
-    src: '/images/photos/DSC09041.jpg',
-    alt: 'Casa Spiral studio session',
+    src: '/images/photos/DSC01973.jpg',
+    alt: 'Ambiente de estudio Casa Spiral',
   },
   {
     src: '/images/photos/DSC02545.jpg',
     alt: 'Studio creative corner',
   },
   {
-    src: '/images/photos/DSC09102.jpg',
-    alt: 'Casa Spiral studio detail',
+    src: '/images/photos/DSC02285.jpg',
+    alt: 'Espacio y estética del estudio',
   },
 ];
 
