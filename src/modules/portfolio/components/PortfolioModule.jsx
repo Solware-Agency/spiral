@@ -106,20 +106,13 @@ const PortfolioModule = () => {
                       ) : null;
                     })() : null}
                     {(item.src || item.imageUrl) && (
-                      <div className={styles.mediaPhotoImageClip}>
-                        <img
-                          className={styles.mediaThumbImage}
-                          src={item.src || item.imageUrl}
-                          alt=""
-                          loading="lazy"
-                          decoding="async"
-                          style={
-                            item.focusY
-                              ? { objectPosition: `50% ${item.focusY}` }
-                              : undefined
-                          }
-                        />
-                      </div>
+                      <img
+                        className={styles.mediaThumbImage}
+                        src={item.src || item.imageUrl}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
                     )}
                   </div>
                 ))}
