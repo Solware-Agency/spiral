@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "vite",
     "optimize:images": "node scripts/optimize-images.mjs",
-    "build": "pnpm run optimize:images && vite build",
+    "optimize:client-logos": "node scripts/optimize-client-logos.mjs",
+    "build": "pnpm run optimize:images && pnpm run optimize:client-logos && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
