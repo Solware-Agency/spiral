@@ -81,14 +81,27 @@ const PUBLIC_PHOTOS_BASE = '/images/photos/Portfolio%20Photos';
 // Lista explícita: Vite no puede auto-listar el directorio `public/` en runtime.
 // Si agregás más PNGs a esa carpeta, sumalos acá (o te lo automatizo moviéndolos a `src/assets`).
 const publicPortfolioPngFiles = [
-  { name: '22.png', title: 'Sports' },
-  { name: '23.png', title: 'Fashion' },
-  { name: '24.png', title: 'Drinks' },
+  {
+    name: '22.png',
+    title: 'Sports',
+    alt: 'Sports and athletic lifestyle photography from the Spiral portfolio',
+  },
+  {
+    name: '23.png',
+    title: 'Fashion',
+    alt: 'Fashion editorial and brand photography from the Spiral portfolio',
+  },
+  {
+    name: '24.png',
+    title: 'Drinks',
+    alt: 'Beverage and product photography for drinks brands, Spiral portfolio',
+  },
 ];
 
-const publicPortfolioPngs = publicPortfolioPngFiles.map(({ name, title }) => ({
+const publicPortfolioPngs = publicPortfolioPngFiles.map(({ name, title, alt }) => ({
   id: `public:${name}`,
   title,
+  alt,
   src: `${PUBLIC_PHOTOS_BASE}/${encodeURIComponent(name)}`,
 }));
 

@@ -5,6 +5,27 @@ import { portfolioPhotosRows, portfolioVideosRows } from '../data/portfolioData'
 
 const MEDIA_THUMB_SIZES = '(max-width: 640px) 100vw, (max-width: 1100px) 50vw, min(36vw, 720px)';
 
+function cleanedPhotoCaption(title) {
+  if (title == null || title === '') return '';
+  return String(title)
+    .replace(/^spiral(?:\s+mstudio|\s+studio)?\s+/i, '')
+    .replace(/^studio\s+/i, '')
+    .trim();
+}
+
+function photoImageAlt(item) {
+  if (item.alt) return item.alt;
+  const caption = cleanedPhotoCaption(item.title);
+  if (caption) return `Portfolio photograph: ${caption}`;
+  return 'Photography sample from Spiral portfolio';
+}
+
+function videoFallbackImageAlt(item, row) {
+  if (item.alt) return item.alt;
+  if (row.label) return `${row.label} — marketing video preview from Spiral portfolio`;
+  return 'Video preview from Spiral portfolio';
+}
+
 const PortfolioModule = () => {
   return (
     <section className={styles.portfolioSection}>
@@ -69,7 +90,7 @@ const PortfolioModule = () => {
                       <ResponsiveImg
                         className={styles.mediaThumbImage}
                         src={item.src || item.imageUrl}
-                        alt=""
+                        alt={videoFallbackImageAlt(item, row)}
                         loading="lazy"
                         decoding="async"
                         sizes={MEDIA_THUMB_SIZES}
@@ -101,10 +122,7 @@ const PortfolioModule = () => {
                     data-layout={idx + 1}
                   >
                     {item.title ? (() => {
-                      const caption = String(item.title)
-                        .replace(/^spiral(?:\s+mstudio|\s+studio)?\s+/i, '')
-                        .replace(/^studio\s+/i, '')
-                        .trim();
+                      const caption = cleanedPhotoCaption(item.title);
                       return caption ? (
                         <span className={styles.mediaPhotoCaption}>{caption}</span>
                       ) : null;
@@ -113,7 +131,7 @@ const PortfolioModule = () => {
                       <ResponsiveImg
                         className={styles.mediaThumbImage}
                         src={item.src || item.imageUrl}
-                        alt=""
+                        alt={photoImageAlt(item)}
                         loading="lazy"
                         decoding="async"
                         sizes={MEDIA_THUMB_SIZES}
