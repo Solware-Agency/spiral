@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import LogoPicture from '../../../components/LogoPicture.jsx';
+import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources.js';
 import styles from '../styles/bookNow.module.css';
 import ElfsightInstagramFeed from '../../../components/ElfsightInstagramFeed';
-
-const CASA_LOGO_WHITE =
-  '/images/spiral%20logos/SPIRAL%20Logos/Casa%20Spiral/Casa.spiral-white.png';
 
 const bgSet = (id, w) =>
   `image-set(url("/images/optimized/${id}_${w}.webp") type("image/webp"), url("/images/optimized/${id}_${w}.jpg") type("image/jpeg"))`;
@@ -783,12 +782,15 @@ const BookNowModule = () => {
         style={bgVars('DSC01989')}
       >
         <div className={styles.heroOverlay} aria-hidden />
-        <img
+        <LogoPicture
+          slug={SPIRAL_LOGO_SLUG.casaWhite}
+          pngSrc={SPIRAL_LOGO_PNG.casaWhite}
           className={styles.heroLogo}
-          src={CASA_LOGO_WHITE}
           alt="CASA SPIRAL"
+          sizes={LOGO_SIZES.casaBook}
           loading="eager"
           decoding="async"
+          fetchPriority="high"
         />
       </section>
 

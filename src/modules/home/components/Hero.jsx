@@ -1,8 +1,7 @@
 import React from 'react';
+import LogoPicture from '../../../components/LogoPicture.jsx';
+import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources.js';
 import styles from '../styles/home.module.css';
-
-const SPIRAL_LOGO_WHITE =
-  '/images/spiral%20logos/SPIRAL%20Logos/Full/Spiral-logo-white.png';
 
 const Hero = () => {
   return (
@@ -10,12 +9,15 @@ const Hero = () => {
       <div className={styles.heroOverlay} />
       <div className={styles.heroContent}>
         <h1 className={styles.heroTitle}>
-          <img
+          <LogoPicture
+            slug={SPIRAL_LOGO_SLUG.fullWhite}
+            pngSrc={SPIRAL_LOGO_PNG.fullWhite}
             className={styles.heroLogoImage}
-            src={SPIRAL_LOGO_WHITE}
             alt=""
+            sizes={LOGO_SIZES.hero}
             loading="eager"
             decoding="async"
+            fetchPriority="high"
           />
           <span className={styles.heroTitleText}>SPIRAL Marketing Studio</span>
         </h1>

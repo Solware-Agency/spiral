@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import LogoPicture from '../../../components/LogoPicture.jsx';
 import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
+import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources.js';
 import styles from '../styles/about.module.css';
 
 const POLAROID_SIZES = '(max-width: 900px) 55vw, min(30vw, 520px)';
@@ -16,12 +18,15 @@ const AboutModule = () => {
         <div className={styles.heroOverlay} aria-hidden />
 
         <div className={styles.heroMonogram} aria-hidden>
-          <img
+          <LogoPicture
+            slug={SPIRAL_LOGO_SLUG.iconWhite}
+            pngSrc={SPIRAL_LOGO_PNG.iconWhite}
             className={styles.monogramIcon}
-            src="/images/spiral%20logos/SPIRAL%20Logos/Icon/Spiral-Icon-White.png"
             alt=""
+            sizes={LOGO_SIZES.aboutMonogram}
             loading="eager"
             decoding="async"
+            aria-hidden="true"
           />
         </div>
 

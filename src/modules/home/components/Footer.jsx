@@ -1,12 +1,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import LogoPicture from '../../../components/LogoPicture.jsx';
+import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources.js';
 import styles from '../styles/home.module.css';
 
 const navLeft = ['HOME', 'SERVICES', 'PORTFOLIO', 'ABOUT'];
 const navRight = ['THE STUDIO', 'BOOK NOW', 'CONTACT US'];
-
-const SPIRAL_LOGO_WHITE =
-  '/images/spiral%20logos/SPIRAL%20Logos/Full/Spiral-logo-white.png';
 
 const CONTACT_PORTAL_URL =
   'https://spiralstudio.hbportal.co/public/66343620b1546100287cdd19';
@@ -78,10 +77,12 @@ const Footer = () => {
           </div>
           <div className={styles.footerColCenter}>
             <Link to="/" aria-label="Spiral home" onClick={scrollTopIfAlreadyHome('/')}>
-              <img
+              <LogoPicture
+                slug={SPIRAL_LOGO_SLUG.fullWhite}
+                pngSrc={SPIRAL_LOGO_PNG.fullWhite}
                 className={styles.footerLogoImage}
-                src={SPIRAL_LOGO_WHITE}
                 alt="SPIRAL Marketing Studio"
+                sizes={LOGO_SIZES.footer}
                 loading="lazy"
                 decoding="async"
               />

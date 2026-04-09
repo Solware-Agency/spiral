@@ -1,12 +1,11 @@
 import React from 'react';
+import LogoPicture from '../../../components/LogoPicture.jsx';
 import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
+import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources.js';
 import styles from '../styles/services.module.css';
 import ElfsightInstagramFeed from '../../../components/ElfsightInstagramFeed';
 
 const POLAROID_SIZES = '(max-width: 900px) 40vw, min(22vw, 420px)';
-
-const SPIRAL_ICON_WHITE =
-  '/images/spiral%20logos/SPIRAL%20Logos/Icon/Spiral-Icon-White.png';
 
 const polaroids = [
   {
@@ -45,13 +44,15 @@ const BrandShowcase = () => {
         ))}
 
         <div className={styles.brandCenter}>
-          <img
+          <LogoPicture
+            slug={SPIRAL_LOGO_SLUG.iconWhite}
+            pngSrc={SPIRAL_LOGO_PNG.iconWhite}
             className={styles.brandMonogram}
-            src={SPIRAL_ICON_WHITE}
             alt=""
-            aria-hidden="true"
+            sizes={LOGO_SIZES.brandIcon}
             loading="lazy"
             decoding="async"
+            aria-hidden="true"
           />
           <div className={styles.brandHeadline}>
             <span className={styles.brandScript}>Lifting brands</span>

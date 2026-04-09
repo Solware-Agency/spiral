@@ -1,13 +1,12 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import LogoPicture from '../../../components/LogoPicture.jsx';
 import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
+import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources.js';
 import styles from '../styles/studio.module.css';
 
 const GALLERY_SIZES = '(max-width: 720px) 90vw, (max-width: 1100px) 50vw, 38vw';
 const RATES_POLAROID_SIZES = '(max-width: 900px) 72vw, min(300px, 32vw)';
-
-const CASA_LOGO_WHITE =
-  '/images/spiral%20logos/SPIRAL%20Logos/Casa%20Spiral/Casa.spiral-white.png';
 
 const bgSet = (id, w) =>
   `image-set(url("/images/optimized/${id}_${w}.webp") type("image/webp"), url("/images/optimized/${id}_${w}.jpg") type("image/jpeg"))`;
@@ -130,12 +129,15 @@ const StudioModule = () => {
         style={bgVars('DSC01989')}
       >
         <div className={styles.heroOverlay} aria-hidden />
-        <img
+        <LogoPicture
+          slug={SPIRAL_LOGO_SLUG.casaWhite}
+          pngSrc={SPIRAL_LOGO_PNG.casaWhite}
           className={styles.heroLogo}
-          src={CASA_LOGO_WHITE}
           alt="CASA SPIRAL"
+          sizes={LOGO_SIZES.casaStudio}
           loading="eager"
           decoding="async"
+          fetchPriority="high"
         />
       </section>
 
