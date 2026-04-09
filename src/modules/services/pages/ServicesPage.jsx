@@ -5,11 +5,13 @@ import ServicesModule from '../components/ServicesModule';
 
 const ServicesPage = () => {
   return (
-    <main>
+    <>
       <Navigation />
-      <ServicesModule />
-      <Footer />
-    </main>
+      <main id="main-content" tabIndex={-1}>
+        <ServicesModule />
+        <Footer />
+      </main>
+    </>
   );
 };
 

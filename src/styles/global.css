@@ -1,5 +1,10 @@
 @import './variables.css';
 
+/* Tras “Saltar al contenido”, el foco va a <main>; evita anillo en todo el viewport */
+#main-content:focus {
+  outline: none;
+}
+
 *,
 *::before,
 *::after {

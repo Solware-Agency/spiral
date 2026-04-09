@@ -5,11 +5,13 @@ import StudioModule from '../components/StudioModule';
 
 const StudioPage = () => {
   return (
-    <main>
+    <>
       <Navigation />
-      <StudioModule />
-      <Footer />
-    </main>
+      <main id="main-content" tabIndex={-1}>
+        <StudioModule />
+        <Footer />
+      </main>
+    </>
   );
 };
 

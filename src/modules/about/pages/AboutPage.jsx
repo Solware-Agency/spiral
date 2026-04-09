@@ -5,11 +5,13 @@ import AboutModule from '../components/AboutModule';
 
 const AboutPage = () => {
   return (
-    <main>
+    <>
       <Navigation />
-      <AboutModule />
-      <Footer />
-    </main>
+      <main id="main-content" tabIndex={-1}>
+        <AboutModule />
+        <Footer />
+      </main>
+    </>
   );
 };
 

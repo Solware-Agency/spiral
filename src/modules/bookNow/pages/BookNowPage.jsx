@@ -5,11 +5,13 @@ import BookNowModule from '../components/BookNowModule';
 
 const BookNowPage = () => {
   return (
-    <main>
+    <>
       <Navigation />
-      <BookNowModule />
-      <Footer />
-    </main>
+      <main id="main-content" tabIndex={-1}>
+        <BookNowModule />
+        <Footer />
+      </main>
+    </>
   );
 };
 

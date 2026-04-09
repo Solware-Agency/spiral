@@ -7,13 +7,15 @@ import PortfolioPreFooter from '../components/PortfolioPreFooter';
 
 const PortfolioPage = () => {
   return (
-    <main>
+    <>
       <Navigation />
-      <PortfolioModule />
-      <PortfolioPreFooter />
-      <InstagramGrid />
-      <Footer />
-    </main>
+      <main id="main-content" tabIndex={-1}>
+        <PortfolioModule />
+        <PortfolioPreFooter />
+        <InstagramGrid />
+        <Footer />
+      </main>
+    </>
   );
 };
 

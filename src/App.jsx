@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import HomePage from './modules/home/pages/HomePage.jsx';
 import './styles/global.css';
 import ScrollToHash from './components/ScrollToHash.jsx';
+import SkipToContent from './components/SkipToContent.jsx';
 
 const ServicesPage = lazy(() => import('./modules/services/pages/ServicesPage.jsx'));
 const PortfolioPage = lazy(() => import('./modules/portfolio/pages/PortfolioPage.jsx'));
@@ -13,6 +14,7 @@ const BookNowPage = lazy(() => import('./modules/bookNow/pages/BookNowPage.jsx')
 function App() {
   return (
     <div className="App">
+      <SkipToContent />
       <ScrollToHash />
       <Suspense fallback={null}>
         <Routes>

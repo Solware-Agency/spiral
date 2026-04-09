@@ -11,16 +11,18 @@ import styles from '../styles/home.module.css';
 
 const HomePage = () => {
   return (
-    <main className={styles.homePage}>
+    <>
       <Navigation />
-      <Hero />
-      <WhatWeDo />
-      <OurServices />
-      <RecentWork />
-      <RegimeWork />
-      <InstagramGrid />
-      <Footer />
-    </main>
+      <main id="main-content" tabIndex={-1} className={styles.homePage}>
+        <Hero />
+        <WhatWeDo />
+        <OurServices />
+        <RecentWork />
+        <RegimeWork />
+        <InstagramGrid />
+        <Footer />
+      </main>
+    </>
   );
 };
 
