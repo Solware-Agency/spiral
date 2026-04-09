@@ -2,9 +2,35 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- LCP: fondo hero vía CSS (no admite fetchpriority en la hoja); preload temprano por ruta + viewport -->
+    <script>
+      (function () {
+        var path = location.pathname.replace(/\/+$/, '').toLowerCase() || '/';
+        var id = 'DSC01989';
+        if (path === '/portfolio') id = 'DSC01973';
+        else if (path === '/services') id = 'DSC09102';
+        var pairs = [
+          [960, '(max-width: 899px)'],
+          [1280, '(min-width: 900px) and (max-width: 1199px)'],
+          [1600, '(min-width: 1200px) and (max-width: 1599px)'],
+          [2560, '(min-width: 1600px) and (max-width: 2199px)'],
+          [3200, '(min-width: 2200px)'],
+        ];
+        pairs.forEach(function (pair) {
+          var link = document.createElement('link');
+          link.rel = 'preload';
+          link.as = 'image';
+          link.href = '/images/optimized/' + id + '_' + pair[0] + '.webp';
+          link.type = 'image/webp';
+          link.setAttribute('fetchpriority', 'high');
+          link.media = pair[1];
+          document.head.appendChild(link);
+        });
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicons/Spiral-Icon-Black.svg" />
     <link rel="icon" type="image/svg+xml" href="/favicons/Spiral-Icon-White.svg" media="(prefers-color-scheme: dark)" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
