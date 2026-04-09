@@ -437,6 +437,14 @@
   margin: 0 auto 2rem auto;
 }
 
+.whatWeDoTextRun {
+  display: block;
+}
+
+.whatWeDoTextRun:not(:last-child) {
+  margin-bottom: 0.2em;
+}
+
 .whatWeDoText strong {
   font-weight: 700;
 }
