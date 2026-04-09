@@ -3,13 +3,62 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- LCP: fondo hero vía CSS (no admite fetchpriority en la hoja); preload temprano por ruta + viewport -->
+    <!-- LCP hero (fondo CSS): preload por viewport; data-lcp-hero=default se reemplaza en /portfolio y /services -->
+    <link
+      rel="preload"
+      as="image"
+      href="/images/optimized/DSC01989_960.webp"
+      type="image/webp"
+      media="(max-width: 899px)"
+      fetchpriority="high"
+      data-lcp-hero="default"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/images/optimized/DSC01989_1280.webp"
+      type="image/webp"
+      media="(min-width: 900px) and (max-width: 1199px)"
+      fetchpriority="high"
+      data-lcp-hero="default"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/images/optimized/DSC01989_1600.webp"
+      type="image/webp"
+      media="(min-width: 1200px) and (max-width: 1599px)"
+      fetchpriority="high"
+      data-lcp-hero="default"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/images/optimized/DSC01989_2560.webp"
+      type="image/webp"
+      media="(min-width: 1600px) and (max-width: 2199px)"
+      fetchpriority="high"
+      data-lcp-hero="default"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="/images/optimized/DSC01989_3200.webp"
+      type="image/webp"
+      media="(min-width: 2200px)"
+      fetchpriority="high"
+      data-lcp-hero="default"
+    />
     <script>
       (function () {
         var path = location.pathname.replace(/\/+$/, '').toLowerCase() || '/';
         var id = 'DSC01989';
         if (path === '/portfolio') id = 'DSC01973';
         else if (path === '/services') id = 'DSC09102';
+        if (id === 'DSC01989') return;
+        document.querySelectorAll('link[data-lcp-hero="default"]').forEach(function (el) {
+          el.remove();
+        });
         var pairs = [
           [960, '(max-width: 899px)'],
           [1280, '(min-width: 900px) and (max-width: 1199px)'],
@@ -25,6 +74,7 @@
           link.type = 'image/webp';
           link.setAttribute('fetchpriority', 'high');
           link.media = pair[1];
+          link.setAttribute('data-lcp-hero', 'runtime');
           document.head.appendChild(link);
         });
       })();
@@ -35,6 +85,22 @@
     <link rel="preconnect" href="https://elfsightcdn.com" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Latin woff2 críticos (texto UI + display); si falla la fuente, comprobar nueva URL en el CSS de Google Fonts -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="https://fonts.gstatic.com/s/inter/v20/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfAZ9hiA.woff2"
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="https://fonts.gstatic.com/s/playfairdisplay/v40/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKdFvXDXbtM.woff2"
+    />
+    <link rel="preload" href="/fonts/fonts/fonnts.com-Loverica-DEMO.otf" as="font" type="font/otf" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Anonymous+Pro:wght@400;700&family=Inter:wght@400;500;600&family=Luxurious+Script&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
       rel="stylesheet"
