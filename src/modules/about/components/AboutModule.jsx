@@ -1,6 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
 import styles from '../styles/about.module.css';
+
+const POLAROID_SIZES = '(max-width: 900px) 55vw, min(30vw, 520px)';
+const FOUNDER_SIZES = '(max-width: 900px) 92vw, min(44vw, 640px)';
+const STRIP_POLAROID_SIZES = '(max-width: 900px) 88vw, min(40vw, 560px)';
 import ClientMarquee from './ClientMarquee';
 import InstagramGrid from '../../home/components/InstagramGrid';
 
@@ -63,12 +68,14 @@ const AboutModule = () => {
         <div className={styles.specializePolaroid} aria-hidden="true">
           <div className={`${styles.polaroid} ${styles.specializePolaroidCard}`} aria-hidden>
             <div className={styles.polaroidClip} aria-hidden />
-            <img
+            <ResponsiveImg
               className={`${styles.polaroidImage} ${styles.specializePolaroidImage}`}
               src="/images/photos/DSC09031.jpg"
               alt=""
               loading="eager"
               decoding="async"
+              sizes={POLAROID_SIZES}
+              fetchPriority="high"
             />
           </div>
         </div>
@@ -77,12 +84,13 @@ const AboutModule = () => {
       <section className={styles.founderSection} aria-label="Founder">
         <div className={styles.founderGrid}>
           <div className={styles.founderPhotoWrap}>
-            <img
+            <ResponsiveImg
               className={styles.founderPhoto}
               src="/images/photos/IMG_9072.JPG"
               alt="Andrea Suarez"
               loading="lazy"
               decoding="async"
+              sizes={FOUNDER_SIZES}
             />
           </div>
 
@@ -125,23 +133,25 @@ const AboutModule = () => {
           <div className={styles.polaroidRow} aria-hidden="false">
             <div className={`${styles.polaroid} ${styles.polaroidLeft}`}>
               <div className={styles.polaroidClip} aria-hidden />
-              <img
+              <ResponsiveImg
                 className={styles.polaroidImage}
                 src="/images/photos/DSC09041.jpg"
                 alt="Foto del equipo"
                 loading="lazy"
                 decoding="async"
+                sizes={STRIP_POLAROID_SIZES}
               />
             </div>
 
             <div className={`${styles.polaroid} ${styles.polaroidRight}`}>
               <div className={styles.polaroidClip} aria-hidden />
-              <img
+              <ResponsiveImg
                 className={styles.polaroidImage}
                 src="/images/photos/DSC09102.jpg"
                 alt="Foto del equipo"
                 loading="lazy"
                 decoding="async"
+                sizes={STRIP_POLAROID_SIZES}
               />
             </div>
           </div>

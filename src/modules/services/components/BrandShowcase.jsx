@@ -1,6 +1,9 @@
 import React from 'react';
+import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
 import styles from '../styles/services.module.css';
 import ElfsightInstagramFeed from '../../../components/ElfsightInstagramFeed';
+
+const POLAROID_SIZES = '(max-width: 900px) 40vw, min(22vw, 420px)';
 
 const SPIRAL_ICON_WHITE =
   '/images/spiral%20logos/SPIRAL%20Logos/Icon/Spiral-Icon-White.png';
@@ -30,7 +33,14 @@ const BrandShowcase = () => {
       <div className={styles.brandMaroon}>
         {polaroids.map((p, idx) => (
           <figure key={idx} className={`${styles.polaroid} ${p.className}`} aria-hidden>
-            <img className={styles.polaroidImage} src={p.src} alt="" loading="lazy" decoding="async" />
+            <ResponsiveImg
+              className={styles.polaroidImage}
+              src={p.src}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              sizes={POLAROID_SIZES}
+            />
           </figure>
         ))}
 

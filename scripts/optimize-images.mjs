@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
+import { OPTIMIZED_PHOTO_FILES } from '../src/data/optimizedSources.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,36 +13,8 @@ const outputDir = path.join(projectRoot, 'public', 'images', 'optimized');
 
 const TARGET_WIDTHS = [640, 960, 1280, 1600, 2560, 3200];
 
-// Only optimize images we actually reference across the app (to keep build time reasonable).
-const SOURCES = [
-  // Hero / backgrounds (critical)
-  'DSC01989.jpg',
-  'DSC01973.jpg',
-  'DSC02285.jpg',
-  'DSC09041.jpg',
-  'DSC09102.jpg',
-  'DSC09031.jpg',
-
-  // Carousels / commonly shown
-  'DSC02380.jpg',
-  'DSC02040.jpg',
-  'DSC01963.jpg',
-  'DSC04163.jpg',
-  'DSC02284.jpg',
-  'DSC02408.jpg',
-  'IMG_6230.jpg',
-  'DSC01921.jpg',
-  'DSC02521.jpg',
-
-  // Services polaroids
-  'DSC01393.JPG',
-  'DSC02545.jpg',
-  'DSC03276.JPG',
-  'IMG_9072.JPG',
-];
-
 const outName = (file, w, ext) => {
-  const base = file.replace(/\.[^.]+$/, '');
+  const base = path.basename(file, path.extname(file));
   return `${base}_${w}.${ext}`;
 };
 
@@ -64,15 +37,14 @@ async function main() {
   await fs.mkdir(outputDir, { recursive: true });
   const tasks = [];
 
-  for (const file of SOURCES) {
-    const srcPath = path.join(inputDir, file);
+  for (const file of OPTIMIZED_PHOTO_FILES) {
+    const srcPath = path.join(inputDir, ...file.split('/'));
     if (!(await exists(srcPath))) continue;
 
     for (const w of TARGET_WIDTHS) {
       const webpOut = path.join(outputDir, outName(file, w, 'webp'));
       const jpgOut = path.join(outputDir, outName(file, w, 'jpg'));
 
-      // Skip if up to date.
       const regenWebp = await shouldRegenerate(srcPath, webpOut);
       const regenJpg = await shouldRegenerate(srcPath, jpgOut);
       if (!regenWebp && !regenJpg) continue;
@@ -103,4 +75,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

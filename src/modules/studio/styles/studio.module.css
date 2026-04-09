@@ -595,9 +595,16 @@
 .polaroidPhoto {
   width: 100%;
   aspect-ratio: 1 / 1.1;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  position: relative;
+  overflow: hidden;
+}
+
+.polaroidPhotoImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 @media (max-width: 520px) {

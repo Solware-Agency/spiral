@@ -646,7 +646,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/images/optimized/DSC09041_1280.jpg') 50% 29% / cover no-repeat;
+  background: url('/images/optimized/DSC09041_960.jpg') 50% 29% / cover no-repeat;
   filter: saturate(0.85) contrast(1.05) brightness(0.68);
   transform: scale(1.02);
 }
@@ -654,9 +654,39 @@
 @supports (background-image: image-set(url('/x.webp') type('image/webp'))) {
   .preFooterCta::before {
     background-image: image-set(
-      url('/images/optimized/DSC09041_1280.webp') type('image/webp'),
-      url('/images/optimized/DSC09041_1280.jpg') type('image/jpeg')
+      url('/images/optimized/DSC09041_960.webp') type('image/webp'),
+      url('/images/optimized/DSC09041_960.jpg') type('image/jpeg')
     );
+  }
+}
+
+@media (min-width: 900px) {
+  .preFooterCta::before {
+    background-image: url('/images/optimized/DSC09041_1280.jpg');
+  }
+
+  @supports (background-image: image-set(url('/x.webp') type('image/webp'))) {
+    .preFooterCta::before {
+      background-image: image-set(
+        url('/images/optimized/DSC09041_1280.webp') type('image/webp'),
+        url('/images/optimized/DSC09041_1280.jpg') type('image/jpeg')
+      );
+    }
+  }
+}
+
+@media (min-width: 1400px) {
+  .preFooterCta::before {
+    background-image: url('/images/optimized/DSC09041_1600.jpg');
+  }
+
+  @supports (background-image: image-set(url('/x.webp') type('image/webp'))) {
+    .preFooterCta::before {
+      background-image: image-set(
+        url('/images/optimized/DSC09041_1600.webp') type('image/webp'),
+        url('/images/optimized/DSC09041_1600.jpg') type('image/jpeg')
+      );
+    }
   }
 }
 

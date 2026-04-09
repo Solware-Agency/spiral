@@ -1,6 +1,9 @@
 import React from 'react';
+import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
 import styles from '../styles/portfolio.module.css';
 import { portfolioPhotosRows, portfolioVideosRows } from '../data/portfolioData';
+
+const MEDIA_THUMB_SIZES = '(max-width: 640px) 100vw, (max-width: 1100px) 50vw, min(36vw, 720px)';
 
 const PortfolioModule = () => {
   return (
@@ -62,13 +65,14 @@ const PortfolioModule = () => {
                           if (parent) parent.setAttribute('data-video-missing', 'true');
                         }}
                       />
-                    ) : (item.src || item.imageUrl) ? (
-                      <img
+                    ) : item.src || item.imageUrl ? (
+                      <ResponsiveImg
                         className={styles.mediaThumbImage}
                         src={item.src || item.imageUrl}
                         alt=""
                         loading="lazy"
                         decoding="async"
+                        sizes={MEDIA_THUMB_SIZES}
                       />
                     ) : null}
                     {item.videoSrc ? (
@@ -106,12 +110,13 @@ const PortfolioModule = () => {
                       ) : null;
                     })() : null}
                     {(item.src || item.imageUrl) && (
-                      <img
+                      <ResponsiveImg
                         className={styles.mediaThumbImage}
                         src={item.src || item.imageUrl}
                         alt=""
                         loading="lazy"
                         decoding="async"
+                        sizes={MEDIA_THUMB_SIZES}
                       />
                     )}
                   </div>

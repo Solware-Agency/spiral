@@ -1,4 +1,5 @@
 import React from 'react';
+import { optimizedSrcSet, optimizedUrl } from '../../../utils/responsiveImage';
 import styles from '../styles/home.module.css';
 
 const photos = [
@@ -12,9 +13,8 @@ const photos = [
 ];
 
 const SIZES = '(max-width: 600px) 140px, (max-width: 1200px) 14vw, 240px';
-const widths = [640, 960, 1280, 1600];
-const srcFor = (id, width, ext) => `/images/optimized/${id}_${width}.${ext}`;
-const srcSetFor = (id, ext) => widths.map((w) => `${srcFor(id, w, ext)} ${w}w`).join(', ');
+const srcFor = (id, width, ext) => optimizedUrl(id, width, ext);
+const srcSetFor = (id, ext) => optimizedSrcSet(id, ext);
 
 const PhotoCarousel = () => {
   return (
@@ -29,7 +29,7 @@ const PhotoCarousel = () => {
                   <source type="image/jpeg" srcSet={srcSetFor(id, 'jpg')} sizes={SIZES} />
                   <img
                     className={styles.photoCarouselImg}
-                    src={srcFor(id, 960, 'jpg')}
+                    src={srcFor(id, 640, 'jpg')}
                     alt=""
                     loading="lazy"
                     decoding="async"
@@ -46,7 +46,7 @@ const PhotoCarousel = () => {
                   <source type="image/jpeg" srcSet={srcSetFor(id, 'jpg')} sizes={SIZES} />
                   <img
                     className={styles.photoCarouselImg}
-                    src={srcFor(id, 960, 'jpg')}
+                    src={srcFor(id, 640, 'jpg')}
                     alt=""
                     loading="lazy"
                     decoding="async"

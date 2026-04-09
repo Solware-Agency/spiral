@@ -1,6 +1,10 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
 import styles from '../styles/studio.module.css';
+
+const GALLERY_SIZES = '(max-width: 720px) 90vw, (max-width: 1100px) 50vw, 38vw';
+const RATES_POLAROID_SIZES = '(max-width: 900px) 72vw, min(300px, 32vw)';
 
 const CASA_LOGO_WHITE =
   '/images/spiral%20logos/SPIRAL%20Logos/Casa%20Spiral/Casa.spiral-white.png';
@@ -223,12 +227,13 @@ const StudioModule = () => {
               key={`${photo.src}-${idx}`}
               className={`${styles.galleryFigure} ${galleryLayouts[idx] ?? ''}`}
             >
-              <img
+              <ResponsiveImg
                 className={styles.galleryImg}
                 src={photo.src}
                 alt={photo.alt}
                 loading="lazy"
                 decoding="async"
+                sizes={GALLERY_SIZES}
               />
             </figure>
           ))}
@@ -268,10 +273,16 @@ const StudioModule = () => {
           <div className={styles.ratesRight} aria-hidden="true">
             <div className={styles.polaroid}>
               <div className={styles.polaroidClip} />
-              <div
-                className={styles.polaroidPhoto}
-                style={{ backgroundImage: "url('/images/photos/DSC09031.jpg')" }}
-              />
+              <div className={styles.polaroidPhoto}>
+                <ResponsiveImg
+                  className={styles.polaroidPhotoImg}
+                  src="/images/photos/DSC09031.jpg"
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  sizes={RATES_POLAROID_SIZES}
+                />
+              </div>
             </div>
           </div>
         </div>

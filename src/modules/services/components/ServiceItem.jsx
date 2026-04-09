@@ -1,6 +1,9 @@
 import React, { useEffect, useId, useState } from 'react';
 import { Link } from 'react-router-dom';
+import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
 import styles from '../styles/services.module.css';
+
+const SERVICE_IMAGE_SIZES = '(max-width: 900px) 100vw, min(42vw, 720px)';
 
 const ServiceItem = ({ id, title, description, imageUrl, packageDetail }) => {
   const [isPackageOpen, setIsPackageOpen] = useState(false);
@@ -31,12 +34,13 @@ const ServiceItem = ({ id, title, description, imageUrl, packageDetail }) => {
         </div>
 
         <div className={styles.serviceMedia}>
-          <img
+          <ResponsiveImg
             className={styles.serviceImage}
             src={imageUrl}
             alt=""
             loading="lazy"
             decoding="async"
+            sizes={SERVICE_IMAGE_SIZES}
           />
           <button
             type="button"
