@@ -15,8 +15,6 @@ const bgVars = (id) => ({
   '--bg-3200': bgSet(id, 3200),
 });
 
-const BOOK_EMAIL = 'andrea@spiralmstudio.com';
-
 /** Single static hero image below the booking panel (no carousel). */
 const STUDIO_GALLERY_IMAGE = '/images/optimized/DSC02380_1280.jpg';
 
@@ -192,8 +190,6 @@ const BookingSlide = React.memo(function BookingSlide({
   formValues,
   setFormValues,
   onContinue,
-  mailtoHref,
-  gmailHref,
   isSubmitting,
   submitError,
   calendarLink,
@@ -444,7 +440,6 @@ const BookingSlide = React.memo(function BookingSlide({
                   autoComplete="tel"
                   maxLength={15}
                 />
-                <div className={styles.fieldHint}>NUMBERS ONLY (10–15 DIGITS)</div>
                 {showErrors && validation.errors.phone ? (
                   <div id="booknow-phone-error" className={styles.fieldError} role="alert">
                     {validation.errors.phone}
@@ -484,20 +479,14 @@ const BookingSlide = React.memo(function BookingSlide({
                     setFormValues((v) => ({ ...v, email: cleaned }));
                   }}
                   aria-invalid={showErrors && !!validation.errors.email}
-                  aria-describedby={[
-                    'booknow-email-hint',
-                    validation.errors.email ? 'booknow-email-error' : null,
-                  ]
-                    .filter(Boolean)
-                    .join(' ')}
+                  aria-describedby={
+                    showErrors && validation.errors.email ? 'booknow-email-error' : undefined
+                  }
                   autoComplete="email"
                   maxLength={254}
                   spellCheck={false}
                   autoCapitalize="none"
                 />
-                <div id="booknow-email-hint" className={styles.fieldHint}>
-                  VALID EMAIL (E.G. NAME@DOMAIN.COM)
-                </div>
                 {showErrors && validation.errors.email ? (
                   <div id="booknow-email-error" className={styles.fieldError} role="alert">
                     {validation.errors.email}
@@ -536,15 +525,6 @@ const BookingSlide = React.memo(function BookingSlide({
               VIEW IN GOOGLE CALENDAR
             </a>
           ) : null}
-
-          <a
-            className={styles.bookingEmail}
-            href={gmailHref || mailtoHref}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {BOOK_EMAIL.toUpperCase()}
-          </a>
         </div>
       </div>
     </section>
@@ -601,71 +581,6 @@ const BookNowModule = () => {
     if (activePlan === 'weekend') return entry.weekend;
     return entry.weekday;
   }, [activePlan, hours]);
-
-  const mailtoHref = useMemo(() => {
-    const planLabel = activePlan === 'weekend' ? 'Weekend' : 'Weekday';
-    const subject = `Studio Rental - ${planLabel}`;
-    const dateText = selectedDate ? selectedDate.toDateString() : '(not selected)';
-    const timeText = selectedTime ?? '(not selected)';
-    const firstName = normalizeName(formValues.firstName);
-    const lastName = normalizeName(formValues.lastName);
-    const phone = normalizePhone(formValues.phone);
-    const email = normalizeEmail(formValues.email);
-
-    const body = [
-      'Hi Spiral,',
-      '',
-      "I'd like to book the studio.",
-      `Plan: ${planLabel}`,
-      `Hours: ${hours}`,
-      `Date: ${dateText}`,
-      `Time: ${timeText}`,
-      '',
-      'My information:',
-      `First name: ${firstName || '(not provided)'}`,
-      `Last name: ${lastName || '(not provided)'}`,
-      `Phone number: ${phone || '(not provided)'}`,
-      `Email: ${email || '(not provided)'}`,
-      '',
-      'Thanks!',
-    ].join('\n');
-
-    return `mailto:${BOOK_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  }, [activePlan, formValues, hours, selectedDate, selectedTime]);
-
-  const gmailHref = useMemo(() => {
-    const planLabel = activePlan === 'weekend' ? 'Weekend' : 'Weekday';
-    const subject = `Studio Rental - ${planLabel}`;
-    const dateText = selectedDate ? selectedDate.toDateString() : '(not selected)';
-    const timeText = selectedTime ?? '(not selected)';
-    const firstName = normalizeName(formValues.firstName);
-    const lastName = normalizeName(formValues.lastName);
-    const phone = normalizePhone(formValues.phone);
-    const email = normalizeEmail(formValues.email);
-
-    const body = [
-      'Hi Spiral,',
-      '',
-      "I'd like to book the studio.",
-      `Plan: ${planLabel}`,
-      `Hours: ${hours}`,
-      `Date: ${dateText}`,
-      `Time: ${timeText}`,
-      '',
-      'My information:',
-      `First name: ${firstName || '(not provided)'}`,
-      `Last name: ${lastName || '(not provided)'}`,
-      `Phone number: ${phone || '(not provided)'}`,
-      `Email: ${email || '(not provided)'}`,
-      '',
-      'Thanks!',
-    ].join('\n');
-
-    const to = encodeURIComponent(BOOK_EMAIL);
-    const su = encodeURIComponent(subject);
-    const b = encodeURIComponent(body);
-    return `https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${su}&body=${b}`;
-  }, [activePlan, formValues, hours, selectedDate, selectedTime]);
 
   const monthWeeks = useMemo(() => getMonthGrid(month), [month]);
 
@@ -832,8 +747,6 @@ const BookNowModule = () => {
       })
       .catch((e) => {
         setSubmitError(e?.message || 'No se pudo crear el evento en el calendario.');
-        // Fallback: keep existing mailto flow so the booking isn't lost.
-        window.location.href = mailtoHref;
       })
       .finally(() => {
         setIsSubmitting(false);
@@ -928,8 +841,6 @@ const BookNowModule = () => {
             formValues={formValues}
             setFormValues={setFormValues}
             onContinue={onContinue}
-            mailtoHref={mailtoHref}
-            gmailHref={gmailHref}
             isSubmitting={isSubmitting}
             submitError={submitError}
             calendarLink={calendarLink}
@@ -980,8 +891,6 @@ const BookNowModule = () => {
             formValues={formValues}
             setFormValues={setFormValues}
             onContinue={onContinue}
-            mailtoHref={mailtoHref}
-            gmailHref={gmailHref}
             isSubmitting={isSubmitting}
             submitError={submitError}
             calendarLink={calendarLink}

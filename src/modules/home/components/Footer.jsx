@@ -8,6 +8,9 @@ const navRight = ['THE STUDIO', 'BOOK NOW', 'CONTACT US'];
 const SPIRAL_LOGO_WHITE =
   '/images/spiral%20logos/SPIRAL%20Logos/Full/Spiral-logo-white.png';
 
+const CONTACT_PORTAL_URL =
+  'https://spiralstudio.hbportal.co/public/66343620b1546100287cdd19';
+
 const leftHref = (item) => {
   const key = item.toLowerCase().replace(/\s+/g, '-');
   if (key === 'home') return '/';
@@ -21,8 +24,11 @@ const sectionHref = (item) => {
   const key = item.toLowerCase().replace(/\s+/g, '-');
   if (key === 'the-studio') return '/studio';
   if (key === 'book-now') return '/book-now';
+  if (key === 'contact-us') return CONTACT_PORTAL_URL;
   return `/#${key}`;
 };
+
+const isExternalFooterHref = (to) => /^https?:\/\//i.test(to);
 
 const Footer = () => {
   const location = useLocation();
@@ -53,11 +59,20 @@ const Footer = () => {
                 ))}
               </ul>
               <ol className={`${styles.footerNav} ${styles.footerNavQuick}`}>
-                {navRight.map((item) => (
-                  <li key={item}>
-                    <Link to={sectionHref(item)}>{item}</Link>
-                  </li>
-                ))}
+                {navRight.map((item) => {
+                  const to = sectionHref(item);
+                  return (
+                    <li key={item}>
+                      {isExternalFooterHref(to) ? (
+                        <a href={to} target="_blank" rel="noreferrer">
+                          {item}
+                        </a>
+                      ) : (
+                        <Link to={to}>{item}</Link>
+                      )}
+                    </li>
+                  );
+                })}
               </ol>
             </div>
           </div>

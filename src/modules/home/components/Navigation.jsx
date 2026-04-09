@@ -8,6 +8,9 @@ const rightLinks = ['The Studio', 'Book Now', 'Contact Us'];
 const SPIRAL_LOGO_WHITE =
   '/images/spiral%20logos/SPIRAL%20Logos/Full/Spiral-logo-white.png';
 
+const CONTACT_PORTAL_URL =
+  'https://spiralstudio.hbportal.co/public/66343620b1546100287cdd19';
+
 const leftLinkTo = (item) => {
   const key = item.toLowerCase().replace(' ', '-');
   if (key === 'home') return '/';
@@ -21,8 +24,11 @@ const sectionLinkTo = (item) => `/#${item.toLowerCase().replace(/\s+/g, '-')}`;
 const rightLinkTo = (item) => {
   if (item === 'The Studio') return '/studio';
   if (item === 'Book Now') return '/book-now';
+  if (item === 'Contact Us') return CONTACT_PORTAL_URL;
   return sectionLinkTo(item);
 };
+
+const isExternalNavHref = (to) => /^https?:\/\//i.test(to);
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -138,11 +144,20 @@ const Navigation = () => {
           />
         </Link>
         <ul className={styles.navRight}>
-          {rightLinks.map((item) => (
-            <li key={item}>
-              <Link to={rightLinkTo(item)}>{item}</Link>
-            </li>
-          ))}
+          {rightLinks.map((item) => {
+            const to = rightLinkTo(item);
+            return (
+              <li key={item}>
+                {isExternalNavHref(to) ? (
+                  <a href={to} target="_blank" rel="noreferrer">
+                    {item}
+                  </a>
+                ) : (
+                  <Link to={to}>{item}</Link>
+                )}
+              </li>
+            );
+          })}
         </ul>
       </nav>
 
@@ -173,9 +188,21 @@ const Navigation = () => {
         <ul className={styles.mobileMenuList}>
           {mobileLinks.map(({ label, to }) => (
             <li key={`${label}-${to}`} className={styles.mobileMenuItem}>
-              <Link to={to} className={styles.mobileMenuLink} onClick={onMobileLinkClick(to)}>
-                {label}
-              </Link>
+              {isExternalNavHref(to) ? (
+                <a
+                  href={to}
+                  className={styles.mobileMenuLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  onClick={closeMenu}
+                >
+                  {label}
+                </a>
+              ) : (
+                <Link to={to} className={styles.mobileMenuLink} onClick={onMobileLinkClick(to)}>
+                  {label}
+                </Link>
+              )}
             </li>
           ))}
         </ul>
