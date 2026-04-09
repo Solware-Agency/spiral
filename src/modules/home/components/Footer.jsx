@@ -88,7 +88,7 @@ const Footer = () => {
             </Link>
           </div>
           <div className={`${styles.footerCol} ${styles.footerColRight}`}>
-            <h3 className={styles.footerLabel}>LETS CONNECT!</h3>
+            <h3 className={styles.footerLabel}>{"LET'S CONNECT!"}</h3>
             <div className={styles.footerConnectLinks}>
               <a
                 href="https://www.instagram.com/spiral.mstudio/"
