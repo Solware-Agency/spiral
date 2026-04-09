@@ -31,7 +31,7 @@ const AboutModule = () => {
         </div>
 
         <div className={styles.heroInner}>
-          <p className={styles.heroKicker}>WE ARE SPIRAL</p>
+          <h1 className={styles.heroKicker}>WE ARE SPIRAL</h1>
         </div>
       </section>
 

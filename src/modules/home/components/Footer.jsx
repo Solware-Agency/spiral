@@ -46,7 +46,7 @@ const Footer = () => {
       <div className={styles.footerInner}>
         <div className={styles.footerGrid}>
           <div className={styles.footerCol}>
-            <h3 className={styles.footerLabel}>NAVIGATION</h3>
+            <p className={styles.footerLabel}>NAVIGATION</p>
             <div className={styles.footerNavGrid}>
               <ul className={styles.footerNav}>
                 {navLeft.map((item) => (
@@ -89,7 +89,7 @@ const Footer = () => {
             </Link>
           </div>
           <div className={`${styles.footerCol} ${styles.footerColRight}`}>
-            <h3 className={styles.footerLabel}>{"LET'S CONNECT!"}</h3>
+            <p className={styles.footerLabel}>{"LET'S CONNECT!"}</p>
             <div className={styles.footerConnectLinks}>
               <a
                 href="https://www.instagram.com/spiral.mstudio/"

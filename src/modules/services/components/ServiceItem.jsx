@@ -26,9 +26,9 @@ const ServiceItem = ({ id, title, description, imageUrl, packageDetail }) => {
         <div className={styles.serviceInfo}>
           <div className={styles.serviceTop}>
             <span className={styles.serviceNumber}>{id}</span>
-            <h3 className={styles.serviceTitle} data-service-id={id}>
+            <h2 className={styles.serviceTitle} data-service-id={id}>
               {title}
-            </h3>
+            </h2>
           </div>
           <p className={styles.serviceDescription}>{description}</p>
         </div>
@@ -70,13 +70,13 @@ const ServiceItem = ({ id, title, description, imageUrl, packageDetail }) => {
             >
               <div className={styles.packageSlideHeader}>
                 <span className={styles.packageSlideKicker}>Package details</span>
-                <h2
+                <h3
                   id={`${detailsId}-heading`}
                   className={styles.packageSlideTitle}
                   data-service-id={id}
                 >
                   {title}
-                </h2>
+                </h3>
               </div>
               <div className={styles.packageSlideBody}>
                 {packageDetail.map((paragraph, i) => (

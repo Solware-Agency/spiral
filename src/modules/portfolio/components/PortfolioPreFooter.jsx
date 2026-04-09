@@ -23,11 +23,11 @@ const PortfolioPreFooter = () => {
         <div className={styles.preFooterTestimonialsInner}>
           <div className={styles.testimonialsLeft}>
             <span className={styles.testimonialsKicker}>FROM OUR CLIENTS</span>
-            <h3 className={styles.testimonialsTitle}>
+            <h2 className={styles.testimonialsTitle}>
               <span className={styles.testimonialsTitleLine1}>DON&apos;T JUST TAKE IT</span>
               <br />
               FROM US -
-            </h3>
+            </h2>
           </div>
 
           <div className={styles.testimonialsRight} aria-hidden>
