@@ -506,8 +506,6 @@
 .photoCarouselMarquee {
   display: flex;
   width: max-content;
-  will-change: transform;
-  animation: photoCarouselScroll var(--studio-marquee-duration, 26s) linear infinite;
 }
 
 .photoCarouselGroup {
@@ -542,9 +540,18 @@
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .photoCarouselMarquee {
+    will-change: transform;
+    animation: photoCarouselScroll var(--studio-marquee-duration, 26s) linear infinite;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .photoCarouselMarquee {
     animation: none;
+    transform: none;
+    will-change: auto;
   }
 
   .photoCarouselTrack {
@@ -570,8 +577,6 @@
   display: flex;
   width: max-content;
   padding-left: 2rem;
-  will-change: transform;
-  animation: galleryMarqueeScroll var(--studio-marquee-duration, 26s) linear infinite;
 }
 
 .galleryImage {
@@ -600,9 +605,28 @@
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .galleryMarquee {
+    will-change: transform;
+    animation: galleryMarqueeScroll var(--studio-marquee-duration, 26s) linear infinite;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .galleryMarquee {
     animation: none;
+    transform: none;
+    will-change: auto;
+  }
+
+  /* Una sola copia del texto; la otra solo servía al loop animado (WCAG 2.2.2) */
+  .galleryMarquee .gallerySeparator[aria-hidden='true'] {
+    display: none;
+  }
+
+  .galleryTrack {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -887,8 +911,6 @@
   display: flex;
   width: max-content;
   padding-left: 1rem;
-  will-change: transform;
-  animation: clientsMarqueeScroll var(--clients-marquee-duration, 36s) linear infinite;
 }
 
 .marqueeDragging {
@@ -959,9 +981,18 @@
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .clientsMarquee {
+    will-change: transform;
+    animation: clientsMarqueeScroll var(--clients-marquee-duration, 36s) linear infinite;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .clientsMarquee {
     animation: none;
+    transform: none;
+    will-change: auto;
   }
 }
 

@@ -449,8 +449,6 @@
   display: flex;
   width: max-content;
   padding-left: 1rem;
-  will-change: transform;
-  animation: aboutLogosMarqueeScroll 36s linear infinite;
 }
 
 .marqueeDragging {
@@ -521,9 +519,18 @@
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .logosMarquee {
+    will-change: transform;
+    animation: aboutLogosMarqueeScroll 36s linear infinite;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .logosMarquee {
     animation: none;
+    transform: none;
+    will-change: auto;
   }
 }
 
