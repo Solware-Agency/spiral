@@ -1,9 +1,18 @@
 /**
  * Reserva espacio antes de que Elfsight pinte el grid (reduce CLS).
  * Ajustar si cambiás el layout del widget en el panel de Elfsight.
+ *
+ * .shell lleva aria-hidden: el widget inyecta reglas CSS como texto en el DOM;
+ * ocultar el subárbol a AT evita que lectores y herramientas lean ese ruido.
+ * El enlace visible al perfil (@…) queda fuera de este componente.
  */
-.host {
+.shell {
   width: 100%;
   min-height: clamp(18rem, 42vw, 32rem);
   contain: layout;
+}
+
+.host {
+  width: 100%;
+  min-height: 100%;
 }

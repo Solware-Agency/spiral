@@ -45,11 +45,13 @@ const ElfsightInstagramFeed = ({ appId = DEFAULT_APP_ID }) => {
   }, [shouldLoad]);
 
   return (
-    <div
-      ref={hostRef}
-      className={`${styles.host} ${className}`}
-      data-elfsight-app-lazy=""
-    />
+    <div className={styles.shell} aria-hidden="true">
+      <div
+        ref={hostRef}
+        className={`${styles.host} ${className}`}
+        data-elfsight-app-lazy=""
+      />
+    </div>
   );
 };
 

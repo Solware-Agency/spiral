@@ -62,7 +62,7 @@ const BrandShowcase = () => {
         </div>
       </div>
 
-      <div className={styles.brandStrip}>
+      <div className={styles.brandStrip} role="region" aria-label="Instagram">
         <div className={styles.brandStripInner}>
           <a
             className={styles.brandHandle}
@@ -73,7 +73,7 @@ const BrandShowcase = () => {
             @SPIRAL.MSTUDIO
           </a>
         </div>
-        <div className={styles.brandGrid} aria-label="Instagram feed">
+        <div className={styles.brandGrid}>
           <ElfsightInstagramFeed />
         </div>
       </div>

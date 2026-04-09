@@ -4,7 +4,7 @@ import InstagramFeedGrid from '../../../components/InstagramFeedGrid';
 
 const InstagramGrid = () => {
   return (
-    <section className={styles.instagramSection}>
+    <section className={styles.instagramSection} aria-label="Instagram">
       <div className={styles.instagramTop}>
         <a
           className={styles.instagramHandle}
