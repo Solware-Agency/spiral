@@ -5,14 +5,15 @@
  * .shell lleva aria-hidden: el widget inyecta reglas CSS como texto en el DOM;
  * ocultar el subárbol a AT evita que lectores y herramientas lean ese ruido.
  * El enlace visible al perfil (@…) queda fuera de este componente.
+ * (Sin contain:layout: puede romper el layout interno del embed.)
  */
+/* min-height en ambos: el % en el host falla si el padre solo tiene min-height (altura usada = auto → % ≈ 0 y el IO no ve intersección). */
 .shell {
   width: 100%;
   min-height: clamp(18rem, 42vw, 32rem);
-  contain: layout;
 }
 
 .host {
   width: 100%;
-  min-height: 100%;
+  min-height: clamp(18rem, 42vw, 32rem);
 }

@@ -18,11 +18,13 @@ const ensurePlatformScript = () => {
 
 const ElfsightInstagramFeed = ({ appId = DEFAULT_APP_ID }) => {
   const className = useMemo(() => `elfsight-app-${appId}`, [appId]);
+  const shellRef = useRef(null);
   const hostRef = useRef(null);
   const [shouldLoad, setShouldLoad] = useState(false);
 
   useEffect(() => {
-    const el = hostRef.current;
+    /* Observar el shell (tiene min-height real). El host interno con min-height % podía quedar en ~0 px y nunca intersectar. */
+    const el = shellRef.current;
     if (!el || typeof IntersectionObserver === 'undefined') {
       queueMicrotask(() => setShouldLoad(true));
       return () => {};
@@ -45,7 +47,7 @@ const ElfsightInstagramFeed = ({ appId = DEFAULT_APP_ID }) => {
   }, [shouldLoad]);
 
   return (
-    <div className={styles.shell} aria-hidden="true">
+    <div ref={shellRef} className={styles.shell} aria-hidden="true">
       <div
         ref={hostRef}
         className={`${styles.host} ${className}`}
