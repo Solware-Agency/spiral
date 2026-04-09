@@ -1,0 +1,9 @@
+/**
+ * Reserva espacio antes de que Elfsight pinte el grid (reduce CLS).
+ * Ajustar si cambiás el layout del widget en el panel de Elfsight.
+ */
+.host {
+  width: 100%;
+  min-height: clamp(18rem, 42vw, 32rem);
+  contain: layout;
+}
