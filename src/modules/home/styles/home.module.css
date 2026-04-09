@@ -365,7 +365,23 @@
 .heroTitle {
   margin: 0;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
+  gap: clamp(0.65rem, 1.8vh, 1.1rem);
+  text-align: center;
+}
+
+.heroTitleText {
+  font-family: var(--font-primary);
+  font-size: clamp(0.68rem, 1.15vw, 0.85rem);
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.94);
+  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.5);
+  max-width: min(90vw, 36rem);
+  line-height: 1.35;
 }
 
 .heroLogoImage {

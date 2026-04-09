@@ -13,10 +13,11 @@ const Hero = () => {
           <img
             className={styles.heroLogoImage}
             src={SPIRAL_LOGO_WHITE}
-            alt="SPIRAL Marketing Studio"
+            alt=""
             loading="eager"
             decoding="async"
           />
+          <span className={styles.heroTitleText}>SPIRAL Marketing Studio</span>
         </h1>
       </div>
     </section>
