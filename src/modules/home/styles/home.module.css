@@ -300,7 +300,11 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/images/optimized/DSC01989_960.jpg') 30% 22% / cover no-repeat;
+  background-color: var(--photo-bg-underlay);
+  background-image: url('/images/optimized/DSC01989_960.jpg');
+  background-position: 30% 22%;
+  background-size: cover;
+  background-repeat: no-repeat;
   opacity: 0.5;
   filter: grayscale(40%) brightness(0.5);
 }
@@ -632,7 +636,7 @@
 
 /* ----- Our Services ----- */
 .ourServices {
-  background: #000;
+  background-color: #000;
   padding: var(--spacing-xl) 2rem;
 }
 
@@ -750,7 +754,7 @@
   display: flex;
   align-items: stretch;
   justify-content: center;
-  background: #0b0b0b;
+  background-color: #000;
   overflow: hidden;
 }
 
@@ -758,7 +762,11 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/images/optimized/DSC01973_960.jpg') 50% 21% / cover no-repeat;
+  background-color: var(--photo-bg-underlay);
+  background-image: url('/images/optimized/DSC01973_960.jpg');
+  background-position: 50% 21%;
+  background-size: cover;
+  background-repeat: no-repeat;
   opacity: 1;
 }
 
@@ -998,7 +1006,7 @@
 
 /* ----- Instagram ----- */
 .instagramSection {
-  background: #000;
+  background-color: #000;
   padding: 0;
   border-top: 1px solid rgba(255, 255, 255, 0.14);
 }

@@ -1,5 +1,7 @@
+@import '../../../styles/variables.css';
+
 .page {
-  background: #000;
+  background-color: #000;
   color: #fff;
 }
 
@@ -9,6 +11,7 @@
   display: grid;
   place-items: center;
   overflow: hidden;
+  background-color: var(--photo-bg-underlay);
   background-position: 30% 35%;
   background-size: cover;
   background-repeat: no-repeat;
@@ -596,7 +599,7 @@
 .carouselWrap {
   width: 100vw;
   margin-left: calc(50% - 50vw);
-  background: #000;
+  background-color: #000;
   margin-top: clamp(1.75rem, 5vh, 3.25rem);
   padding: clamp(1.25rem, 3.5vw, 2.25rem) clamp(1rem, 4vw, 3.25rem)
     clamp(1.25rem, 3.5vw, 2.25rem) clamp(1rem, 4vw, 3.25rem);
@@ -612,7 +615,7 @@
   position: relative;
   width: 100%;
   height: clamp(17rem, 44vh, 40rem);
-  background-color: #0b0b0b;
+  background-color: var(--photo-bg-underlay);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -624,7 +627,7 @@
 .instagram {
   width: 100vw;
   margin-left: calc(50% - 50vw);
-  background: #000;
+  background-color: #000;
 }
 
 .instagramTop {

@@ -1,12 +1,14 @@
+@import '../../../styles/variables.css';
+
 .portfolioSection {
-  background: #000;
+  background-color: #000;
   padding: 0;
 }
 
 .hero {
   position: relative;
   min-height: clamp(18rem, 42vh, 28rem);
-  background: #0b0b0b;
+  background-color: #000;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -17,7 +19,11 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/images/optimized/DSC01973_960.jpg') 50% 21% / cover no-repeat;
+  background-color: var(--photo-bg-underlay);
+  background-image: url('/images/optimized/DSC01973_960.jpg');
+  background-position: 50% 21%;
+  background-size: cover;
+  background-repeat: no-repeat;
   opacity: 0.9;
   filter: saturate(0.95) contrast(1.05) brightness(0.7);
 }
@@ -190,7 +196,7 @@
 }
 
 .mediaBlockVideos {
-  background: #000;
+  background-color: #000;
   /* More height for the heading band */
   --videos-heading-h: calc(clamp(120px, 14vw, 220px) + 10px);
   border-radius: 28px 28px 0 0;
@@ -206,7 +212,7 @@
 .mediaBlockPhotos {
   /* Black band + floating heading between Videos and Photos */
   --photos-heading-h: calc(clamp(120px, 14vw, 220px) + 150px);
-  background: #000;
+  background-color: #000;
   border-radius: 0 0 28px 28px;
   border-top: none;
   padding-top: var(--photos-heading-h);
@@ -231,7 +237,11 @@
   content: '';
   position: absolute;
   inset: var(--photos-heading-h) 0 0 0;
-  background: url('/images/optimized/DSC02285_960.jpg') center/cover no-repeat;
+  background-color: var(--photo-bg-underlay);
+  background-image: url('/images/optimized/DSC02285_960.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
   filter: grayscale(1) contrast(1.05) brightness(0.9);
   opacity: 0.9;
   z-index: 0;
@@ -636,7 +646,7 @@
 .preFooterCta {
   position: relative;
   min-height: clamp(20rem, 46vh, 28rem);
-  background: #111;
+  background-color: #000;
   overflow: hidden;
   display: grid;
   place-items: center;
@@ -646,7 +656,11 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: url('/images/optimized/DSC09041_960.jpg') 50% 29% / cover no-repeat;
+  background-color: var(--photo-bg-underlay);
+  background-image: url('/images/optimized/DSC09041_960.jpg');
+  background-position: 50% 29%;
+  background-size: cover;
+  background-repeat: no-repeat;
   filter: saturate(0.85) contrast(1.05) brightness(0.68);
   transform: scale(1.02);
 }
