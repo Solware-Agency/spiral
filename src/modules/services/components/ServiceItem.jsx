@@ -5,6 +5,8 @@ import styles from '../styles/services.module.css';
 
 const SERVICE_IMAGE_SIZES = '(max-width: 900px) 100vw, min(42vw, 720px)';
 
+const titleForPackagesPanel = (t) => t.replace(/\n/g, ' ');
+
 const ServiceItem = ({ id, title, description, imageUrl, packageDetail }) => {
   const [isPackageOpen, setIsPackageOpen] = useState(false);
   const detailsId = useId();
@@ -75,7 +77,7 @@ const ServiceItem = ({ id, title, description, imageUrl, packageDetail }) => {
                   className={styles.packageSlideTitle}
                   data-service-id={id}
                 >
-                  {title}
+                  {titleForPackagesPanel(title)}
                 </h3>
               </div>
               <div className={styles.packageSlideBody}>

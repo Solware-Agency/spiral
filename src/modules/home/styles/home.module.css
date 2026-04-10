@@ -636,8 +636,10 @@
 
 /* ----- Our Services ----- */
 .ourServices {
+  --our-services-hpad: 2rem;
   background-color: #000;
-  padding: var(--spacing-xl) 2rem;
+  padding: var(--spacing-xl) var(--our-services-hpad);
+  overflow-x: clip;
 }
 
 .ourServicesInner {
@@ -672,12 +674,31 @@
 }
 
 .serviceRow {
+  box-sizing: border-box;
+  position: relative;
   padding: clamp(1.6rem, 4vh, 2.35rem) 0;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: none;
   display: grid;
   grid-template-columns: 64px minmax(0, 1fr) auto;
   align-items: center;
   column-gap: clamp(1.25rem, 4vw, 3rem);
+}
+
+.serviceRow::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 100vw;
+  max-width: 100vw;
+  height: 1px;
+  background: #fff;
+  pointer-events: none;
+}
+
+.servicesList > .serviceRow:last-child::after {
+  display: none;
 }
 
 .serviceNumber {
@@ -1407,7 +1428,8 @@
 
 @media (max-width: 600px) {
   .ourServices {
-    padding: clamp(1.9rem, 7vw, 2.6rem) 1rem;
+    --our-services-hpad: 1rem;
+    padding: clamp(1.9rem, 7vw, 2.6rem) var(--our-services-hpad);
   }
 
   .servicesHeader {
