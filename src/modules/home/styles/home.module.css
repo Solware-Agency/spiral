@@ -1327,18 +1327,19 @@
   /* Keep Recent Work composition, but invert title offsets on small screens */
   .recentWorkTitle {
     letter-spacing: 0.02em;
+    font-size: calc(clamp(5.25rem, 12.5vw, 14.25rem) - 30px);
   }
 
   .recentWorkTitleTop {
     text-align: left;
     margin-right: 0;
-    margin-left: clamp(0px, 12vw, 110px);
+    margin-left: calc(clamp(0px, 12vw, 110px) + 10px);
   }
 
   .recentWorkTitleBottom {
     text-align: right;
     margin-left: 0;
-    margin-right: clamp(0px, 12vw, 110px);
+    margin-right: calc(clamp(0px, 12vw, 110px) - 5px);
     margin-top: -0.08em;
   }
 

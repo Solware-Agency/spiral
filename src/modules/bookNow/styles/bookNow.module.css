@@ -178,9 +178,11 @@
 
 .divider {
   height: 1px;
-  background: rgba(0, 0, 0, 0.12);
+  background: #000;
   margin: clamp(1rem, 2.6vw, 1.35rem) 0;
-  width: min(920px, 100%);
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  max-width: none;
 }
 
 .bookingSlide {
@@ -192,10 +194,14 @@
     grid-template-rows 520ms cubic-bezier(0.2, 0.8, 0.2, 1),
     opacity 260ms cubic-bezier(0.2, 0.8, 0.2, 1),
     transform 260ms cubic-bezier(0.2, 0.8, 0.2, 1);
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  max-width: none;
+  border-top: 1px solid #000;
+  border-bottom: 1px solid #000;
   background: #b5b5b5;
   will-change: grid-template-rows, opacity, transform;
+  box-sizing: border-box;
 }
 
 .bookingSlideOpen {
@@ -207,22 +213,14 @@
 .bookingSlideInner {
   min-height: 0;
   overflow: hidden;
+  /* Extra inset (~80px máx.) para acercar el contenido al centro respecto al ancho completo */
+  --booking-content-pad-x: calc(
+    clamp(1.35rem, 4.6vw, 3.15rem) + clamp(0.75rem, 5vw, 5rem)
+  );
 }
 
 .bookingSlideContent {
-  padding: 2.15rem clamp(1.35rem, 4.6vw, 3.15rem) 2.75rem;
-}
-
-.bookingTopTitle {
-  font-family: var(--font-mono);
-  font-size: clamp(0.72rem, 1.15vw, 0.85rem);
-  letter-spacing: 0.26em;
-  text-transform: uppercase;
-  color: rgba(20, 20, 20, 0.78);
-  text-align: center;
-  padding: 0.65rem 0 1.35rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
-  margin: 0 0 1.35rem 0;
+  padding: 2.15rem var(--booking-content-pad-x) 2.75rem;
 }
 
 .bookingMeta {
@@ -288,14 +286,33 @@
 }
 
 .bookingPickers {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1.35fr;
   gap: clamp(1rem, 2.4vw, 1.6rem);
   align-items: start;
   padding: 1.05rem 0 1.45rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   margin-bottom: 1.5rem;
+}
+
+.bookingPickers::before,
+.bookingPickers::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 1px;
+  background: #000;
+  pointer-events: none;
+}
+
+.bookingPickers::before {
+  top: 0;
+}
+
+.bookingPickers::after {
+  bottom: 0;
 }
 
 .calendarCard,
@@ -441,10 +458,11 @@
 }
 
 .infoBlock {
-  padding-top: 0.35rem;
+  padding: 0.35rem var(--booking-content-pad-x) 0;
 }
 
 .infoTitle {
+  position: relative;
   font-family: var(--font-mono);
   font-size: clamp(0.72rem, 1.15vw, 0.85rem);
   letter-spacing: 0.26em;
@@ -452,9 +470,27 @@
   color: rgba(20, 20, 20, 0.78);
   text-align: center;
   padding: 1.25rem 0 1.35rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   margin-bottom: 1.35rem;
+}
+
+.infoTitle::before,
+.infoTitle::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  height: 1px;
+  background: #000;
+  pointer-events: none;
+}
+
+.infoTitle::before {
+  top: 0;
+}
+
+.infoTitle::after {
+  bottom: 0;
 }
 
 .infoForm {

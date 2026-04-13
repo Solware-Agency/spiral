@@ -194,18 +194,17 @@ const BookingSlide = React.memo(function BookingSlide({
   calendarLink,
 }) {
   const isOpen = activePlan === plan;
-  const planTitle = plan === 'weekday' ? 'STUDIO RENTAL WEEKDAY' : 'STUDIO RENTAL WEEKEND';
 
   return (
     <section
       className={`${styles.bookingSlide} ${isOpen ? styles.bookingSlideOpen : ''}`}
-      aria-label="Booking details"
+      aria-label={
+        plan === 'weekday' ? 'Studio rental weekday booking details' : 'Studio rental weekend booking details'
+      }
       aria-hidden={!isOpen}
     >
       <div className={styles.bookingSlideInner}>
         <div className={styles.bookingSlideContent}>
-          <div className={styles.bookingTopTitle}>{planTitle}</div>
-
           <div className={styles.bookingMeta}>
             <div className={styles.bookingMetaLeft}>
               <label className={styles.hoursRow}>
