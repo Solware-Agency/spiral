@@ -15,43 +15,31 @@ const ClientMarquee = () => {
         <div className={`${styles.logosMarquee} ${isDragging ? styles.marqueeDragging : ''}`}>
           <div ref={contentRef} className={styles.logosMarqueeDrag} style={dragStyle}>
             <div className={styles.logosGroup}>
-              {clientLogos.map((logo) => {
-                const href = logo.href ?? logo.instagram;
-                const sharedProps = {
-                  className: styles.logoItem,
-                  'aria-label': logo.alt,
-                  style: {
+              {clientLogos.map((logo) => (
+                <span
+                  key={logo.src}
+                  role="img"
+                  className={styles.logoItem}
+                  aria-label={logo.alt}
+                  style={{
                     '--client-logo-url': `url("${logo.src}")`,
                     '--client-logo-scale': logo.scale ?? 1,
-                  },
-                };
-                return (
-                  <a key={logo.src} {...sharedProps} href={href} target="_blank" rel="noreferrer" />
-                );
-              })}
+                  }}
+                />
+              ))}
             </div>
             <div className={styles.logosGroup} aria-hidden="true">
-              {clientLogos.map((logo) => {
-                const href = logo.href ?? logo.instagram;
-                const sharedProps = {
-                  className: styles.logoItem,
-                  tabIndex: -1,
-                  'aria-hidden': 'true',
-                  style: {
+              {clientLogos.map((logo) => (
+                <span
+                  key={`${logo.src}-dup`}
+                  className={styles.logoItem}
+                  aria-hidden="true"
+                  style={{
                     '--client-logo-url': `url("${logo.src}")`,
                     '--client-logo-scale': logo.scale ?? 1,
-                  },
-                };
-                return (
-                  <a
-                    key={`${logo.src}-dup`}
-                    {...sharedProps}
-                    href={href}
-                    target="_blank"
-                    rel="noreferrer"
-                  />
-                );
-              })}
+                  }}
+                />
+              ))}
             </div>
           </div>
         </div>

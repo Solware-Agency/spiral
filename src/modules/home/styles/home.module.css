@@ -697,6 +697,19 @@
   pointer-events: none;
 }
 
+.servicesList > .serviceRow:first-child::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 100vw;
+  max-width: 100vw;
+  height: 1px;
+  background: #fff;
+  pointer-events: none;
+}
+
 .servicesList > .serviceRow:last-child::after {
   display: none;
 }
@@ -724,17 +737,45 @@
   white-space: nowrap;
 }
 
+.serviceTitleStack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.06em;
+  white-space: normal;
+  line-height: 1;
+}
+
+.serviceTitleLine {
+  display: block;
+  white-space: nowrap;
+}
+
 .serviceTitle[data-service-id='01'] {
   font-family: var(--font-loverica, var(--font-display));
   max-width: none;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
+}
+
+.serviceTitle[data-service-id='01'] .serviceTitleLine {
+  font-family: inherit;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 0.88;
 }
 
 .serviceTitle[data-service-id='02'] {
   font-family: 'Anonymous Pro', var(--font-mono);
   max-width: none;
-  letter-spacing: 0.02em;
-  word-spacing: normal;
+  letter-spacing: 0;
+}
+
+.serviceTitle[data-service-id='02'] .serviceTitleLine {
+  font-family: 'Anonymous Pro', var(--font-mono);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  line-height: 1.02;
+  text-transform: uppercase;
 }
 
 .serviceTitle[data-service-id='03'] {
@@ -916,6 +957,7 @@
 .clientsSection {
   background: #6C1622;
   --clients-marquee-duration: 36s;
+  --client-logo-gap: clamp(1.25rem, 2.2vw, 1.75rem);
   padding: clamp(0.75rem, 1.9vw, 1.15rem) 0;
   min-height: 160px;
   display: flex;
@@ -939,7 +981,7 @@
 .clientsMarquee {
   display: flex;
   width: max-content;
-  padding-left: 1rem;
+  padding-left: var(--client-logo-gap);
 }
 
 .marqueeDragging {
@@ -948,6 +990,7 @@
 
 .clientsMarqueeDrag {
   display: flex;
+  gap: var(--client-logo-gap);
   transform: translateX(var(--marquee-drag-x, 0px));
   will-change: transform;
 }
@@ -955,8 +998,7 @@
 .clientsGroup {
   display: flex;
   align-items: center;
-  gap: clamp(0.75rem, 1.8vw, 1.6rem);
-  padding-right: 1rem;
+  gap: var(--client-logo-gap);
 }
 
 .clientLogoItem {
@@ -965,22 +1007,9 @@
   flex-shrink: 0;
   position: relative;
   user-select: none;
-  pointer-events: auto;
-  cursor: pointer;
+  pointer-events: none;
   display: block;
-  text-decoration: none;
   border-radius: 6px;
-  outline: none;
-  transition: transform 160ms ease, opacity 160ms ease;
-}
-
-.clientLogoItem:hover {
-  opacity: 0.92;
-}
-
-.clientLogoItem:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.85);
-  outline-offset: 4px;
 }
 
 .clientLogoItem::before {
@@ -1312,6 +1341,12 @@
     white-space: normal;
     overflow-wrap: anywhere;
     word-break: break-word;
+  }
+
+  .serviceTitleStack .serviceTitleLine {
+    white-space: nowrap;
+    overflow-wrap: normal;
+    word-break: normal;
   }
 
   .serviceTitle[data-service-id='03'] {
