@@ -463,12 +463,12 @@
 
   .mediaBlockVideos .mediaHeading {
     font-size: calc(clamp(2.4rem, 12vw, 4.2rem) + 64px);
-    transform: translateY(-112px);
+    transform: translateY(-82px);
   }
 
   .mediaBlockPhotos .mediaHeading {
     font-size: calc(clamp(2.4rem, 12vw, 4.2rem) + 64px);
-    transform: translateY(55px);
+    transform: translateY(35px);
   }
 
   .mediaBlockVideos .mediaHeading + .mediaRow {
@@ -598,17 +598,6 @@
 }
 
 @media (max-width: 420px) {
-  .mediaBlockPhotos {
-    --photos-heading-h: calc(clamp(50px, 8.5vw, 72px) + 8px);
-    margin-top: 0;
-  }
-
-  .mediaBlockVideos {
-    padding-top: calc(var(--videos-heading-h) - 62px);
-    padding-bottom: 0;
-    margin-bottom: -22px;
-  }
-
   .mediaRow {
     padding: 0.95rem 0.75rem 1.15rem 0.75rem;
   }
@@ -619,16 +608,6 @@
 
   .mediaBlockVideos .mediaGridVideos {
     gap: 0.7rem;
-  }
-
-  .mediaBlockVideos .mediaHeading {
-    font-size: calc(clamp(2rem, 12.5vw, 3.4rem) + 34px);
-    transform: translateY(-82px);
-  }
-
-  .mediaBlockPhotos .mediaHeading {
-    font-size: calc(clamp(2rem, 12.5vw, 3.4rem) + 34px);
-    transform: translateY(29px);
   }
 
   .mediaGridPhotos {

@@ -1271,6 +1271,31 @@
   margin: 0;
 }
 
+@media (max-width: 1024px) {
+  .recentWorkContent {
+    padding: 2.5rem 1.25rem;
+    gap: 1.75rem;
+  }
+
+  .recentWorkTitle {
+    letter-spacing: 0.02em;
+    font-size: calc(5.25rem - 30px);
+  }
+
+  .recentWorkTitleTop {
+    text-align: left;
+    margin-right: 0;
+    margin-left: 73px;
+  }
+
+  .recentWorkTitleBottom {
+    text-align: right;
+    margin-left: 0;
+    margin-right: 88px;
+    margin-top: -0.08em;
+  }
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .header {
@@ -1357,25 +1382,6 @@
     grid-column: 1 / -1;
     justify-self: center;
     padding: 0.7rem 1.7rem;
-  }
-
-  /* Keep Recent Work composition, but invert title offsets on small screens */
-  .recentWorkTitle {
-    letter-spacing: 0.02em;
-    font-size: calc(clamp(5.25rem, 12.5vw, 14.25rem) - 30px);
-  }
-
-  .recentWorkTitleTop {
-    text-align: left;
-    margin-right: 0;
-    margin-left: calc(clamp(0px, 12vw, 110px) + 10px);
-  }
-
-  .recentWorkTitleBottom {
-    text-align: right;
-    margin-left: 0;
-    margin-right: calc(clamp(0px, 12vw, 110px) - 5px);
-    margin-top: -0.08em;
   }
 
   .footerGrid {
