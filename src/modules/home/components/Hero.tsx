@@ -1,6 +1,6 @@
 import React from 'react';
-import LogoPicture from '../../../components/LogoPicture.jsx';
-import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources.js';
+import LogoPicture from '../../../components/LogoPicture';
+import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
 import styles from '../styles/home.module.css';
 
 const Hero = () => {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { metaForPathname } from '../seo/routeMeta.js';
-import { SITE_ORIGIN } from '../seo/siteOrigin.js';
+import { metaForPathname } from '../seo/routeMeta';
+import { SITE_ORIGIN } from '../seo/siteOrigin';
 
 function upsertMetaByName(name, content) {
   let el = document.querySelector(`meta[name="${name}"]`);

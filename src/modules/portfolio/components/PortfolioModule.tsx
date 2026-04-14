@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
-import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
+import ResponsiveImg from '../../../components/ResponsiveImg';
 import styles from '../styles/portfolio.module.css';
-import { portfolioPhotosRows, portfolioVideosRows } from '../data/portfolioData';
+import {
+  portfolioPhotosRows,
+  portfolioVideosRows,
+  type PortfolioPhotoItem,
+  type PortfolioVideoItem,
+  type PortfolioVideoRow,
+} from '../data/portfolioData';
 
 const MEDIA_THUMB_SIZES = '(max-width: 640px) 100vw, (max-width: 1100px) 50vw, min(36vw, 720px)';
 
@@ -13,21 +19,21 @@ function cleanedPhotoCaption(title) {
     .trim();
 }
 
-function photoImageAlt(item) {
+function photoImageAlt(item: PortfolioPhotoItem) {
   if (item.alt) return item.alt;
   const caption = cleanedPhotoCaption(item.title);
   if (caption) return `Portfolio photograph: ${caption}`;
   return 'Photography sample from Spiral portfolio';
 }
 
-function videoFallbackImageAlt(item, row) {
+function videoFallbackImageAlt(item: PortfolioVideoItem, row: PortfolioVideoRow) {
   if (item.alt) return item.alt;
   if (row.label) return `${row.label} — marketing video preview from Spiral portfolio`;
   return 'Video preview from Spiral portfolio';
 }
 
 /** Carátula: explícita, imagen auxiliar del ítem, o mismo nombre que el .mp4 con extensión .jpg */
-function videoPosterUrl(item) {
+function videoPosterUrl(item: PortfolioVideoItem) {
   if (item.posterSrc) return item.posterSrc;
   if (item.src || item.imageUrl) return item.src || item.imageUrl;
   if (item.videoSrc && /\.mp4$/i.test(item.videoSrc)) {
@@ -36,7 +42,15 @@ function videoPosterUrl(item) {
   return null;
 }
 
-function PortfolioVideoThumb({ item, row, layoutIdx }) {
+function PortfolioVideoThumb({
+  item,
+  row,
+  layoutIdx,
+}: {
+  item: PortfolioVideoItem & { videoSrc: string };
+  row: PortfolioVideoRow;
+  layoutIdx: number;
+}) {
   const [videoBroken, setVideoBroken] = useState(false);
   const [posterBroken, setPosterBroken] = useState(false);
   const [posterImgBroken, setPosterImgBroken] = useState(false);
@@ -156,7 +170,12 @@ const PortfolioModule = () => {
               <div className={styles.mediaGridVideos}>
                 {row.items.map((item, idx) =>
                   item.videoSrc ? (
-                    <PortfolioVideoThumb key={item.id} item={item} row={row} layoutIdx={idx + 1} />
+                    <PortfolioVideoThumb
+                      key={item.id}
+                      item={item as PortfolioVideoItem & { videoSrc: string }}
+                      row={row}
+                      layoutIdx={idx + 1}
+                    />
                   ) : item.src || item.imageUrl ? (
                     <div
                       key={item.id}

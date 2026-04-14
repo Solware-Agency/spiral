@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
-import { LOGO_OPTIMIZE_ENTRIES, LOGO_WEBP_WIDTHS } from '../src/data/logoSources.js';
+import { LOGO_OPTIMIZE_ENTRIES, LOGO_WEBP_WIDTHS } from '../src/data/logoSources.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');

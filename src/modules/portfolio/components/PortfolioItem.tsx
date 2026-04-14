@@ -1,5 +1,5 @@
 import React from 'react';
-import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
+import ResponsiveImg from '../../../components/ResponsiveImg';
 import styles from '../styles/portfolio.module.css';
 
 const CARD_IMAGE_SIZES = '(max-width: 900px) 100vw, min(33vw, 520px)';

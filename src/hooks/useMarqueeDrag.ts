@@ -1,11 +1,12 @@
+import type { CSSProperties, MouseEvent, PointerEvent } from 'react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 const DRAG_START_PX = 10;
 const BLOCK_CLICK_AFTER_DRAG_MS = 450;
 
 export default function useMarqueeDrag() {
-  const contentRef = useRef(null);
-  const cycleWidthRef = useRef(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const cycleWidthRef = useRef<number | null>(null);
 
   const [dragX, setDragX] = useState(0);
   const dragXRef = useRef(0);
@@ -14,8 +15,8 @@ export default function useMarqueeDrag() {
   const isDraggingRef = useRef(false);
 
   const isPointerDownRef = useRef(false);
-  const pointerIdRef = useRef(null);
-  const captureElRef = useRef(null);
+  const pointerIdRef = useRef<number | null>(null);
+  const captureElRef = useRef<HTMLElement | null>(null);
   const startRef = useRef({ x: 0, y: 0, offset: 0 });
   const didDragRef = useRef(false);
   const lastDragAtRef = useRef(-Infinity);
@@ -30,7 +31,7 @@ export default function useMarqueeDrag() {
     if (Number.isFinite(cycle) && cycle > 0) cycleWidthRef.current = cycle;
   }, []);
 
-  const commit = useCallback((nextX) => {
+  const commit = useCallback((nextX: number) => {
     if (cycleWidthRef.current == null) updateCycleWidth();
     const cycle = cycleWidthRef.current;
     let clamped = nextX;
@@ -48,7 +49,7 @@ export default function useMarqueeDrag() {
     });
   }, [updateCycleWidth]);
 
-  const onPointerDown = useCallback((e) => {
+  const onPointerDown = useCallback((e: PointerEvent<HTMLDivElement>) => {
     if (e.button != null && e.button !== 0) return;
     isPointerDownRef.current = true;
     isDraggingRef.current = false;
@@ -61,7 +62,7 @@ export default function useMarqueeDrag() {
   }, []);
 
   const onPointerMove = useCallback(
-    (e) => {
+    (e: PointerEvent<HTMLDivElement>) => {
       if (!isPointerDownRef.current) return;
       const dx = e.clientX - startRef.current.x;
       const dy = e.clientY - startRef.current.y;
@@ -92,7 +93,7 @@ export default function useMarqueeDrag() {
     [commit]
   );
 
-  const endDrag = useCallback((e) => {
+  const endDrag = useCallback((e: PointerEvent<HTMLDivElement>) => {
     if (!isPointerDownRef.current) return;
     isPointerDownRef.current = false;
     if (isDraggingRef.current) {
@@ -111,7 +112,7 @@ export default function useMarqueeDrag() {
     captureElRef.current = null;
   }, []);
 
-  const onClickCapture = useCallback((e) => {
+  const onClickCapture = useCallback((e: MouseEvent) => {
     const now = performance.now();
     if (now - lastDragAtRef.current > BLOCK_CLICK_AFTER_DRAG_MS) return;
     e.preventDefault();
@@ -129,7 +130,10 @@ export default function useMarqueeDrag() {
     [endDrag, onClickCapture, onPointerDown, onPointerMove]
   );
 
-  const dragStyle = useMemo(() => ({ '--marquee-drag-x': `${dragX}px` }), [dragX]);
+  const dragStyle = useMemo(
+    () => ({ '--marquee-drag-x': `${dragX}px` }) as CSSProperties,
+    [dragX]
+  );
 
   return { bind, dragStyle, isDragging, contentRef };
 }

@@ -41,7 +41,7 @@ export const ROUTE_META = {
   },
 };
 
-export function metaForPathname(pathname) {
+export function metaForPathname(pathname: string) {
   const key = (pathname || '/').replace(/\/+$/, '') || '/';
-  return ROUTE_META[key] || ROUTE_META['/'];
+  return ROUTE_META[key as keyof typeof ROUTE_META] ?? ROUTE_META['/'];
 }

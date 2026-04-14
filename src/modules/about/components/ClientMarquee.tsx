@@ -1,5 +1,6 @@
 import React from 'react';
-import { clientLogos } from '../../../data/clientLogos.js';
+import type { CSSProperties } from 'react';
+import { clientLogos } from '../../../data/clientLogos';
 import styles from '../styles/about.module.css';
 import useMarqueeDrag from '../../../hooks/useMarqueeDrag';
 
@@ -13,7 +14,11 @@ const ClientMarquee = () => {
         {...bind}
       >
         <div className={`${styles.logosMarquee} ${isDragging ? styles.marqueeDragging : ''}`}>
-          <div ref={contentRef} className={styles.logosMarqueeDrag} style={dragStyle}>
+          <div
+            ref={contentRef}
+            className={styles.logosMarqueeDrag}
+            style={dragStyle as CSSProperties}
+          >
             <div className={styles.logosGroup}>
               {clientLogos.map((logo) => (
                 <span
@@ -21,10 +26,12 @@ const ClientMarquee = () => {
                   role="img"
                   className={styles.logoItem}
                   aria-label={logo.alt}
-                  style={{
-                    '--client-logo-url': `url("${logo.src}")`,
-                    '--client-logo-scale': logo.scale ?? 1,
-                  }}
+                  style={
+                    {
+                      '--client-logo-url': `url("${logo.src}")`,
+                      '--client-logo-scale': logo.scale ?? 1,
+                    } as CSSProperties
+                  }
                 />
               ))}
             </div>
@@ -34,10 +41,12 @@ const ClientMarquee = () => {
                   key={`${logo.src}-dup`}
                   className={styles.logoItem}
                   aria-hidden="true"
-                  style={{
-                    '--client-logo-url': `url("${logo.src}")`,
-                    '--client-logo-scale': logo.scale ?? 1,
-                  }}
+                  style={
+                    {
+                      '--client-logo-url': `url("${logo.src}")`,
+                      '--client-logo-scale': logo.scale ?? 1,
+                    } as CSSProperties
+                  }
                 />
               ))}
             </div>

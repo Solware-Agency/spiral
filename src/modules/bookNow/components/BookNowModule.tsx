@@ -1,18 +1,68 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import LogoPicture from '../../../components/LogoPicture.jsx';
-import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources.js';
+import type { CSSProperties, Dispatch, SetStateAction } from 'react';
+import LogoPicture from '../../../components/LogoPicture';
+import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
 import styles from '../styles/bookNow.module.css';
 import ElfsightInstagramFeed from '../../../components/ElfsightInstagramFeed';
 
-const bgSet = (id, w) =>
+type Plan = 'weekday' | 'weekend';
+
+type BookingFormValues = {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  email: string;
+};
+
+type BookingValidationErrors = Partial<{
+  activePlan: string;
+  selectedDate: string;
+  selectedTime: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+}>;
+
+type BookingSlideProps = {
+  plan: Plan;
+  activePlan: Plan | null;
+  hours: number;
+  setHours: Dispatch<SetStateAction<number>>;
+  money: Intl.NumberFormat;
+  price: number;
+  month: Date;
+  setMonth: Dispatch<SetStateAction<Date>>;
+  monthWeeks: (Date | null)[][];
+  selectedDate: Date | null;
+  setSelectedDate: Dispatch<SetStateAction<Date | null>>;
+  selectedTime: string | null;
+  setSelectedTime: Dispatch<SetStateAction<string | null>>;
+  timeSlots: string[];
+  availableTimes: string[] | null;
+  isLoadingTimes: boolean;
+  availableDays: Record<string, boolean> | null;
+  isLoadingDays: boolean;
+  showErrors: boolean;
+  validation: { errors: BookingValidationErrors; isValid: boolean };
+  formValues: BookingFormValues;
+  setFormValues: Dispatch<SetStateAction<BookingFormValues>>;
+  onContinue: () => void;
+  isSubmitting: boolean;
+  submitError: string | null;
+  calendarLink: string | null;
+};
+
+const bgSet = (id: string, w: number) =>
   `image-set(url("/images/optimized/${id}_${w}.webp") type("image/webp"), url("/images/optimized/${id}_${w}.jpg") type("image/jpeg"))`;
-const bgVars = (id) => ({
-  '--bg-960': bgSet(id, 960),
-  '--bg-1280': bgSet(id, 1280),
-  '--bg-1600': bgSet(id, 1600),
-  '--bg-2560': bgSet(id, 2560),
-  '--bg-3200': bgSet(id, 3200),
-});
+const bgVars = (id: string): CSSProperties =>
+  ({
+    '--bg-960': bgSet(id, 960),
+    '--bg-1280': bgSet(id, 1280),
+    '--bg-1600': bgSet(id, 1600),
+    '--bg-2560': bgSet(id, 2560),
+    '--bg-3200': bgSet(id, 3200),
+  }) as CSSProperties;
 
 /** Single static hero image below the booking panel (no carousel). */
 const STUDIO_GALLERY_IMAGE = '/images/optimized/DSC02380_1280.jpg';
@@ -210,7 +260,7 @@ const BookingSlide = React.memo(function BookingSlide({
   isSubmitting,
   submitError,
   calendarLink,
-}) {
+}: BookingSlideProps) {
   const isOpen = activePlan === plan;
 
   return (
@@ -543,12 +593,12 @@ const BookingSlide = React.memo(function BookingSlide({
 });
 
 const BookNowModule = () => {
-  const [activePlan, setActivePlan] = useState(null); // 'weekday' | 'weekend' | null
+  const [activePlan, setActivePlan] = useState<Plan | null>(null);
   const [hours, setHours] = useState(2);
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedTime, setSelectedTime] = useState(null);
-  const [formValues, setFormValues] = useState({
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [formValues, setFormValues] = useState<BookingFormValues>({
     firstName: '',
     lastName: '',
     phone: '',
@@ -556,11 +606,11 @@ const BookNowModule = () => {
   });
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [calendarLink, setCalendarLink] = useState(null);
-  const [submitError, setSubmitError] = useState(null);
-  const [availableTimes, setAvailableTimes] = useState(null);
+  const [calendarLink, setCalendarLink] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [availableTimes, setAvailableTimes] = useState<string[] | null>(null);
   const [isLoadingTimes, setIsLoadingTimes] = useState(false);
-  const [availableDays, setAvailableDays] = useState(null);
+  const [availableDays, setAvailableDays] = useState<Record<string, boolean> | null>(null);
   const [isLoadingDays, setIsLoadingDays] = useState(false);
 
   useEffect(() => {
@@ -579,7 +629,7 @@ const BookNowModule = () => {
     []
   );
 
-  const togglePlan = (plan) => {
+  const togglePlan = (plan: Plan) => {
     setActivePlan((p) => (p === plan ? null : plan));
     setSelectedTime(null);
     setSelectedDate(null);
@@ -685,7 +735,7 @@ const BookNowModule = () => {
   }, [availableTimes, selectedTime]);
 
   const validation = useMemo(() => {
-    const errors = {};
+    const errors: BookingValidationErrors = {};
 
     if (!activePlan) errors.activePlan = 'Selecciona un plan (Weekday o Weekend).';
     if (!selectedDate) errors.selectedDate = 'Selecciona una fecha.';

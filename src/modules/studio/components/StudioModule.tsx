@@ -1,22 +1,24 @@
 import React, { useMemo } from 'react';
+import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
-import LogoPicture from '../../../components/LogoPicture.jsx';
-import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
-import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources.js';
+import LogoPicture from '../../../components/LogoPicture';
+import ResponsiveImg from '../../../components/ResponsiveImg';
+import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
 import styles from '../styles/studio.module.css';
 
 const GALLERY_SIZES = '(max-width: 720px) 90vw, (max-width: 1100px) 50vw, 38vw';
 const RATES_POLAROID_SIZES = '(max-width: 900px) 72vw, min(300px, 32vw)';
 
-const bgSet = (id, w) =>
+const bgSet = (id: string, w: number) =>
   `image-set(url("/images/optimized/${id}_${w}.webp") type("image/webp"), url("/images/optimized/${id}_${w}.jpg") type("image/jpeg"))`;
-const bgVars = (id) => ({
-  '--bg-960': bgSet(id, 960),
-  '--bg-1280': bgSet(id, 1280),
-  '--bg-1600': bgSet(id, 1600),
-  '--bg-2560': bgSet(id, 2560),
-  '--bg-3200': bgSet(id, 3200),
-});
+const bgVars = (id: string): CSSProperties =>
+  ({
+    '--bg-960': bgSet(id, 960),
+    '--bg-1280': bgSet(id, 1280),
+    '--bg-1600': bgSet(id, 1600),
+    '--bg-2560': bgSet(id, 2560),
+    '--bg-3200': bgSet(id, 3200),
+  }) as CSSProperties;
 
 const features = [
   {

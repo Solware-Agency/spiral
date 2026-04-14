@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
-import { OPTIMIZED_PHOTO_FILES } from '../src/data/optimizedSources.js';
+import { OPTIMIZED_PHOTO_FILES } from '../src/data/optimizedSources.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

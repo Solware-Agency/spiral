@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   buildOptimizedPictureProps,
   buildUnsplashSrcSet,
@@ -7,6 +6,16 @@ import {
 import styles from './ResponsiveImg.module.css';
 
 const defaultSizes = '100vw';
+
+export type ResponsiveImgProps = {
+  src: string;
+  alt?: string;
+  className?: string;
+  loading?: 'lazy' | 'eager';
+  decoding?: 'async' | 'auto' | 'sync';
+  sizes?: string;
+  fetchPriority?: 'high' | 'low' | 'auto';
+};
 
 /** Picture+srcset para /images/photos optimizadas; srcset w para Unsplash; resto img simple. */
 export default function ResponsiveImg({
@@ -17,7 +26,7 @@ export default function ResponsiveImg({
   decoding = 'async',
   sizes = defaultSizes,
   fetchPriority,
-}) {
+}: ResponsiveImgProps) {
   const opt = buildOptimizedPictureProps(src);
 
   if (opt) {

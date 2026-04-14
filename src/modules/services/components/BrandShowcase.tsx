@@ -1,7 +1,7 @@
 import React from 'react';
-import LogoPicture from '../../../components/LogoPicture.jsx';
-import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
-import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources.js';
+import LogoPicture from '../../../components/LogoPicture';
+import ResponsiveImg from '../../../components/ResponsiveImg';
+import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
 import styles from '../styles/services.module.css';
 import ElfsightInstagramFeed from '../../../components/ElfsightInstagramFeed';
 

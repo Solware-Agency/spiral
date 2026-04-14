@@ -6,11 +6,12 @@
   "packageManager": "pnpm@10.28.2",
   "scripts": {
     "dev": "vite",
-    "optimize:images": "node scripts/optimize-images.mjs",
+    "optimize:images": "node --experimental-strip-types scripts/optimize-images.mjs",
     "optimize:client-logos": "node scripts/optimize-client-logos.mjs",
-    "optimize:logos": "node scripts/optimize-logos.mjs",
+    "optimize:logos": "node --experimental-strip-types scripts/optimize-logos.mjs",
     "build": "pnpm run optimize:images && pnpm run optimize:client-logos && pnpm run optimize:logos && vite build",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
     "preview": "vite preview"
   },
   "engines": {
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@tailwindcss/postcss": "^4.2.2",
+    "@types/node": "^25.6.0",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
@@ -37,6 +39,8 @@
     "postcss": "^8.5.8",
     "sharp": "^0.34.5",
     "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.58.2",
     "vite": "^7.3.1"
   },
   "pnpm": {

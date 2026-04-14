@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import LogoPicture from '../../../components/LogoPicture.jsx';
-import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
-import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources.js';
+import LogoPicture from '../../../components/LogoPicture';
+import ResponsiveImg from '../../../components/ResponsiveImg';
+import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
 import styles from '../styles/about.module.css';
 
 const POLAROID_SIZES = '(max-width: 900px) 55vw, min(30vw, 520px)';

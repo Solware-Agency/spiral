@@ -1,16 +1,16 @@
 import React, { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
-import HomePage from './modules/home/pages/HomePage.jsx';
+import HomePage from './modules/home/pages/HomePage';
 import './styles/global.css';
-import ScrollToHash from './components/ScrollToHash.jsx';
-import SeoHead from './components/SeoHead.jsx';
-import SkipToContent from './components/SkipToContent.jsx';
+import ScrollToHash from './components/ScrollToHash';
+import SeoHead from './components/SeoHead';
+import SkipToContent from './components/SkipToContent';
 
-const ServicesPage = lazy(() => import('./modules/services/pages/ServicesPage.jsx'));
-const PortfolioPage = lazy(() => import('./modules/portfolio/pages/PortfolioPage.jsx'));
-const AboutPage = lazy(() => import('./modules/about/pages/AboutPage.jsx'));
-const StudioPage = lazy(() => import('./modules/studio/pages/StudioPage.jsx'));
-const BookNowPage = lazy(() => import('./modules/bookNow/pages/BookNowPage.jsx'));
+const ServicesPage = lazy(() => import('./modules/services/pages/ServicesPage'));
+const PortfolioPage = lazy(() => import('./modules/portfolio/pages/PortfolioPage'));
+const AboutPage = lazy(() => import('./modules/about/pages/AboutPage'));
+const StudioPage = lazy(() => import('./modules/studio/pages/StudioPage'));
+const BookNowPage = lazy(() => import('./modules/bookNow/pages/BookNowPage'));
 
 function App() {
   return (

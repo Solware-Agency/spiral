@@ -43,11 +43,26 @@ export const portfolioData = [
   },
 ];
 
+export type PortfolioVideoItem = {
+  id: string;
+  videoSrc?: string;
+  posterSrc?: string;
+  src?: string;
+  imageUrl?: string;
+  alt?: string;
+};
+
+export type PortfolioVideoRow = {
+  id: string;
+  label: string;
+  items: PortfolioVideoItem[];
+};
+
 /**
  * Vídeos: opcional `posterSrc` para carátula. Si falla el .mp4, se intenta la misma ruta con .jpg
  * (p. ej. 24.mp4 → 24.jpg). Sin carátula y sin vídeo → mensaje sobre fondo oscuro (no blanco).
  */
-export const portfolioVideosRows = [
+export const portfolioVideosRows: PortfolioVideoRow[] = [
   {
     id: 'vrow-sports',
     label: 'SPORTS',
@@ -102,14 +117,22 @@ const publicPortfolioPngFiles = [
   },
 ];
 
-const publicPortfolioPngs = publicPortfolioPngFiles.map(({ name, title, alt }) => ({
+export type PortfolioPhotoItem = {
+  id: string;
+  title: string;
+  alt: string;
+  src: string;
+  imageUrl?: string;
+};
+
+const publicPortfolioPngs: PortfolioPhotoItem[] = publicPortfolioPngFiles.map(({ name, title, alt }) => ({
   id: `public:${name}`,
   title,
   alt,
   src: `${PUBLIC_PHOTOS_BASE}/${encodeURIComponent(name)}`,
 }));
 
-export const portfolioPhotosRows = [
+export const portfolioPhotosRows: { id: string; label: string; items: PortfolioPhotoItem[] }[] = [
   { id: 'prow-photos', label: '', items: publicPortfolioPngs },
 ];
 

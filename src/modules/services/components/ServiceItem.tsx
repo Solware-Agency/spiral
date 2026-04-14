@@ -1,5 +1,5 @@
 import React, { useEffect, useId, useState } from 'react';
-import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
+import ResponsiveImg from '../../../components/ResponsiveImg';
 import styles from '../styles/services.module.css';
 
 const SERVICE_IMAGE_SIZES = '(max-width: 900px) 100vw, min(42vw, 720px)';
