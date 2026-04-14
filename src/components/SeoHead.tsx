@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { metaForPathname } from '../seo/routeMeta';
 import { SITE_ORIGIN } from '../seo/siteOrigin';
 
-function upsertMetaByName(name, content) {
+function upsertMetaByName(name: string, content: string) {
   let el = document.querySelector(`meta[name="${name}"]`);
   if (!el) {
     el = document.createElement('meta');
@@ -13,7 +13,7 @@ function upsertMetaByName(name, content) {
   el.setAttribute('content', content);
 }
 
-function upsertMetaByProperty(property, content) {
+function upsertMetaByProperty(property: string, content: string) {
   let el = document.querySelector(`meta[property="${property}"]`);
   if (!el) {
     el = document.createElement('meta');
@@ -23,7 +23,7 @@ function upsertMetaByProperty(property, content) {
   el.setAttribute('content', content);
 }
 
-function upsertCanonical(href) {
+function upsertCanonical(href: string) {
   let el = document.querySelector('link[rel="canonical"]');
   if (!el) {
     el = document.createElement('link');
@@ -45,6 +45,9 @@ export default function SeoHead() {
 
     document.title = meta.title;
     upsertMetaByName('description', meta.description);
+    if ('keywords' in meta && meta.keywords) {
+      upsertMetaByName('keywords', meta.keywords);
+    }
 
     upsertMetaByProperty('og:site_name', 'SPIRAL Marketing Studio');
     upsertMetaByProperty('og:type', 'website');
