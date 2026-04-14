@@ -58,6 +58,24 @@ const isWeekend = (d) => {
   return dow === 0 || dow === 6;
 };
 
+/** English ordinal suffix for booking header (e.g. 6 → 6TH). */
+const ordinalSuffixEn = (n) => {
+  const j = n % 10;
+  const k = n % 100;
+  if (j === 1 && k !== 11) return 'ST';
+  if (j === 2 && k !== 12) return 'ND';
+  if (j === 3 && k !== 13) return 'RD';
+  return 'TH';
+};
+
+const formatPickerDateHeading = (d) => {
+  if (!d) return 'Select a date';
+  const weekday = d.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+  const month = d.toLocaleDateString('en-US', { month: 'long' }).toUpperCase();
+  const dayNum = d.getDate();
+  return `${weekday} ${month} ${dayNum}${ordinalSuffixEn(dayNum)}`;
+};
+
 const normalizePhoneDigits = (value) => value.replace(/[^\d]/g, '');
 
 const stripNewlines = (value) => value.replace(/[\r\n]+/g, ' ');
@@ -205,38 +223,39 @@ const BookingSlide = React.memo(function BookingSlide({
     >
       <div className={styles.bookingSlideInner}>
         <div className={styles.bookingSlideContent}>
-          <div className={styles.bookingMeta}>
-            <div className={styles.bookingMetaLeft}>
-              <label className={styles.hoursRow}>
-                <select
-                  className={styles.hoursSelect}
-                  value={hours}
-                  onChange={(e) => {
-                    const next = Number(e.target.value);
-                    const allowed = rates.some((r) => r.hours === next);
-                    setHours(allowed ? next : rates[0]?.hours ?? 2);
-                  }}
-                  aria-label="Select hours"
-                >
-                  {rates.map((r) => (
-                    <option key={r.hours} value={r.hours}>
-                      {r.hours} HOURS
-                    </option>
-                  ))}
-                </select>
-                <span className={styles.hoursSuffix}>STUDIO RENTAL</span>
-              </label>
+          <div className={styles.bookingLead}>
+            <div className={styles.bookingMeta}>
+              <div className={styles.bookingMetaLeft}>
+                <label className={styles.hoursRow}>
+                  <select
+                    className={styles.hoursSelect}
+                    value={hours}
+                    onChange={(e) => {
+                      const next = Number(e.target.value);
+                      const allowed = rates.some((r) => r.hours === next);
+                      setHours(allowed ? next : rates[0]?.hours ?? 2);
+                    }}
+                    aria-label="Select hours"
+                  >
+                    {rates.map((r) => (
+                      <option key={r.hours} value={r.hours}>
+                        {r.hours} HOURS
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <span className={styles.bookingMetaTitle}>STUDIO RENTAL</span>
+              </div>
+              <div className={styles.bookingPrice} aria-label="Price">
+                {money.format(price)}
+              </div>
             </div>
 
-            <div className={styles.bookingPrice} aria-label="Price">
-              {money.format(price)}
-            </div>
+            <p className={styles.bookingDesc}>
+              Private access to CASA STUDIO including all sets, props, and professional lighting
+              equipment.
+            </p>
           </div>
-
-          <p className={styles.bookingDesc}>
-            Private access to CASA STUDIO including all sets, props, and professional lighting
-            equipment.
-          </p>
 
           <div className={styles.bookingPickers}>
             <div className={styles.calendarCard} aria-label="Calendar">
@@ -300,15 +319,7 @@ const BookingSlide = React.memo(function BookingSlide({
             </div>
             <div className={styles.timeCard} aria-label="Time slots">
               <div className={styles.timeHeader}>
-                <div className={styles.timeTitle}>
-                  {selectedDate
-                    ? selectedDate.toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        month: 'long',
-                        day: 'numeric',
-                      })
-                    : 'Select a date'}
-                </div>
+                <div className={styles.timeTitle}>{formatPickerDateHeading(selectedDate)}</div>
                 <div className={styles.timeZone}>TIME ZONE: EASTERN TIME (GMT-05:00)</div>
                 {selectedDate && isLoadingTimes ? (
                   <div className={styles.timeZone}>CHECKING AVAILABILITY…</div>
@@ -340,6 +351,8 @@ const BookingSlide = React.memo(function BookingSlide({
             </div>
           </div>
         </div>
+
+        <div className={styles.bookingInfoDivider} aria-hidden />
 
         <div className={styles.infoBlock} aria-label="Your information">
           <div className={styles.infoTitle}>YOUR INFORMATION</div>

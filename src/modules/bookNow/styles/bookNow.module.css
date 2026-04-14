@@ -176,12 +176,11 @@
   outline-offset: 3px;
 }
 
+/* Espacio entre bloques weekday / weekend (sin línea negra). */
 .divider {
-  height: 1px;
-  background: #000;
+  height: 0;
   margin: clamp(1rem, 2.6vw, 1.35rem) 0;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  width: 100%;
   max-width: none;
 }
 
@@ -198,7 +197,6 @@
   margin-left: calc(50% - 50vw);
   max-width: none;
   border-top: 1px solid #000;
-  border-bottom: 1px solid #000;
   background: #b5b5b5;
   will-change: grid-template-rows, opacity, transform;
   box-sizing: border-box;
@@ -213,28 +211,53 @@
 .bookingSlideInner {
   min-height: 0;
   overflow: hidden;
-  /* Extra inset (~80px máx.) para acercar el contenido al centro respecto al ancho completo */
+  /* Extra inset (~80px máx.) + 20px por lado (= 40px más hacia el centro en total) */
   --booking-content-pad-x: calc(
-    clamp(1.35rem, 4.6vw, 3.15rem) + clamp(0.75rem, 5vw, 5rem)
+    clamp(1.35rem, 4.6vw, 3.15rem) + clamp(0.75rem, 5vw, 5rem) + 20px
   );
 }
 
 .bookingSlideContent {
-  padding: 2.15rem var(--booking-content-pad-x) 2.75rem;
+  padding: 1.45rem var(--booking-content-pad-x) 2.35rem;
+}
+
+/* Solo encabezado + descripción: desktop +40px de inset por lado hacia el centro; calendario sin cambio */
+@media (min-width: 521px) {
+  .bookingLead {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
 }
 
 .bookingMeta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1.15rem;
+  gap: 0.4rem 0.75rem;
+  margin-bottom: 0.38rem;
+}
+
+.bookingMetaLeft {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.65rem;
+  min-width: 0;
+}
+
+.bookingMetaTitle {
+  font-family: var(--font-mono);
+  font-size: clamp(0.58rem, 0.95vw, 0.74rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(20, 20, 20, 0.9);
+  white-space: nowrap;
 }
 
 .hoursRow {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
   font-family: var(--font-mono);
   text-transform: uppercase;
   letter-spacing: 0.18em;
@@ -245,10 +268,10 @@
   appearance: none;
   background: rgba(255, 255, 255, 0.9);
   border: 1px solid rgba(0, 0, 0, 0.35);
-  padding: 0.42rem 1.7rem 0.42rem 0.7rem;
+  padding: 0.32rem 1.45rem 0.32rem 0.55rem;
   font-family: var(--font-mono);
-  font-size: clamp(0.66rem, 1.05vw, 0.78rem);
-  letter-spacing: 0.18em;
+  font-size: clamp(0.62rem, 1vw, 0.74rem);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   cursor: pointer;
   position: relative;
@@ -259,29 +282,28 @@
   outline-offset: 3px;
 }
 
-.hoursSuffix {
-  font-size: 0.62rem;
-}
-
 .bookingPrice {
+  margin-left: auto;
+  flex-shrink: 0;
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(0, 0, 0, 0.35);
-  padding: 0.42rem 0.95rem;
+  padding: 0.32rem 0.75rem;
   font-family: var(--font-mono);
-  font-size: clamp(0.66rem, 1.05vw, 0.78rem);
-  letter-spacing: 0.18em;
+  font-size: clamp(0.62rem, 1vw, 0.74rem);
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(20, 20, 20, 0.88);
-  min-width: 102px;
+  min-width: 5.5rem;
   text-align: center;
 }
 
 .bookingDesc {
-  margin: 0 0 1.15rem 0;
+  margin: 0 0 0.85rem 0;
   font-family: var(--font-mono);
-  font-size: clamp(0.66rem, 1.05vw, 0.8rem);
-  letter-spacing: 0.06em;
-  color: rgba(20, 20, 20, 0.8);
+  font-size: clamp(0.62rem, 1vw, 0.76rem);
+  letter-spacing: 0.05em;
+  line-height: 1.35;
+  color: rgba(20, 20, 20, 0.82);
   max-width: 78ch;
 }
 
@@ -291,12 +313,11 @@
   grid-template-columns: 1fr 1.35fr;
   gap: clamp(1rem, 2.4vw, 1.6rem);
   align-items: start;
-  padding: 1.05rem 0 1.45rem;
-  margin-bottom: 1.5rem;
+  padding: 0.65rem 0 0;
+  margin-bottom: 0;
 }
 
-.bookingPickers::before,
-.bookingPickers::after {
+.bookingPickers::before {
   content: '';
   position: absolute;
   left: 50%;
@@ -305,14 +326,27 @@
   height: 1px;
   background: #000;
   pointer-events: none;
-}
-
-.bookingPickers::before {
   top: 0;
 }
 
-.bookingPickers::after {
-  bottom: 0;
+/* Línea a mitad de camino entre calendario/horas y YOUR INFORMATION */
+.bookingInfoDivider {
+  position: relative;
+  --booking-info-rail: clamp(0.95rem, 2.6vw, 1.4rem);
+  padding: var(--booking-info-rail) 0;
+  margin: 0;
+}
+
+.bookingInfoDivider::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 1px;
+  background: #000;
+  pointer-events: none;
 }
 
 .calendarCard,
@@ -350,41 +384,55 @@
 .calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 0.46rem;
+  gap: 0.28rem 0.2rem;
+  justify-items: center;
 }
 
 .calendarDow {
   text-align: center;
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  letter-spacing: 0.18em;
-  color: rgba(20, 20, 20, 0.7);
-  padding-bottom: 0.2rem;
+  letter-spacing: 0.12em;
+  color: rgba(20, 20, 20, 0.72);
+  padding-bottom: 0.35rem;
+  width: 100%;
 }
 
 .calendarCellEmpty {
-  height: 44px;
+  width: 2.45rem;
+  height: 2.45rem;
+  max-width: 100%;
 }
 
 .calendarCell {
   appearance: none;
   background: transparent;
   border: none;
-  height: 44px;
-  border-radius: 999px;
+  width: 2.45rem;
+  height: 2.45rem;
+  max-width: 100%;
+  flex-shrink: 0;
+  border-radius: 50%;
   cursor: pointer;
   font-family: var(--font-mono);
-  font-size: clamp(0.8rem, 1.2vw, 0.96rem);
-  color: rgba(20, 20, 20, 0.9);
+  font-size: clamp(0.78rem, 1.15vw, 0.92rem);
+  font-weight: 600;
+  color: rgba(10, 10, 10, 0.92);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 1;
 }
 
 .calendarCell:hover {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .calendarCellDisabled {
-  opacity: 0.35;
+  opacity: 0.32;
   cursor: not-allowed;
+  font-weight: 500;
 }
 
 .calendarCellDisabled:hover {
@@ -392,8 +440,9 @@
 }
 
 .calendarCellSelected {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.28);
+  background: #fff;
+  color: #0a0a0a;
+  font-weight: 700;
 }
 
 .calendarCell:focus-visible {
@@ -423,24 +472,25 @@
 }
 
 .timeGrid {
-  border: 1px solid rgba(0, 0, 0, 0.35);
-  padding: 1.35rem;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  padding: clamp(0.85rem, 2vw, 1.2rem);
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.85rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(4, auto);
+  gap: clamp(0.5rem, 1.5vw, 0.72rem);
 }
 
 .timeSlot {
   appearance: none;
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(0, 0, 0, 0.35);
-  padding: 0.72rem 0.6rem;
+  background: transparent;
+  border: 1px solid rgba(0, 0, 0, 0.38);
+  padding: 0.62rem 0.35rem;
   cursor: pointer;
   font-family: var(--font-mono);
-  font-size: clamp(0.78rem, 1.2vw, 0.94rem);
-  letter-spacing: 0.14em;
+  font-size: clamp(0.72rem, 1.05vw, 0.88rem);
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(20, 20, 20, 0.88);
+  color: rgba(12, 12, 12, 0.9);
 }
 
 .timeSlot:disabled {
@@ -449,7 +499,8 @@
 }
 
 .timeSlotActive {
-  background: rgba(255, 255, 255, 0.92);
+  background: #fff;
+  border-color: rgba(0, 0, 0, 0.45);
 }
 
 .timeSlot:focus-visible {
@@ -458,39 +509,18 @@
 }
 
 .infoBlock {
-  padding: 0.35rem var(--booking-content-pad-x) 0;
+  padding: 0 var(--booking-content-pad-x) clamp(1.25rem, 3vw, 1.85rem);
 }
 
 .infoTitle {
-  position: relative;
   font-family: var(--font-mono);
   font-size: clamp(0.72rem, 1.15vw, 0.85rem);
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: rgba(20, 20, 20, 0.78);
   text-align: center;
-  padding: 1.25rem 0 1.35rem;
+  padding: 0 0 1.35rem;
   margin-bottom: 1.35rem;
-}
-
-.infoTitle::before,
-.infoTitle::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100vw;
-  height: 1px;
-  background: #000;
-  pointer-events: none;
-}
-
-.infoTitle::before {
-  top: 0;
-}
-
-.infoTitle::after {
-  bottom: 0;
 }
 
 .infoForm {
@@ -708,9 +738,54 @@
     align-items: stretch;
   }
 
+  /* Select + título + precio en una sola fila */
   .bookingMeta {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.35rem;
+  }
+
+  .bookingMetaLeft {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.35rem;
+  }
+
+  .hoursRow {
+    flex-shrink: 0;
+  }
+
+  .hoursSelect {
+    max-width: min(38vw, 8.5rem);
+    padding-left: 0.4rem;
+    padding-right: 1.1rem;
+    font-size: clamp(0.5rem, 2.6vw, 0.62rem);
+  }
+
+  .bookingMetaTitle {
+    white-space: nowrap;
+    text-align: left;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: clamp(0.46rem, 2.4vw, 0.58rem);
+    letter-spacing: 0.1em;
+  }
+
+  .bookingPrice {
+    margin-left: 0;
+    flex-shrink: 0;
+    align-self: center;
+    min-width: unset;
+    padding: 0.28rem 0.55rem;
+    font-size: clamp(0.5rem, 2.6vw, 0.62rem);
   }
 
   .heroLogo {

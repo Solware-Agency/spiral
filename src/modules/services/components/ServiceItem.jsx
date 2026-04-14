@@ -1,11 +1,13 @@
 import React, { useEffect, useId, useState } from 'react';
-import { Link } from 'react-router-dom';
 import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
 import styles from '../styles/services.module.css';
 
 const SERVICE_IMAGE_SIZES = '(max-width: 900px) 100vw, min(42vw, 720px)';
 
 const titleForPackagesPanel = (t) => t.replace(/\n/g, ' ');
+
+const PACKAGES_CONTACT_URL =
+  'https://spiralstudio.hbportal.co/public/66343620b1546100287cdd19';
 
 const ServiceItem = ({ id, title, description, imageUrl, packageDetail }) => {
   const [isPackageOpen, setIsPackageOpen] = useState(false);
@@ -88,9 +90,14 @@ const ServiceItem = ({ id, title, description, imageUrl, packageDetail }) => {
                 ))}
               </div>
               <div className={styles.packageSlideFooter}>
-                <Link to="/book-now" className={styles.packageSlideBook}>
-                  Book now
-                </Link>
+                <a
+                  href={PACKAGES_CONTACT_URL}
+                  className={styles.packageSlideBook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Contact us
+                </a>
                 <button
                   type="button"
                   className={styles.packageSlideCollapse}
