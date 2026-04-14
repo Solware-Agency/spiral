@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ResponsiveImg from '../../../components/ResponsiveImg.jsx';
 import styles from '../styles/portfolio.module.css';
 import { portfolioPhotosRows, portfolioVideosRows } from '../data/portfolioData';
@@ -24,6 +24,99 @@ function videoFallbackImageAlt(item, row) {
   if (item.alt) return item.alt;
   if (row.label) return `${row.label} — marketing video preview from Spiral portfolio`;
   return 'Video preview from Spiral portfolio';
+}
+
+/** Carátula: explícita, imagen auxiliar del ítem, o mismo nombre que el .mp4 con extensión .jpg */
+function videoPosterUrl(item) {
+  if (item.posterSrc) return item.posterSrc;
+  if (item.src || item.imageUrl) return item.src || item.imageUrl;
+  if (item.videoSrc && /\.mp4$/i.test(item.videoSrc)) {
+    return item.videoSrc.replace(/\.mp4$/i, '.jpg');
+  }
+  return null;
+}
+
+function PortfolioVideoThumb({ item, row, layoutIdx }) {
+  const [videoBroken, setVideoBroken] = useState(false);
+  const [posterBroken, setPosterBroken] = useState(false);
+  const [posterImgBroken, setPosterImgBroken] = useState(false);
+  const [showPosterOverlay, setShowPosterOverlay] = useState(() => Boolean(videoPosterUrl(item)));
+
+  const posterUrl = videoPosterUrl(item);
+  const alt = videoFallbackImageAlt(item, row);
+  const showPosterOnly = videoBroken && posterUrl && !posterBroken;
+  const showMissing = videoBroken && (!posterUrl || posterBroken);
+
+  const syncPosterOverlay = (v) => {
+    if (!posterUrl || posterImgBroken) {
+      setShowPosterOverlay(false);
+      return;
+    }
+    setShowPosterOverlay(v.paused && v.currentTime < 0.25);
+  };
+
+  return (
+    <div
+      className={styles.mediaThumb}
+      data-variant="video"
+      data-layout={layoutIdx}
+      data-video-missing={showMissing ? 'true' : undefined}
+    >
+      {!videoBroken ? (
+        <div className={styles.mediaThumbVideoStack}>
+          <video
+            className={styles.mediaThumbVideo}
+            src={item.videoSrc}
+            poster={posterUrl || undefined}
+            preload="auto"
+            playsInline
+            muted
+            loop
+            controls
+            onError={() => setVideoBroken(true)}
+            onLoadedMetadata={(e) => syncPosterOverlay(e.currentTarget)}
+            onLoadedData={(e) => syncPosterOverlay(e.currentTarget)}
+            onPlay={() => setShowPosterOverlay(false)}
+            onPause={(e) => syncPosterOverlay(e.currentTarget)}
+            onTimeUpdate={(e) => {
+              const v = e.currentTarget;
+              if (v.paused) syncPosterOverlay(v);
+            }}
+            onSeeked={(e) => syncPosterOverlay(e.currentTarget)}
+            onEnded={(e) => syncPosterOverlay(e.currentTarget)}
+          />
+          {posterUrl && !posterImgBroken ? (
+            <img
+              src={posterUrl}
+              alt=""
+              className={`${styles.mediaThumbPosterOverlay} ${
+                showPosterOverlay ? styles.mediaThumbPosterOverlayVisible : ''
+              }`}
+              aria-hidden
+              loading="eager"
+              decoding="async"
+              draggable={false}
+              onError={() => setPosterImgBroken(true)}
+            />
+          ) : null}
+        </div>
+      ) : showPosterOnly ? (
+        <img
+          className={styles.mediaThumbVideo}
+          src={posterUrl}
+          alt={alt}
+          loading="lazy"
+          decoding="async"
+          onError={() => setPosterBroken(true)}
+        />
+      ) : null}
+      {showMissing ? (
+        <div className={styles.videoMissing} role="status">
+          VIDEO NOT FOUND
+        </div>
+      ) : null}
+    </div>
+  );
 }
 
 const PortfolioModule = () => {
@@ -61,32 +154,16 @@ const PortfolioModule = () => {
             <div key={row.id} className={styles.mediaRow}>
               {row.label && <span className={styles.mediaRowLabel}>{row.label}</span>}
               <div className={styles.mediaGridVideos}>
-                {row.items.map((item, idx) => (
-                  <div
-                    key={item.id}
-                    className={styles.mediaThumb}
-                    data-variant="video"
-                    data-layout={idx + 1}
-                  >
-                    {item.videoSrc ? (
-                      <video
-                        className={styles.mediaThumbVideo}
-                        src={item.videoSrc}
-                        poster={item.posterSrc || undefined}
-                        preload="metadata"
-                        playsInline
-                        muted
-                        loop
-                        controls
-                        onError={(e) => {
-                          // If the file doesn't exist / can't be decoded, show a clear fallback.
-                          const el = e.currentTarget;
-                          el.style.display = 'none';
-                          const parent = el.parentElement;
-                          if (parent) parent.setAttribute('data-video-missing', 'true');
-                        }}
-                      />
-                    ) : item.src || item.imageUrl ? (
+                {row.items.map((item, idx) =>
+                  item.videoSrc ? (
+                    <PortfolioVideoThumb key={item.id} item={item} row={row} layoutIdx={idx + 1} />
+                  ) : item.src || item.imageUrl ? (
+                    <div
+                      key={item.id}
+                      className={styles.mediaThumb}
+                      data-variant="video"
+                      data-layout={idx + 1}
+                    >
                       <ResponsiveImg
                         className={styles.mediaThumbImage}
                         src={item.src || item.imageUrl}
@@ -95,14 +172,9 @@ const PortfolioModule = () => {
                         decoding="async"
                         sizes={MEDIA_THUMB_SIZES}
                       />
-                    ) : null}
-                    {item.videoSrc ? (
-                      <div className={styles.videoMissing} aria-hidden="true">
-                        VIDEO NOT FOUND
-                      </div>
-                    ) : null}
-                  </div>
-                ))}
+                    </div>
+                  ) : null,
+                )}
               </div>
             </div>
           ))}

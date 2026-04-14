@@ -532,11 +532,40 @@
   object-fit: cover;
 }
 
-.mediaThumbVideo {
+/* Contenedor apilado: el <video> suele pintarse negro hasta play; la img tapa con la carátula */
+.mediaThumbVideoStack {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template: 1fr / 1fr;
+}
+
+.mediaThumbVideoStack > * {
+  grid-area: 1 / 1;
   width: 100%;
   height: 100%;
+  min-height: 0;
+}
+
+.mediaThumbVideo {
+  position: relative;
+  z-index: 1;
   display: block;
   object-fit: cover;
+  background: #0a0a0a;
+}
+
+.mediaThumbPosterOverlay {
+  position: relative;
+  z-index: 2;
+  object-fit: cover;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.mediaThumbPosterOverlayVisible {
+  opacity: 1;
 }
 
 .videoMissing {
@@ -549,8 +578,8 @@
   font-size: 0.62rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.82);
-  background: rgba(0, 0, 0, 0.22);
+  color: rgba(255, 255, 255, 0.88);
+  background: #121212;
 }
 
 .mediaThumb[data-video-missing='true'] .videoMissing {
@@ -558,7 +587,9 @@
 }
 
 .mediaThumb[data-variant='video'] {
-  aspect-ratio: 3 / 4;
+  /* Proporción vertical tipo reel (9:16) */
+  aspect-ratio: 9 / 16;
+  background: #0b0b0b;
 }
 
 .mediaThumb[data-variant='photo'] {

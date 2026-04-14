@@ -43,6 +43,10 @@ export const portfolioData = [
   },
 ];
 
+/**
+ * Vídeos: opcional `posterSrc` para carátula. Si falla el .mp4, se intenta la misma ruta con .jpg
+ * (p. ej. 24.mp4 → 24.jpg). Sin carátula y sin vídeo → mensaje sobre fondo oscuro (no blanco).
+ */
 export const portfolioVideosRows = [
   {
     id: 'vrow-sports',
