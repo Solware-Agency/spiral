@@ -29,7 +29,8 @@ export const LOGO_SIZES = {
   hero: 'clamp(240px, 38vw, 620px)',
   footer: 'clamp(190px, 18vw, 320px)',
   brandIcon: '96px',
-  aboutMonogram: 'clamp(160px, 26vw, 360px)',
+  aboutMonogram:
+    '(max-width: 899px) calc(clamp(180px, 30vw, 420px) + 220px), calc(clamp(180px, 30vw, 420px) + 70px)',
   casaStudio: 'clamp(200px, 32vw, 340px)',
   casaBook: 'clamp(220px, 34vw, 360px)',
 };
