@@ -30,7 +30,7 @@ export const LOGO_SIZES = {
   footer: 'clamp(190px, 18vw, 320px)',
   brandIcon: '96px',
   aboutMonogram:
-    '(max-width: 899px) calc(clamp(180px, 30vw, 420px) + 220px), calc(clamp(180px, 30vw, 420px) + 70px)',
+    '(max-width: 899px) calc(clamp(180px, 30vw, 420px) + 340px), calc(clamp(180px, 30vw, 420px) + 350px)',
   casaStudio: 'clamp(200px, 32vw, 340px)',
   casaBook: 'clamp(220px, 34vw, 360px)',
 };
