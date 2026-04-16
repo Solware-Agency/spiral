@@ -5,7 +5,8 @@ import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/log
 import styles from '../styles/services.module.css';
 import ElfsightInstagramFeed from '../../../components/ElfsightInstagramFeed';
 
-const POLAROID_SIZES = '(max-width: 900px) 40vw, min(22vw, 420px)';
+/* Tamaños declarados altos para que el srcset use 1280w–1600w en desktop y retina */
+const POLAROID_SIZES = '(max-width: 900px) min(92vw, 440px), min(42vw, 900px)';
 
 const polaroids = [
   {
@@ -32,14 +33,27 @@ const BrandShowcase = () => {
       <div className={styles.brandMaroon}>
         {polaroids.map((p, idx) => (
           <figure key={idx} className={`${styles.polaroid} ${p.className}`} aria-hidden>
-            <ResponsiveImg
-              className={styles.polaroidImage}
-              src={p.src}
-              alt=""
-              loading="lazy"
-              decoding="async"
-              sizes={POLAROID_SIZES}
-            />
+            {idx === 0 ? (
+              <div className={styles.polaroidImageSlot}>
+                <ResponsiveImg
+                  className={styles.polaroidImageSlotInner}
+                  src={p.src}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  sizes={POLAROID_SIZES}
+                />
+              </div>
+            ) : (
+              <ResponsiveImg
+                className={styles.polaroidImage}
+                src={p.src}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                sizes={POLAROID_SIZES}
+              />
+            )}
           </figure>
         ))}
 
