@@ -130,24 +130,44 @@
 }
 
 .monogramIcon {
-  max-width: calc(clamp(180px, 30vw, 420px) + 350px);
   width: auto;
-  /* Antes 72%: al subir max-width el alto seguía capando el logo (object-fit: contain). */
-  max-height: min(90%, 78vh);
   height: auto;
+  /*
+   * min+max: en móvil 28vmin es pequeño; 72vw acerca la talla al desktop (hasta 540px).
+   * max(380px, …) evita que quede el logo ~260px frente a ~540px en escritorio.
+   */
+  --monogram-v: min(540px, max(380px, max(28vmin, 72vw)));
+  /* % del contenedor en flex a veces no limita bien en móvil; prioriza --monogram-v y dvh */
+  max-height: min(var(--monogram-v), min(90%, 58vh));
+  max-height: min(var(--monogram-v), min(90%, 58dvh));
+  /*
+   * min(92vw, …) acotaba el ancho antes que la talla deseada (~92vw ≈ ancho útil).
+   * El tope debe ser el aspecto del icono, no un vw bajo.
+   */
+  max-width: min(calc(var(--monogram-v) * 1.55), calc(100vw - 1.25rem));
   display: block;
   flex-shrink: 0;
   object-fit: contain;
   opacity: 0.92;
   filter: drop-shadow(0 18px 55px rgba(0, 0, 0, 0.6));
-  transform: translate(10px, calc(5% - 60px));
+  transform: translate(10px, calc(5% - 60px)) scale(1.11);
+  transform-origin: right center;
 }
 
-@media (max-width: 899px) {
+/* Móvil + landscape bajo (p. ej. Pixel 7); svh reduce saltos por barra del navegador */
+@media (max-width: 899px), (min-width: 900px) and (max-height: 520px) {
+  .heroMonogram {
+    padding-block: clamp(1rem, 3.5vh, 2.25rem) clamp(0.35rem, 2vh, 1rem);
+    padding-right: max(0.35rem, env(safe-area-inset-right, 0px));
+  }
+
   .monogramIcon {
-    max-width: calc(clamp(180px, 30vw, 420px) + 340px);
-    max-height: min(92%, 82vh);
-    transform: translate(10px, calc(5% + 10px));
+    /* Entre ~360–430px CSS el logo no debe “bailar”: tope fijo + vmin acotado */
+    --monogram-v: max(380px, min(400px, 88vmin));
+    max-height: min(var(--monogram-v), 48vh);
+    max-height: min(var(--monogram-v), 48svh);
+    max-width: min(calc(var(--monogram-v) * 1.55), calc(100vw - 0.5rem - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
+    transform: translate(6px, calc(5% + 8px)) scale(1.28);
   }
 }
 
