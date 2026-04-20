@@ -392,6 +392,11 @@
   padding: 0.25rem clamp(16px, 2.2vw, 24px) 30px clamp(16px, 2.2vw, 24px);
 }
 
+.mediaBlockVideos .mediaRow:not(:last-child) {
+  /* Espacio entre el grid y la línea (complementa el padding-top de la fila siguiente) */
+  padding-bottom: clamp(4rem, 9vw, 7rem);
+}
+
 .mediaBlockVideos .mediaRow + .mediaRow {
   padding-top: clamp(5.25rem, 11vw, 9.5rem);
   border-top: 3px solid rgba(255, 255, 255, 0.28);
@@ -423,6 +428,11 @@
 
 .mediaBlockPhotos .mediaRowLabel {
   color: rgba(0, 0, 0, 0.55);
+}
+
+.mediaBlockVideos .mediaRowLabel {
+  font-size: clamp(0.72rem, 1.05vw, 0.88rem);
+  transform: translateY(-80px);
 }
 
 .mediaGridVideos {
@@ -478,6 +488,10 @@
 
   .mediaBlockVideos .mediaRow {
     padding: 0.25rem 0.9rem 1.1rem 0.9rem;
+  }
+
+  .mediaBlockVideos .mediaRow:not(:last-child) {
+    padding-bottom: clamp(3rem, 10vw, 5rem);
   }
 
   .mediaBlockVideos .mediaRow + .mediaRow {
