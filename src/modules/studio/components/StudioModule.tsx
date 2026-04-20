@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import LogoPicture from '../../../components/LogoPicture';
@@ -6,7 +6,9 @@ import ResponsiveImg from '../../../components/ResponsiveImg';
 import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
 import styles from '../styles/studio.module.css';
 
-const GALLERY_SIZES = '(max-width: 720px) 90vw, (max-width: 1100px) 50vw, 38vw';
+const GALLERY_SIZES = '(max-width: 519px) 92vw, (max-width: 900px) 46vw, 34vw';
+const GALLERY_GAP_PX = 10;
+const GALLERY_AUTO_MS = 4500;
 const RATES_POLAROID_SIZES = '(max-width: 900px) 72vw, min(300px, 32vw)';
 
 const bgSet = (id: string, w: number) =>
@@ -57,10 +59,6 @@ const galleryPhotos = [
     alt: 'Studio lighting and backdrop',
   },
   {
-    src: '/images/photos/DSC01393.JPG',
-    alt: 'Detalle creativo en Casa Spiral',
-  },
-  {
     src: '/images/photos/DSC01973.jpg',
     alt: 'Ambiente de estudio Casa Spiral',
   },
@@ -74,15 +72,105 @@ const galleryPhotos = [
   },
 ];
 
-const galleryLayouts = [
-  styles.galleryPos0,
-  styles.galleryPos1,
-  styles.galleryPos2,
-  styles.galleryPos3,
-  styles.galleryPos4,
-  styles.galleryPos5,
-  styles.galleryPos6,
-];
+function useGalleryVisibleCount(): 1 | 2 | 3 {
+  const [visible, setVisible] = useState<1 | 2 | 3>(1);
+
+  useEffect(() => {
+    const mqDesktop = window.matchMedia('(min-width: 901px)');
+    const mqTwo = window.matchMedia('(min-width: 520px)');
+    const sync = () => {
+      if (mqDesktop.matches) setVisible(3);
+      else if (mqTwo.matches) setVisible(2);
+      else setVisible(1);
+    };
+    sync();
+    mqDesktop.addEventListener('change', sync);
+    mqTwo.addEventListener('change', sync);
+    return () => {
+      mqDesktop.removeEventListener('change', sync);
+      mqTwo.removeEventListener('change', sync);
+    };
+  }, []);
+
+  return visible;
+}
+
+const StudioGalleryCarousel = () => {
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [slotPx, setSlotPx] = useState(0);
+  const [slide, setSlide] = useState({ index: 0, snap: false });
+  const visible = useGalleryVisibleCount();
+  const n = galleryPhotos.length;
+  const { index, snap } = slide;
+
+  useLayoutEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return;
+    const measure = () => {
+      const w = el.clientWidth;
+      const gaps = GALLERY_GAP_PX * Math.max(0, visible - 1);
+      const slot = visible > 0 ? (w - gaps) / visible : 0;
+      setSlotPx(Math.max(0, slot));
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [visible]);
+
+  const advance = useCallback(() => {
+    setSlide((s) => {
+      if (s.index >= n - 1) return { index: 0, snap: true };
+      return { index: s.index + 1, snap: false };
+    });
+  }, [n]);
+
+  useLayoutEffect(() => {
+    if (snap) {
+      setSlide((s) => ({ ...s, snap: false }));
+    }
+  }, [snap]);
+
+  useEffect(() => {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduce.matches || n < 2) return undefined;
+    const id = window.setInterval(advance, GALLERY_AUTO_MS);
+    return () => clearInterval(id);
+  }, [advance, n]);
+
+  const offsetPx = index * (slotPx + GALLERY_GAP_PX);
+  const trackStyle: CSSProperties = {
+    transform: slotPx > 0 ? `translate3d(${-offsetPx}px, 0, 0)` : undefined,
+    transition: snap ? 'none' : 'transform 0.55s ease',
+  };
+
+  const viewportCss = slotPx > 0 ? ({ '--gallery-slot': `${slotPx}px` } as CSSProperties) : undefined;
+
+  return (
+    <div
+      className={styles.galleryViewport}
+      ref={viewportRef}
+      style={viewportCss}
+      aria-roledescription="carousel"
+      aria-label="Studio photo gallery"
+    >
+      <div className={styles.galleryTrack} style={trackStyle}>
+        {galleryPhotos.map((photo) => (
+          <figure key={photo.src} className={styles.gallerySlide}>
+            <ResponsiveImg
+              className={styles.galleryImg}
+              src={photo.src}
+              alt={photo.alt}
+              loading="lazy"
+              decoding="async"
+              sizes={GALLERY_SIZES}
+            />
+          </figure>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const rates = [
   { hours: 2, weekday: 160, weekend: 170 },
@@ -131,16 +219,18 @@ const StudioModule = () => {
         style={bgVars('DSC01989')}
       >
         <div className={styles.heroOverlay} aria-hidden />
-        <LogoPicture
-          slug={SPIRAL_LOGO_SLUG.casaWhite}
-          pngSrc={SPIRAL_LOGO_PNG.casaWhite}
-          className={styles.heroLogo}
-          alt="CASA SPIRAL"
-          sizes={LOGO_SIZES.casaStudio}
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-        />
+        <div className={styles.heroLogoWrap}>
+          <LogoPicture
+            slug={SPIRAL_LOGO_SLUG.casaWhite}
+            pngSrc={SPIRAL_LOGO_PNG.casaWhite}
+            className={styles.heroLogo}
+            alt="CASA SPIRAL"
+            sizes={LOGO_SIZES.casaStudio}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+        </div>
       </section>
 
       <section className={styles.intro} aria-label="Welcome to Casa Spiral">
@@ -225,23 +315,7 @@ const StudioModule = () => {
       </section>
 
       <section className={styles.galleryWrap} aria-label="Studio gallery">
-        <div className={styles.galleryGrid}>
-          {galleryPhotos.map((photo, idx) => (
-            <figure
-              key={`${photo.src}-${idx}`}
-              className={`${styles.galleryFigure} ${galleryLayouts[idx] ?? ''}`}
-            >
-              <ResponsiveImg
-                className={styles.galleryImg}
-                src={photo.src}
-                alt={photo.alt}
-                loading="lazy"
-                decoding="async"
-                sizes={GALLERY_SIZES}
-              />
-            </figure>
-          ))}
-        </div>
+        <StudioGalleryCarousel />
       </section>
 
       <section className={styles.rates} aria-label="Studio rates">

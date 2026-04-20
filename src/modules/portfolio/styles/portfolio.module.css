@@ -316,7 +316,7 @@
   text-align: center;
   font-family: 'Luxurious Script', cursive;
   font-weight: 400;
-  font-size: clamp(3.2rem, 8vw, 6.1rem);
+  font-size: clamp(4.16rem, 10.4vw, 7.93rem);
   line-height: 0.92;
   color: rgba(255, 255, 255, 0.95);
 }
@@ -327,8 +327,8 @@
   z-index: 5;
   pointer-events: none;
   margin: 0;
-  font-size: calc(clamp(3.2rem, 8vw, 6.1rem) + 150px);
-  transform: translateY(-180px);
+  font-size: calc(clamp(4.85rem, 12vw, 9.1rem) + 224px);
+  transform: translateY(-151px);
   height: var(--videos-heading-h);
   display: flex;
   align-items: center;
@@ -338,8 +338,8 @@
 
 @media (min-width: 761px) {
   .mediaBlockVideos .mediaHeading {
-    font-size: calc(clamp(3.2rem, 8vw, 6.1rem) + 85px);
-    transform: translateY(-122px);
+    font-size: calc(clamp(4.85rem, 12vw, 9.1rem) + 128px);
+    transform: translateY(-93px);
   }
 }
 
@@ -353,7 +353,7 @@
   padding: 0 clamp(1rem, 3vw, 2.25rem);
   margin: 0;
   transform: translateY(180px);
-  font-size: calc(clamp(3.2rem, 8vw, 6.1rem) + 150px);
+  font-size: calc(clamp(4.16rem, 10.4vw, 7.93rem) + 195px);
   color: rgba(255, 255, 255, 0.96);
   text-shadow: 0 22px 70px rgba(0, 0, 0, 0.65);
   z-index: 2;
@@ -393,7 +393,8 @@
 }
 
 .mediaBlockVideos .mediaRow + .mediaRow {
-  padding-top: 30px;
+  padding-top: clamp(5.25rem, 11vw, 9.5rem);
+  border-top: 3px solid rgba(255, 255, 255, 0.28);
 }
 
 .mediaBlockVideos .mediaRow:last-child {
@@ -462,12 +463,12 @@
   }
 
   .mediaBlockVideos .mediaHeading {
-    font-size: calc(clamp(2.4rem, 12vw, 4.2rem) + 64px);
-    transform: translateY(-82px);
+    font-size: calc(clamp(3.6rem, 18vw, 6.3rem) + 96px);
+    transform: translateY(-53px);
   }
 
   .mediaBlockPhotos .mediaHeading {
-    font-size: calc(clamp(2.4rem, 12vw, 4.2rem) + 64px);
+    font-size: calc(clamp(3.12rem, 15.6vw, 5.46rem) + 83px);
     transform: translateY(35px);
   }
 
@@ -480,7 +481,7 @@
   }
 
   .mediaBlockVideos .mediaRow + .mediaRow {
-    padding-top: 1.1rem;
+    padding-top: clamp(3.75rem, 12vw, 6rem);
   }
 
   .mediaBlockVideos .mediaGridVideos {
