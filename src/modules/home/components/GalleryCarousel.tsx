@@ -9,7 +9,9 @@ const GalleryCarousel = () => {
     <div className={styles.galleryStrip}>
       <div className={styles.galleryTrack} aria-label="Social ticker">
         <div className={styles.galleryMarquee}>
-          <span className={styles.gallerySeparator}>{LOOP_TEXT}</span>
+          <span className={styles.gallerySeparator} data-marquee-gallery-segment>
+            {LOOP_TEXT}
+          </span>
           <span className={styles.gallerySeparator} aria-hidden="true">{LOOP_TEXT}</span>
         </div>
       </div>

@@ -43,7 +43,7 @@ const PhotoCarousel = () => {
     <div className={styles.photoCarousel} aria-label="Home photo carousel">
       <div className={styles.photoCarouselTrack}>
         <div className={styles.photoCarouselMarquee}>
-          <div className={styles.photoCarouselGroup}>
+          <div className={styles.photoCarouselGroup} data-marquee-photo-group>
             {photos.map(({ id, alt }) => (
               <figure key={`a-${id}`} className={styles.photoCarouselItem}>
                 <picture>
