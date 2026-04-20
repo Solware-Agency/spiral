@@ -56,14 +56,9 @@ const WhatWeDo = () => {
       <div className={styles.whatWeDo}>
         <h2 className={styles.whatWeDoLabel}>WHAT WE DO</h2>
         <p className={styles.whatWeDoText}>
-          <span className={styles.whatWeDoTextRun}>
-            We capture the pulse of your brand and translate it into visuals that resonate. Every detail is{' '}
-            <strong>intentional</strong>, every project a new chapter.
-          </span>
-          <span className={styles.whatWeDoTextRun}>
-            At Spiral, we don&apos;t just create content.
-          </span>
-          <span className={styles.whatWeDoTextRun}>We create <strong>meaning</strong>.</span>
+          We capture the pulse of your brand and translate it into visuals that resonate. Every detail is{' '}
+          <strong>intentional,</strong> every project a new chapter. At Spiral, we don&apos;t just create content—we create{' '}
+          <strong>meaning</strong>.
         </p>
         <Link to="/#contact-us" className={styles.workWithUsBtn}>
           WORK WITH US
