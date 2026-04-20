@@ -6,3 +6,12 @@
   width: 100%;
   min-height: clamp(18rem, 42vw, 32rem);
 }
+
+/* Popups/previsualización montados dentro del embed (complemento al handler en .tsx) */
+.shell :global(.eapps-instagram-feed-popup),
+.shell :global([class*='eapps-instagram-feed'][class*='Popup']),
+.shell :global([class*='eapps-instagram-feed'][class*='Lightbox']) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

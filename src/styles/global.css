@@ -51,3 +51,10 @@ canvas {
     scroll-behavior: auto;
   }
 }
+
+/* Elfsight Instagram Feed: lightbox suele montarse en document.body */
+.eapps-instagram-feed-popup {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
