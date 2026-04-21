@@ -19,7 +19,7 @@
   place-items: center;
   overflow: hidden;
   background-color: var(--photo-bg-underlay);
-  background-position: 24% 30%;
+  background-position: 23% 32%;
   background-size: 125% auto;
   background-repeat: no-repeat;
   background-image: var(--bg-960);
@@ -31,7 +31,7 @@
     margin-top: clamp(0.75rem, 3vw, 1.75rem);
     min-height: clamp(26rem, 62vh, 44rem);
     /* Encuadre más alto en la foto para que no pierda cabeza/techo */
-    background-position: center 22%;
+    background-position: center 15%;
     background-size: cover;
     padding-top: clamp(0.75rem, 2.5vh, 1.5rem);
     padding-bottom: clamp(0.5rem, 2vh, 1rem);
