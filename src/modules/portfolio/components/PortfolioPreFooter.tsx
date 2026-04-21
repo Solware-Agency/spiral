@@ -9,7 +9,7 @@ const PortfolioPreFooter = () => {
         <div className={styles.preFooterCtaOverlay} />
         <div className={styles.preFooterCtaInner}>
           <h2 className={styles.preFooterCtaTitle}>
-            READY TO MAKE YOUR
+            <span className={styles.preFooterCtaTitleLine1}>READY TO MAKE YOUR</span>
             <br />
             BRAND STAND OUT?
           </h2>

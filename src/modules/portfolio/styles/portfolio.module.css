@@ -761,6 +761,10 @@
   text-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
 }
 
+.preFooterCtaTitleLine1 {
+  white-space: nowrap;
+}
+
 .preFooterCtaBtn {
   background: rgba(215, 215, 215, 0.92);
   color: #111;
