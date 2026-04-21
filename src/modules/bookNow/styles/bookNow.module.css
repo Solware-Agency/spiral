@@ -5,6 +5,12 @@
   color: #fff;
 }
 
+@media (max-width: 900px) {
+  .page {
+    padding-top: calc(86px + env(safe-area-inset-top, 0px));
+  }
+}
+
 .hero {
   position: relative;
   min-height: clamp(26rem, 62vh, 44rem);
@@ -12,13 +18,23 @@
   place-items: center;
   overflow: hidden;
   background-color: var(--photo-bg-underlay);
-  background-position: 30% 35%;
-  background-size: cover;
+  background-position: 24% 30%;
+  background-size: 125% auto;
   background-repeat: no-repeat;
   background-image: var(--bg-960);
-  filter: saturate(0.95) contrast(1.05) brightness(0.82);
   width: 100vw;
   margin-left: calc(50% - 50vw);
+}
+
+@media (max-width: 899px) {
+  .hero {
+    margin-top: clamp(0.75rem, 3vw, 1.75rem);
+    background-position: center 22%;
+    background-size: cover;
+    padding-top: clamp(0.75rem, 2.5vh, 1.5rem);
+    padding-bottom: clamp(0.5rem, 2vh, 1rem);
+    box-sizing: border-box;
+  }
 }
 
 @media (min-width: 900px) {
@@ -54,15 +70,35 @@
   pointer-events: none;
 }
 
-.heroLogo {
+.heroLogoWrap {
   position: relative;
   z-index: 1;
-  justify-self: center;
-  align-self: center;
-  width: clamp(220px, 34vw, 360px);
-  max-width: 82vw;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding-inline: clamp(1rem, 4vw, 2rem);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.heroLogo {
+  position: relative;
+  width: clamp(200px, 32vw, 340px);
+  max-width: min(80vw, 100%);
   height: auto;
+  display: block;
   opacity: 0.95;
+  object-fit: contain;
+  transform: translateY(clamp(-3.5rem, -10vh, -8.75rem));
+}
+
+@media (max-width: 899px) {
+  .heroLogo {
+    width: clamp(160px, 52vw, 240px);
+    max-width: 78vw;
+    transform: translateY(clamp(1rem, 3.5vh, 2.25rem));
+  }
 }
 
 .bookNow {
@@ -786,10 +822,6 @@
     min-width: unset;
     padding: 0.28rem 0.55rem;
     font-size: clamp(0.5rem, 2.6vw, 0.62rem);
-  }
-
-  .heroLogo {
-    width: min(440px, 78vw);
   }
 
   .bookingPickers {

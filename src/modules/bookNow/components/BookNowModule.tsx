@@ -844,16 +844,18 @@ const BookNowModule = () => {
         style={bgVars('DSC01989')}
       >
         <div className={styles.heroOverlay} aria-hidden />
-        <LogoPicture
-          slug={SPIRAL_LOGO_SLUG.casaWhite}
-          pngSrc={SPIRAL_LOGO_PNG.casaWhite}
-          className={styles.heroLogo}
-          alt="CASA SPIRAL"
-          sizes={LOGO_SIZES.casaBook}
-          loading="eager"
-          decoding="async"
-          fetchPriority="high"
-        />
+        <div className={styles.heroLogoWrap}>
+          <LogoPicture
+            slug={SPIRAL_LOGO_SLUG.casaWhite}
+            pngSrc={SPIRAL_LOGO_PNG.casaWhite}
+            className={styles.heroLogo}
+            alt="CASA SPIRAL"
+            sizes={LOGO_SIZES.casaStudio}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+          />
+        </div>
       </section>
 
       <section className={styles.bookNow} aria-label="Book the studio">
