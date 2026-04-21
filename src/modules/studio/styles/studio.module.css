@@ -14,7 +14,7 @@
 
 .hero {
   position: relative;
-  min-height: clamp(30rem, 74vh, 52rem);
+  min-height: clamp(26rem, 62vh, 44rem);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -29,7 +29,7 @@
   .hero {
     /* Separación extra bajo el nav + caja algo más alta = menos “recorte” con cover */
     margin-top: clamp(0.75rem, 3vw, 1.75rem);
-    min-height: clamp(22rem, 58vh, 34rem);
+    min-height: clamp(26rem, 62vh, 44rem);
     /* Encuadre más alto en la foto para que no pierda cabeza/techo */
     background-position: center 22%;
     background-size: cover;
@@ -106,11 +106,11 @@
 
 .intro {
   background-color: #000;
-  min-height: clamp(36rem, 68vh, 56rem);
+  min-height: clamp(18rem, 38vh, 34rem);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(6rem, 14vh, 10rem) clamp(1.5rem, 5vw, 3rem);
+  padding: clamp(2.75rem, 7vh, 4.5rem) clamp(1.5rem, 5vw, 3rem);
   text-align: center;
   box-sizing: border-box;
 }
@@ -126,50 +126,55 @@
 .introKicker {
   margin: 0;
   font-family: var(--font-mono);
-  font-size: clamp(0.58rem, 1vw, 0.68rem);
+  font-size: clamp(0.5rem, 0.85vw, 0.58rem);
   letter-spacing: 0.34em;
   text-transform: uppercase;
   color: #fff;
 }
 
 .introTitle {
-  margin: clamp(0.85rem, 2vh, 1.35rem) 0 0 0;
+  margin: clamp(0.55rem, 1.5vh, 0.95rem) 0 0 0;
   font-family: var(--font-loverica, var(--font-display));
-  font-size: clamp(2.85rem, 7.5vw, 5rem);
+  font-size: clamp(2rem, 5.2vw, 3.35rem);
   font-weight: 400;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   line-height: 1.05;
   text-transform: uppercase;
   color: #fff;
 }
 
 .introBody {
-  margin: clamp(1.35rem, 2.8vh, 2.15rem) auto 0 auto;
+  margin: clamp(0.85rem, 2vh, 1.35rem) auto 0 auto;
   font-family: var(--font-display), 'Times New Roman', serif;
-  font-size: clamp(0.92rem, 1.45vw, 1.12rem);
+  font-size: clamp(0.78rem, 1.15vw, 0.95rem);
   font-weight: 400;
-  line-height: 1.65;
+  line-height: 1.6;
   color: #fff;
-  max-width: 38rem;
+  max-width: 34rem;
 }
 
 /* Después de las reglas base de .intro: si no, el min-height/padding desktop pisan estos valores */
 @media (max-width: 899px) {
   .intro {
     min-height: 0;
-    padding: clamp(2rem, 5vh, 3rem) clamp(1.25rem, 5vw, 2rem);
+    padding: clamp(1.35rem, 4vh, 2.25rem) clamp(1.25rem, 5vw, 2rem);
+  }
+
+  .introKicker {
+    font-size: clamp(0.5rem, 2.6vw, 0.54rem);
+    letter-spacing: 0.28em;
   }
 
   .introTitle {
-    margin: clamp(0.45rem, 1.5vh, 0.85rem) 0 0 0;
-    font-size: clamp(1.85rem, 9vw, 2.65rem);
-    letter-spacing: 0.12em;
+    margin: clamp(0.35rem, 1.2vh, 0.65rem) 0 0 0;
+    font-size: clamp(1.45rem, 7.2vw, 2.05rem);
+    letter-spacing: 0.11em;
   }
 
   .introBody {
-    margin-top: clamp(0.75rem, 2vh, 1.15rem);
-    font-size: clamp(0.88rem, 3.8vw, 1rem);
-    line-height: 1.55;
+    margin-top: clamp(0.55rem, 1.6vh, 0.95rem);
+    font-size: clamp(0.78rem, 3.35vw, 0.9rem);
+    line-height: 1.52;
   }
 }
 
