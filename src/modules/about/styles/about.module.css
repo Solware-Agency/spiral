@@ -78,14 +78,6 @@
   }
 }
 
-@media (max-width: 899px) {
-  .hero::before {
-    background-position: 64% calc(34% - 48px);
-    transform: scale(1.18) translateX(2.5%);
-    transform-origin: 62% 24%;
-  }
-}
-
 .heroOverlay {
   position: absolute;
   inset: 0;

@@ -29,8 +29,6 @@
 @media (max-width: 899px) {
   .hero {
     margin-top: clamp(0.75rem, 3vw, 1.75rem);
-    background-position: center 22%;
-    background-size: cover;
     padding-top: clamp(0.75rem, 2.5vh, 1.5rem);
     padding-bottom: clamp(0.5rem, 2vh, 1rem);
     box-sizing: border-box;
