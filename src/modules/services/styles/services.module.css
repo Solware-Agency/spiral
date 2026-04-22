@@ -14,7 +14,7 @@
   overflow: hidden;
   background-color: var(--photo-bg-underlay);
   background-image: url('/images/optimized/DSC09102_960.jpg');
-  background-position: center;
+  background-position: center 64%;
   background-size: cover;
   background-repeat: no-repeat;
   filter: saturate(0.95) contrast(1.05) brightness(0.82);
@@ -84,6 +84,31 @@
   text-transform: uppercase;
   color: #fff;
   text-shadow: 0 18px 45px rgba(0, 0, 0, 0.55);
+}
+
+/* Móvil: misma caja y anclaje del h1 que en iPhone SE (no depende de vh/vw del viewport). */
+@media (max-width: 768px) {
+  .servicesHero {
+    min-height: 19rem;
+    display: block;
+    padding: 0;
+  }
+
+  .servicesHeroTitle {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(2.25rem - 10px);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0 clamp(0.75rem, 3vw, 1.25rem);
+    margin: 0;
+    text-align: center;
+    /* Igual que en iPhone SE (3.25rem fijo, sin vw) */
+    font-size: 3.25rem;
+    transform: translateY(-20px);
+  }
 }
 
 .servicesInner {
