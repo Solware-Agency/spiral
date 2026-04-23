@@ -9,7 +9,8 @@
     "optimize:images": "node --experimental-strip-types scripts/optimize-images.mjs",
     "optimize:client-logos": "node scripts/optimize-client-logos.mjs",
     "optimize:logos": "node --experimental-strip-types scripts/optimize-logos.mjs",
-    "build": "pnpm run optimize:images && pnpm run optimize:client-logos && pnpm run optimize:logos && vite build",
+    "build": "node scripts/build.mjs",
+    "optimize:all": "node scripts/optimize-all.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview"

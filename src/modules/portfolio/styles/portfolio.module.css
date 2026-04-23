@@ -433,6 +433,7 @@
 .mediaBlockVideos .mediaRowLabel {
   font-size: clamp(0.72rem, 1.05vw, 0.88rem);
   transform: translateY(-80px);
+  white-space: nowrap;
 }
 
 .mediaGridVideos {
@@ -504,6 +505,12 @@
 
   .mediaGridVideos {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* El -80px del label compensa el título gigante en desktop; en móvil desordena la cuadrícula */
+  .mediaBlockVideos .mediaRowLabel {
+    transform: translateY(0);
+    align-self: center;
   }
 }
 
@@ -608,6 +615,7 @@
 }
 
 .mediaThumb[data-variant='photo'] {
+  container-type: inline-size;
   background: transparent;
   border-radius: 0;
   box-shadow: none;
@@ -643,6 +651,32 @@
   transform: translate(-80px, 100px);
 }
 
+/*
+ * Escritorio ancho: offset fino para alinear con el collage en las PNG.
+ * Móvil/tablet: ver bloque max-width — esquina superior derecha (como mediaRowLabel de vídeo).
+ */
+@media (min-width: 902px) {
+  .mediaThumb[data-variant='photo'] .mediaPhotoCaption {
+    transform: translate(
+      calc(-80px * min(1, calc(100cqi / 900px))),
+      calc(100px * min(1, calc(100cqi / 900px)))
+    );
+  }
+}
+
+@media (max-width: 901px) {
+  .mediaThumb[data-variant='photo'] .mediaPhotoCaption {
+    transform: none;
+    top: clamp(0.5rem, 2.2vw, 0.9rem);
+    right: clamp(0.5rem, 2.2vw, 0.9rem);
+    left: auto;
+    bottom: auto;
+    text-align: right;
+    white-space: nowrap;
+    max-width: min(11rem, calc(100% - 0.85rem));
+  }
+}
+
 @media (max-width: 420px) {
   .mediaRow {
     padding: 0.95rem 0.75rem 1.15rem 0.75rem;
@@ -659,6 +693,11 @@
   .mediaGridPhotos {
     gap: 0.7rem;
     grid-template-columns: 1fr;
+  }
+
+  .mediaPhotoCaption {
+    font-size: calc(0.52rem + 4px);
+    letter-spacing: 0.22em;
   }
 }
 
