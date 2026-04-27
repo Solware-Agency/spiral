@@ -305,8 +305,8 @@
   background-position: 30% 22%;
   background-size: cover;
   background-repeat: no-repeat;
-  opacity: 0.5;
-  filter: grayscale(40%) brightness(0.5);
+  opacity: 1;
+  filter: brightness(0.5);
 }
 
 @supports (background-image: image-set(url('/x.webp') type('image/webp'))) {
