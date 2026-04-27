@@ -780,7 +780,7 @@
 
 .preFooterCta {
   position: relative;
-  min-height: clamp(20rem, 46vh, 28rem);
+  min-height: clamp(32rem, 76vh, 52rem);
   background-color: #000;
   overflow: hidden;
   display: grid;
@@ -793,11 +793,11 @@
   inset: 0;
   background-color: var(--photo-bg-underlay);
   background-image: url('/images/optimized/DSC09041_960.jpg');
-  background-position: 50% 29%;
+  background-position: 50% 31%;
   background-size: cover;
   background-repeat: no-repeat;
   filter: saturate(0.85) contrast(1.05) brightness(0.68);
-  transform: scale(1.02);
+  transform: scale(1.12);
 }
 
 @supports (background-image: image-set(url('/x.webp') type('image/webp'))) {
@@ -861,9 +861,9 @@
 
 .preFooterCtaTitle {
   margin: 0;
-  font-family: var(--font-display);
+  font-family: 'Loverica DEMO', var(--font-loverica, var(--font-display));
   font-weight: 400;
-  font-size: clamp(2.1rem, 5vw, 3.3rem);
+  font-size: clamp(2.6rem, 6.4vw, 4.4rem);
   line-height: 1.08;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -879,13 +879,13 @@
   background: rgba(215, 215, 215, 0.92);
   color: #111;
   border: 1px solid rgba(0, 0, 0, 0.18);
-  padding: 0.75rem 1.6rem;
-  font-size: 0.65rem;
+  padding: 0.95rem 2.1rem;
+  font-size: 0.78rem;
   letter-spacing: 0.22em;
   font-weight: 700;
   text-transform: uppercase;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 8px;
   transition: transform 160ms ease, background 160ms ease;
   text-decoration: none;
   display: inline-flex;
@@ -905,7 +905,7 @@
 
 @media (max-width: 520px) {
   .preFooterCta {
-    min-height: clamp(18rem, 52vh, 26rem);
+    min-height: clamp(27rem, 72vh, 40rem);
   }
 
   .preFooterCtaInner {
@@ -914,14 +914,19 @@
   }
 
   .preFooterCtaTitle {
-    font-size: clamp(1.75rem, 7.8vw, 2.4rem);
+    font-size: clamp(2rem, 9vw, 2.9rem);
     letter-spacing: 0.1em;
+  }
+
+  .preFooterCtaBtn {
+    padding: 0.85rem 1.75rem;
+    font-size: 0.72rem;
   }
 }
 
 @media (max-height: 520px) {
   .preFooterCta {
-    min-height: clamp(16rem, 70vh, 22rem);
+    min-height: clamp(22rem, 82vh, 32rem);
   }
 }
 
