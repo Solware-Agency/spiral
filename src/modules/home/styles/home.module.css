@@ -464,7 +464,7 @@
 }
 
 .whatWeDoText {
-  font-family: Georgia, 'Times New Roman', var(--font-display), serif;
+  font-family: 'Source Serif Pro', Georgia, 'Times New Roman', var(--font-display), serif;
   font-size: clamp(1.28rem, 2.05vw, 1.72rem);
   font-weight: 400;
   line-height: 1.42;
