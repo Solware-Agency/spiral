@@ -13,15 +13,22 @@
   place-items: center;
   overflow: hidden;
   background-color: var(--photo-bg-underlay);
+}
+
+.servicesHero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   background-image: url('/images/optimized/DSC09102_960.jpg');
   background-position: center 64%;
   background-size: cover;
   background-repeat: no-repeat;
-  filter: saturate(0.94) contrast(1.02) brightness(0.9);
+  filter: brightness(0.5);
+  pointer-events: none;
 }
 
 @supports (background-image: image-set(url('/x.webp') type('image/webp'))) {
-  .servicesHero {
+  .servicesHero::before {
     background-image: image-set(
       url('/images/optimized/DSC09102_960.webp') type('image/webp'),
       url('/images/optimized/DSC09102_960.jpg') type('image/jpeg')
@@ -30,7 +37,7 @@
 }
 
 @media (min-width: 900px) {
-  .servicesHero {
+  .servicesHero::before {
     background-image: image-set(
       url('/images/optimized/DSC09102_1280.webp') type('image/webp'),
       url('/images/optimized/DSC09102_1280.jpg') type('image/jpeg')
@@ -39,7 +46,7 @@
 }
 
 @media (min-width: 1200px) {
-  .servicesHero {
+  .servicesHero::before {
     background-image: image-set(
       url('/images/optimized/DSC09102_1600.webp') type('image/webp'),
       url('/images/optimized/DSC09102_1600.jpg') type('image/jpeg')
@@ -48,7 +55,7 @@
 }
 
 @media (min-width: 1600px) {
-  .servicesHero {
+  .servicesHero::before {
     background-image: image-set(
       url('/images/optimized/DSC09102_2560.webp') type('image/webp'),
       url('/images/optimized/DSC09102_2560.jpg') type('image/jpeg')
@@ -57,7 +64,7 @@
 }
 
 @media (min-width: 2200px) {
-  .servicesHero {
+  .servicesHero::before {
     background-image: image-set(
       url('/images/optimized/DSC09102_3200.webp') type('image/webp'),
       url('/images/optimized/DSC09102_3200.jpg') type('image/jpeg')
@@ -82,7 +89,7 @@
   line-height: 0.98;
   text-transform: uppercase;
   color: #fff;
-  text-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+
 }
 
 /* Móvil: misma caja y anclaje del h1 que en iPhone SE (no depende de vh/vw del viewport). */
