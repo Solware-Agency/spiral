@@ -24,6 +24,23 @@ export default defineConfig(({ mode }) => {
           return html.replaceAll('%SITE_ORIGIN%', siteOrigin);
         },
       },
+      {
+        name: 'html-async-local-css',
+        transformIndexHtml: {
+          order: 'post',
+          handler(html: string) {
+            return html.replace(
+              /<link rel="stylesheet"(?:\s+crossorigin)? href="(\/assets\/[^"]+\.css)">/g,
+              (_m, href: string) =>
+                [
+                  `<link rel="preload" as="style" href="${href}">`,
+                  `<link rel="stylesheet" href="${href}" media="print" onload="this.media='all'">`,
+                  `<noscript><link rel="stylesheet" href="${href}"></noscript>`,
+                ].join(''),
+            );
+          },
+        },
+      },
     ],
     build: {
       rollupOptions: {

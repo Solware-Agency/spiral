@@ -1,7 +1,6 @@
 import React, { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import HomePage from './modules/home/pages/HomePage';
-import './styles/global.css';
 import ScrollToHash from './components/ScrollToHash';
 import SeoHead from './components/SeoHead';
 import SkipToContent from './components/SkipToContent';
