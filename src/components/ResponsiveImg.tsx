@@ -33,7 +33,6 @@ export default function ResponsiveImg({
     return (
       <picture className={styles.picture}>
         <source type="image/webp" srcSet={opt.webpSrcSet} sizes={sizes} />
-        <source type="image/jpeg" srcSet={opt.jpegSrcSet} sizes={sizes} />
         <img
           className={className}
           src={opt.fallbackSrc}

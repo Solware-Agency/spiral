@@ -82,6 +82,8 @@ const Footer = () => {
                 pngSrc={SPIRAL_LOGO_PNG.fullWhite}
                 className={styles.footerLogoImage}
                 alt="SPIRAL Marketing Studio"
+                width={736}
+                height={325}
                 sizes={LOGO_SIZES.footer}
                 loading="lazy"
                 decoding="async"

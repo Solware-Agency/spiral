@@ -48,7 +48,6 @@ const PhotoCarousel = () => {
               <figure key={`a-${id}`} className={styles.photoCarouselItem}>
                 <picture>
                   <source type="image/webp" srcSet={srcSetFor(id, 'webp')} sizes={SIZES} />
-                  <source type="image/jpeg" srcSet={srcSetFor(id, 'jpg')} sizes={SIZES} />
                   <img
                     className={styles.photoCarouselImg}
                     src={srcFor(id, 480, 'jpg')}
@@ -67,7 +66,6 @@ const PhotoCarousel = () => {
               <figure key={`b-${id}`} className={styles.photoCarouselItem}>
                 <picture>
                   <source type="image/webp" srcSet={srcSetFor(id, 'webp')} sizes={SIZES} />
-                  <source type="image/jpeg" srcSet={srcSetFor(id, 'jpg')} sizes={SIZES} />
                   <img
                     className={styles.photoCarouselImg}
                     src={srcFor(id, 480, 'jpg')}
