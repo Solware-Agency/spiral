@@ -35,10 +35,21 @@ const Navigation = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const update = () => setIsScrolled(window.scrollY > 10);
+    let rafId = 0;
+    const update = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0;
+        const next = window.scrollY > 10;
+        setIsScrolled((prev) => (prev === next ? prev : next));
+      });
+    };
     update();
     window.addEventListener('scroll', update, { passive: true });
-    return () => window.removeEventListener('scroll', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
   }, []);
 
   useEffect(() => {
