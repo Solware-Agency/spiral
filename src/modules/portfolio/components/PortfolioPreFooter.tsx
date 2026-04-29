@@ -35,6 +35,8 @@ const PortfolioPreFooter = () => {
               className={styles.testimonialsAsset}
               src="/images/photos/ENVELOPE.png"
               alt=""
+              width={1080}
+              height={1080}
               loading="lazy"
               decoding="async"
             />

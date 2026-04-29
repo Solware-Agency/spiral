@@ -103,6 +103,8 @@ function PortfolioVideoThumb({
             <img
               src={posterUrl}
               alt=""
+              width={1080}
+              height={1920}
               className={`${styles.mediaThumbPosterOverlay} ${
                 showPosterOverlay ? styles.mediaThumbPosterOverlayVisible : ''
               }`}
@@ -119,6 +121,8 @@ function PortfolioVideoThumb({
           className={styles.mediaThumbVideo}
           src={posterUrl}
           alt={alt}
+          width={1080}
+          height={1920}
           loading="lazy"
           decoding="async"
           onError={() => setPosterBroken(true)}

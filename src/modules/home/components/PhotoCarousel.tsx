@@ -53,6 +53,8 @@ const PhotoCarousel = () => {
                     className={styles.photoCarouselImg}
                     src={srcFor(id, 640, 'jpg')}
                     alt={alt}
+                    width={640}
+                    height={960}
                     loading="lazy"
                     decoding="async"
                   />
@@ -70,6 +72,8 @@ const PhotoCarousel = () => {
                     className={styles.photoCarouselImg}
                     src={srcFor(id, 640, 'jpg')}
                     alt=""
+                    width={640}
+                    height={960}
                     loading="lazy"
                     decoding="async"
                   />

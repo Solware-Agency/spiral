@@ -3,15 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E9DPRXSGM1"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag() {
         dataLayer.push(arguments);
       }
-      gtag('js', new Date());
-      gtag('config', 'G-E9DPRXSGM1');
+      window.__loadGtag = function () {
+        if (window.__gtagLoaded) return;
+        window.__gtagLoaded = true;
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-E9DPRXSGM1';
+        document.head.appendChild(script);
+        gtag('js', new Date());
+        gtag('config', 'G-E9DPRXSGM1');
+      };
+
+      var queueGtagLoad = function () {
+        var load = window.__loadGtag;
+        if (typeof load !== 'function') return;
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(load, { timeout: 2500 });
+          return;
+        }
+        setTimeout(load, 1400);
+      };
+
+      if (document.readyState === 'complete') {
+        queueGtagLoad();
+      } else {
+        window.addEventListener('load', queueGtagLoad, { once: true });
+      }
     </script>
     <!-- LCP hero (fondo CSS): preload por viewport; data-lcp-hero=default se reemplaza en /portfolio y /services -->
     <link
@@ -112,9 +134,22 @@
     />
     <link rel="preload" href="/fonts/fonts/fonnts.com-Loverica-DEMO.otf" as="font" type="font/otf" crossorigin />
     <link
+      rel="preload"
+      as="style"
       href="https://fonts.googleapis.com/css2?family=Anonymous+Pro:wght@400;700&family=Inter:wght@400;500;600&family=Luxurious+Script&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
-      rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Anonymous+Pro:wght@400;700&family=Inter:wght@400;500;600&family=Luxurious+Script&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Anonymous+Pro:wght@400;700&family=Inter:wght@400;500;600&family=Luxurious+Script&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap"
+      />
+    </noscript>
     <title>SPIRAL Marketing Studio</title>
     <meta
       name="description"

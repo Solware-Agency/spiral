@@ -23,7 +23,27 @@ const ElfsightInstagramFeed = ({ appId = 'e1077f31-d2f4-4b2c-8d9b-bb2e032f40da' 
   const className = useMemo(() => `elfsight-app-${appId}`, [appId]);
 
   useEffect(() => {
-    ensurePlatformScript();
+    const shell = shellRef.current;
+    if (!shell) return;
+
+    if (!('IntersectionObserver' in window)) {
+      ensurePlatformScript();
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          ensurePlatformScript();
+          io.disconnect();
+        });
+      },
+      { rootMargin: '300px 0px' },
+    );
+
+    io.observe(shell);
+    return () => io.disconnect();
   }, []);
 
   /*
