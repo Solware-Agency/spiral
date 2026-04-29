@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import styles from '../styles/home.module.css';
 
 const services = [
-  { id: '01', lines: ['SOCIAL MEDIA', 'MANAGEMENT'] },
-  { id: '02', lines: ['ALL ACCESS', 'CONTENT DAYS'] },
-  { id: '03', title: 'Graphic Design' },
+  { id: '01', lines: ['SOCIAL MEDIA', 'MANAGEMENT'], seoLabel: 'Social Media Management' },
+  { id: '02', lines: ['ALL ACCESS', 'CONTENT DAYS'], seoLabel: 'All Access Content Days' },
+  { id: '03', title: 'Graphic Design', seoLabel: 'Graphic Design' },
 ];
 
 const OurServices = () => {
@@ -33,7 +33,11 @@ const OurServices = () => {
                   : s.title}
               </span>
 
-              <Link to="/services" className={styles.learnMoreBtn}>
+              <Link
+                to="/services"
+                className={styles.learnMoreBtn}
+                aria-label={`Learn more about ${s.seoLabel} services`}
+              >
                 LEARN MORE
               </Link>
             </div>
