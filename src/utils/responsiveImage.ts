@@ -1,7 +1,7 @@
 import { OPTIMIZED_PHOTO_FILES } from '../data/optimizedSources';
 
 /** Anchos alineados con scripts/optimize-images.mjs */
-export const RESPONSIVE_WIDTHS = [640, 960, 1280, 1600, 2560, 3200];
+export const RESPONSIVE_WIDTHS = [320, 480, 640, 960, 1280, 1600, 2560, 3200];
 
 const baseFromSourceFile = (file) => {
   const name = file.split('/').pop();

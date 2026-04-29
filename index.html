@@ -29,11 +29,27 @@
         setTimeout(load, 1400);
       };
 
+      var bindUserInteractionGtag = function () {
+        var events = ['pointerdown', 'keydown', 'scroll', 'touchstart'];
+        var onFirstInteraction = function () {
+          events.forEach(function (evt) {
+            window.removeEventListener(evt, onFirstInteraction, { passive: true });
+          });
+          queueGtagLoad();
+        };
+        events.forEach(function (evt) {
+          window.addEventListener(evt, onFirstInteraction, { passive: true, once: true });
+        });
+      };
+
       if (document.readyState === 'complete') {
-        queueGtagLoad();
+        bindUserInteractionGtag();
       } else {
-        window.addEventListener('load', queueGtagLoad, { once: true });
+        window.addEventListener('load', bindUserInteractionGtag, { once: true });
       }
+
+      // Fallback para sesiones sin interacción (no afectar medición productiva).
+      setTimeout(queueGtagLoad, 15000);
     </script>
     <!-- LCP hero (fondo CSS): preload por viewport; data-lcp-hero=default se reemplaza en /portfolio y /services -->
     <link
@@ -113,8 +129,6 @@
     </script>
     <link rel="icon" type="image/svg+xml" href="/favicons/Spiral-Icon-Black.svg" />
     <link rel="icon" type="image/svg+xml" href="/favicons/Spiral-Icon-White.svg" media="(prefers-color-scheme: dark)" />
-    <link rel="dns-prefetch" href="https://elfsightcdn.com" />
-    <link rel="preconnect" href="https://elfsightcdn.com" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <!-- Latin woff2 críticos (texto UI + display); si falla la fuente, comprobar nueva URL en el CSS de Google Fonts -->

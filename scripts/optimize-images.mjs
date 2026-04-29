@@ -11,7 +11,7 @@ const projectRoot = path.resolve(__dirname, '..');
 const inputDir = path.join(projectRoot, 'public', 'images', 'photos');
 const outputDir = path.join(projectRoot, 'public', 'images', 'optimized');
 
-const TARGET_WIDTHS = [640, 960, 1280, 1600, 2560, 3200];
+const TARGET_WIDTHS = [320, 480, 640, 960, 1280, 1600, 2560, 3200];
 
 const outName = (file, w, ext) => {
   const base = path.basename(file, path.extname(file));

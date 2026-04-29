@@ -51,7 +51,7 @@ const PhotoCarousel = () => {
                   <source type="image/jpeg" srcSet={srcSetFor(id, 'jpg')} sizes={SIZES} />
                   <img
                     className={styles.photoCarouselImg}
-                    src={srcFor(id, 640, 'jpg')}
+                    src={srcFor(id, 480, 'jpg')}
                     alt={alt}
                     width={640}
                     height={960}
@@ -70,7 +70,7 @@ const PhotoCarousel = () => {
                   <source type="image/jpeg" srcSet={srcSetFor(id, 'jpg')} sizes={SIZES} />
                   <img
                     className={styles.photoCarouselImg}
-                    src={srcFor(id, 640, 'jpg')}
+                    src={srcFor(id, 480, 'jpg')}
                     alt=""
                     width={640}
                     height={960}

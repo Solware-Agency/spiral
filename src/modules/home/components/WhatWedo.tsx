@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../styles/home.module.css';
 import PhotoCarousel from './PhotoCarousel';
@@ -10,7 +10,7 @@ const STUDIO_MARQUEE_BASE_SEC = 26;
 const WhatWeDo = () => {
   const studioMarqueesRef = useRef<HTMLDivElement>(null);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const root = studioMarqueesRef.current;
     if (!root) return;
 
