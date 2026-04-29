@@ -14,6 +14,8 @@ const Hero = () => {
             pngSrc={SPIRAL_LOGO_PNG.fullWhite}
             className={styles.heroLogoImage}
             alt=""
+            width={736}
+            height={325}
             sizes={LOGO_SIZES.hero}
             loading="eager"
             decoding="async"
