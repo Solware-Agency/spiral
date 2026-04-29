@@ -14,9 +14,7 @@ const ScrollToHash = () => {
 
     const t = window.setTimeout(() => {
       if (!hash) {
-        if (window.scrollY > 1 || window.scrollX > 1) {
-          window.scrollTo({ top: 0, left: 0, behavior });
-        }
+        window.scrollTo({ top: 0, left: 0, behavior });
         return;
       }
 
