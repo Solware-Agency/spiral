@@ -13,46 +13,41 @@ const WhatWeDo = () => {
   useEffect(() => {
     const root = studioMarqueesRef.current;
     if (!root) return;
-    const photoEl = root.querySelector<HTMLElement>('[data-marquee-photo-group]');
-    const galleryEl = root.querySelector<HTMLElement>('[data-marquee-gallery-segment]');
-    if (!photoEl || !galleryEl) return;
-
-    let rafId = 0;
-    let prevPhotoSec = '';
 
     const measureAndApply = () => {
-      const wPhoto = photoEl.clientWidth;
-      const wGallery = galleryEl.clientWidth;
+      const photoEl = root.querySelector<HTMLElement>('[data-marquee-photo-group]');
+      const galleryEl = root.querySelector<HTMLElement>('[data-marquee-gallery-segment]');
+      if (!photoEl || !galleryEl) return;
+      const wPhoto = photoEl.getBoundingClientRect().width;
+      const wGallery = galleryEl.getBoundingClientRect().width;
       if (wGallery < 1 || wPhoto < 1) return;
       const photoSec = (STUDIO_MARQUEE_BASE_SEC * wPhoto) / wGallery;
-      const nextPhotoSec = `${photoSec}s`;
-      if (nextPhotoSec === prevPhotoSec) return;
-      prevPhotoSec = nextPhotoSec;
       root.style.setProperty('--studio-marquee-duration-gallery', `${STUDIO_MARQUEE_BASE_SEC}s`);
-      root.style.setProperty('--studio-marquee-duration-photo', nextPhotoSec);
+      root.style.setProperty('--studio-marquee-duration-photo', `${photoSec}s`);
     };
 
-    const queueMeasure = () => {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(measureAndApply);
-    };
-
-    const ro = new ResizeObserver(queueMeasure);
+    const ro = new ResizeObserver(() => {
+      requestAnimationFrame(measureAndApply);
+    });
     ro.observe(root);
-    ro.observe(photoEl);
-    ro.observe(galleryEl);
+    const photoEl = root.querySelector('[data-marquee-photo-group]');
+    const galleryEl = root.querySelector('[data-marquee-gallery-segment]');
+    if (photoEl) ro.observe(photoEl);
+    if (galleryEl) ro.observe(galleryEl);
 
-    queueMeasure();
+    measureAndApply();
 
     const imgs = root.querySelectorAll<HTMLImageElement>('img');
-    const onImgLoad = () => queueMeasure();
+    const onImgLoad = () => measureAndApply();
     imgs.forEach((img) => {
       if (!img.complete) img.addEventListener('load', onImgLoad, { once: true });
     });
 
+    window.addEventListener('resize', measureAndApply);
+
     return () => {
-      cancelAnimationFrame(rafId);
       ro.disconnect();
+      window.removeEventListener('resize', measureAndApply);
     };
   }, []);
 

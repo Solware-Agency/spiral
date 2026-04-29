@@ -139,8 +139,6 @@ const Navigation = () => {
             pngSrc={SPIRAL_LOGO_PNG.fullWhite}
             className={styles.logoImage}
             alt="SPIRAL Marketing Studio"
-            width={736}
-            height={325}
             sizes={LOGO_SIZES.nav}
             loading="eager"
             decoding="async"
