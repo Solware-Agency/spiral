@@ -37,6 +37,21 @@ function isWeekendYMD(year, month, day) {
   return dow === 0 || dow === 6;
 }
 
+function toGoogleUtcStamp(dt) {
+  return dt.toUTC().toFormat("yyyyLLdd'T'HHmmss'Z'");
+}
+
+function buildGoogleCalendarTemplateLink({ summary, description, start, end }) {
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: summary,
+    details: description,
+    dates: `${toGoogleUtcStamp(start)}/${toGoogleUtcStamp(end)}`,
+    ctz: TZ,
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -166,11 +181,19 @@ export default async function handler(req, res) {
         guestsCanSeeOtherGuests: false,
       },
     });
+    const description = descriptionLines.join('\n');
+    const calendarTemplateLink = buildGoogleCalendarTemplateLink({
+      summary,
+      description,
+      start,
+      end,
+    });
 
     return json(res, 200, {
       ok: true,
       eventId: resp.data.id,
       htmlLink: resp.data.htmlLink,
+      calendarTemplateLink,
     });
   } catch (e) {
     console.error('create-booking-event: failed', e);

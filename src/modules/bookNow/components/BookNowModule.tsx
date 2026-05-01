@@ -583,7 +583,7 @@ const BookingSlide = React.memo(function BookingSlide({
 
           {calendarLink ? (
             <a className={styles.bookingEmail} href={calendarLink} target="_blank" rel="noreferrer">
-              VIEW IN GOOGLE CALENDAR
+              ADD TO MY GOOGLE CALENDAR
             </a>
           ) : null}
         </div>
@@ -804,7 +804,13 @@ const BookNowModule = () => {
           console.error('create-booking-event failed', { status: r.status, data });
           throw new Error(msg);
         }
-        if (data?.htmlLink) setCalendarLink(data.htmlLink);
+        const link =
+          typeof data?.calendarTemplateLink === 'string' && data.calendarTemplateLink
+            ? data.calendarTemplateLink
+            : typeof data?.htmlLink === 'string' && data.htmlLink
+              ? data.htmlLink
+              : null;
+        if (link) setCalendarLink(link);
       })
       .catch((e) => {
         setSubmitError(e?.message || 'No se pudo crear el evento en el calendario.');
