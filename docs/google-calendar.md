@@ -43,6 +43,21 @@ Payload (JSON):
 - `time`: `"7:00 AM"`
 - `firstName`, `lastName`, `phone`, `email`
 
+### 4.1) Endpoint de diagnóstico (owner calendar)
+
+Para validar por qué no se crea el evento en el calendario del propietario:
+
+- `GET /api/calendar-diagnostics`
+  - Revisa env vars, private key y acceso `freebusy` al `GOOGLE_CALENDAR_ID`.
+- `GET /api/calendar-diagnostics?checkWrite=1`
+  - Además intenta crear y borrar un evento temporal para confirmar permiso de escritura real.
+
+Respuestas útiles:
+- `stage: "env"` → faltan variables.
+- `stage: "private_key"` → formato inválido en `GOOGLE_PRIVATE_KEY`.
+- `stage: "calendar_access"` → la service account no tiene acceso al calendario configurado.
+- `stage: "write_permission"` → puede leer, pero no puede crear eventos en ese calendario.
+
 ### 5) Comportamiento en frontend
 
 - Si el evento se crea correctamente, se muestra un link **“VER EN GOOGLE CALENDAR”**.
