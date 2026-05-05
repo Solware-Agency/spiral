@@ -374,7 +374,13 @@
 }
 
 .mediaBlockPhotos .mediaHeading + .mediaRow {
-  padding-top: clamp(1.1rem, 2.6vw, 1.5rem);
+  padding-top: clamp(1.8rem, 3.6vw, 2.4rem);
+}
+
+@media (min-width: 1025px) {
+  .mediaBlockPhotos .mediaHeading + .mediaRow {
+    padding-top: clamp(3.6rem, 6vw, 5.2rem);
+  }
 }
 
 .mediaRow {
@@ -471,7 +477,7 @@
   }
 
   .mediaBlockPhotos .mediaHeading + .mediaRow {
-    padding-top: clamp(1.25rem, 3.2vw, 1.85rem);
+    padding-top: clamp(1.9rem, 4vw, 2.5rem);
   }
 
   .mediaBlockVideos {
@@ -524,7 +530,7 @@
   }
 
   .mediaBlockPhotos .mediaHeading + .mediaRow {
-    padding-top: clamp(1.25rem, 3.2vw, 1.85rem);
+    padding-top: clamp(2rem, 5vw, 2.8rem);
   }
 
   .mediaBlockVideos .mediaHeading + .mediaRow {
@@ -568,7 +574,7 @@
 
 .mediaGridPhotos {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(1.1rem, 2.1vw, 1.65rem);
   align-items: start;
   grid-column: 1 / -1;
@@ -671,6 +677,8 @@
   aspect-ratio: 2 / 1;
   padding: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 .mediaThumb[data-variant='photo'] .mediaThumbImage {
@@ -701,17 +709,14 @@
  * ≤600: esquina móvil. 601–1200: iPad y tabletas (iPad a menudo >900px) → anclaje con %, sin cqi.
  * ≥1201: escritorio, offset con 100cqi.
  */
-@media (min-width: 1201px) {
+@media (min-width: 1025px) {
   .mediaThumb[data-variant='photo'] .mediaPhotoCaption {
-    top: clamp(1.05rem, 2.25vw, 1.35rem);
-    right: clamp(1.05rem, 2.25vw, 1.35rem);
+    top: 0;
+    right: 0;
     text-align: right;
     white-space: nowrap;
-    max-width: min(14rem, calc(100% - 1.25rem));
-    transform: translate(
-      calc(-80px * min(1, calc(100cqi / 900px))),
-      calc(100px * min(1, calc(100cqi / 900px)))
-    );
+    max-width: min(14rem, calc(100% - 0.75rem));
+    transform: translate(-1.6rem, 1rem);
   }
 }
 
@@ -761,12 +766,35 @@
 
   .mediaGridPhotos {
     gap: 0.7rem;
-    grid-template-columns: 1fr;
   }
 
   .mediaPhotoCaption {
     font-size: calc(0.52rem + 4px);
     letter-spacing: 0.22em;
+  }
+}
+
+@media (max-width: 1024px) {
+  .mediaGridPhotos {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: calc((100% - clamp(1.1rem, 2.1vw, 1.65rem)) / 2);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .mediaGridPhotos::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .mediaGridPhotos {
+    grid-auto-columns: min(100%, 86%);
   }
 }
 

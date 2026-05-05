@@ -5,9 +5,9 @@ import ResponsiveImg from '../../../components/ResponsiveImg';
 import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
 import styles from '../styles/about.module.css';
 
-const POLAROID_SIZES = '(max-width: 900px) 55vw, min(30vw, 520px)';
+const POLAROID_SIZES = '(max-width: 900px) 72vw, min(42vw, 820px)';
 const FOUNDER_SIZES = '(max-width: 900px) 92vw, min(44vw, 640px)';
-const STRIP_POLAROID_SIZES = '(max-width: 900px) 88vw, min(40vw, 560px)';
+const STRIP_POLAROID_SIZES = '(max-width: 900px) 94vw, min(54vw, 780px)';
 import ClientMarquee from './ClientMarquee';
 import InstagramGrid from '../../home/components/InstagramGrid';
 
@@ -71,11 +71,10 @@ const AboutModule = () => {
         </div>
 
         <div className={styles.specializePolaroid} aria-hidden="true">
-          <div className={`${styles.polaroid} ${styles.specializePolaroidCard}`} aria-hidden>
-            <div className={styles.polaroidClip} aria-hidden />
+          <div className={styles.specializePolaroidCard} aria-hidden>
             <ResponsiveImg
-              className={`${styles.polaroidImage} ${styles.specializePolaroidImage}`}
-              src="/images/photos/DSC09031.jpg"
+              className={`${styles.polaroidPngImage} ${styles.specializePolaroidImage}`}
+              src="/Polaroids/3.png"
               alt=""
               loading="eager"
               decoding="async"
@@ -136,11 +135,10 @@ const AboutModule = () => {
       <section className={styles.brandStrip} aria-label="Brand strip">
         <div className={styles.brandStripInner}>
           <div className={styles.polaroidRow} aria-hidden="false">
-            <div className={`${styles.polaroid} ${styles.polaroidLeft}`}>
-              <div className={styles.polaroidClip} aria-hidden />
+            <div className={styles.polaroidLeft}>
               <ResponsiveImg
-                className={styles.polaroidImage}
-                src="/images/photos/DSC09041.jpg"
+                className={styles.polaroidPngImage}
+                src="/Polaroids/1.png"
                 alt="Foto del equipo"
                 loading="lazy"
                 decoding="async"
@@ -148,11 +146,10 @@ const AboutModule = () => {
               />
             </div>
 
-            <div className={`${styles.polaroid} ${styles.polaroidRight}`}>
-              <div className={styles.polaroidClip} aria-hidden />
+            <div className={styles.polaroidRight}>
               <ResponsiveImg
-                className={styles.polaroidImage}
-                src="/images/photos/DSC09102.jpg"
+                className={styles.polaroidPngImage}
+                src="/Polaroids/2.png"
                 alt="Foto del equipo"
                 loading="lazy"
                 decoding="async"

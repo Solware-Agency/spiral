@@ -349,18 +349,15 @@ const StudioModule = () => {
           </div>
 
           <div className={styles.ratesRight} aria-hidden="true">
-            <div className={styles.polaroid}>
-              <div className={styles.polaroidClip} />
-              <div className={styles.polaroidPhoto}>
-                <ResponsiveImg
-                  className={styles.polaroidPhotoImg}
-                  src="/images/photos/DSC09031.jpg"
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  sizes={RATES_POLAROID_SIZES}
-                />
-              </div>
+            <div className={styles.polaroidPngWrap}>
+              <ResponsiveImg
+                className={styles.polaroidPngImg}
+                src="/Polaroids/3.png"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                sizes={RATES_POLAROID_SIZES}
+              />
             </div>
           </div>
         </div>

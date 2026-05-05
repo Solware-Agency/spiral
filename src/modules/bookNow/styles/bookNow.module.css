@@ -169,7 +169,7 @@
   color: #fff;
   border: 1px solid rgba(0, 0, 0, 0.3);
   padding: 0.6rem 1.2rem;
-  font-family: var(--font-mono);
+  font-family: 'Andale Mono', var(--font-mono), ui-monospace, monospace;
   font-size: clamp(0.66rem, 0.95vw, 0.76rem);
   letter-spacing: 0.18em;
   font-weight: 600;

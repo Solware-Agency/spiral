@@ -482,6 +482,7 @@
   color: #111;
   border: 1px solid rgba(0, 0, 0, 0.2);
   padding: 0.75rem 1.55rem;
+  font-family: 'Andale Mono', var(--font-mono), ui-monospace, monospace;
   font-size: 0.72rem;
   letter-spacing: 0.22em;
   font-weight: 600;
@@ -573,62 +574,77 @@
 }
 
 .rates {
-  background: #fff;
+  background: #dcdcdc;
   color: #111;
-  padding: clamp(3.25rem, 6vh, 4.75rem) clamp(1.25rem, 4vw, 2.5rem);
+  padding: clamp(2.6rem, 5.5vh, 3.8rem) clamp(1.6rem, 5.5vw, 4rem);
 }
 
 .ratesInner {
-  width: min(1100px, 100%);
+  width: min(1220px, 100%);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1.25fr 0.75fr;
-  gap: clamp(1.5rem, 4vw, 3rem);
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(1.8rem, 4vw, 3.6rem);
+  align-items: start;
 }
 
 .ratesKicker {
-  margin: 0 0 1rem 0;
+  margin: 0 0 clamp(1.3rem, 2.2vh, 1.8rem) 0;
   font-family: var(--font-mono);
-  font-size: clamp(1rem, 1.7vw, 1.35rem);
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
   line-height: 1.15;
-  letter-spacing: 0.26em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(20, 20, 20, 0.7);
+  color: rgba(20, 20, 20, 0.82);
 }
 
 .ratesTable {
-  width: 100%;
+  width: min(760px, 100%);
+  margin: 0 auto;
   border-collapse: collapse;
   font-family: var(--font-mono);
-  font-size: clamp(0.9rem, 1.25vw, 1.08rem);
-  line-height: 1.25;
-  letter-spacing: 0.12em;
+  font-size: clamp(1rem, 1.28vw, 1.14rem);
+  line-height: 1.35;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .ratesTable th,
 .ratesTable td {
-  padding: clamp(0.7rem, 1.15vw, 0.95rem) clamp(0.75rem, 1.35vw, 1.05rem);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: clamp(0.52rem, 0.95vw, 0.8rem) clamp(0.68rem, 1.2vw, 1.08rem);
+  text-align: center;
+  border-bottom: none;
+}
+
+.ratesTable th:not(:last-child),
+.ratesTable td:not(:last-child) {
+  border-right: 1px solid rgba(0, 0, 0, 0.45);
 }
 
 .ratesTable thead th {
-  color: rgba(0, 0, 0, 0.65);
-  font-weight: 600;
+  color: rgba(0, 0, 0, 0.82);
+  font-weight: 500;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.45);
 }
 
 .ratesTable tbody td {
-  color: rgba(0, 0, 0, 0.78);
+  color: rgba(0, 0, 0, 0.9);
 }
 
 .ratesNote {
-  margin: 1.25rem 0 0 0;
+  margin: clamp(2rem, 3.6vh, 2.8rem) auto 0;
   font-family: var(--font-primary);
-  font-size: clamp(0.85rem, 1.05vw, 1rem);
-  line-height: 1.55;
+  font-size: clamp(0.95rem, 1.08vw, 1.05rem);
+  line-height: 1.5;
   color: rgba(0, 0, 0, 0.62);
-  max-width: 62ch;
+  max-width: 56ch;
+  text-align: center;
+}
+
+.ratesRight {
+  display: grid;
+  justify-items: end;
+  align-items: start;
 }
 
 .mapSection {
@@ -696,6 +712,21 @@
   object-fit: cover;
   object-position: center;
   display: block;
+}
+
+.polaroidPngWrap {
+  width: clamp(420px, 48vw, 680px);
+  margin-left: auto;
+  transform: translateX(270px) rotate(12deg);
+  transform-origin: right top;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.18));
+}
+
+.polaroidPngImg {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
 }
 
 @media (max-width: 520px) {
@@ -795,6 +826,13 @@
     margin: 0 auto;
     width: min(320px, 100%);
     transform: rotate(-6deg);
+  }
+
+  .polaroidPngWrap {
+    margin: 0 auto;
+    width: min(500px, 96vw);
+    transform: rotate(6deg);
+    transform-origin: right top;
   }
 
   /* Sin franja negra: el gris monta un poco más sobre la fila inferior de tarjetas */

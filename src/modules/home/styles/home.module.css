@@ -830,6 +830,7 @@
   color: #111;
   border: 1px solid rgba(0, 0, 0, 0.18);
   padding: 0.8rem 2.1rem;
+  font-family: 'Andale Mono', var(--font-mono), ui-monospace, monospace;
   font-size: clamp(0.72rem, 1.05vw, 0.86rem);
   letter-spacing: 0.08em;
   cursor: pointer;

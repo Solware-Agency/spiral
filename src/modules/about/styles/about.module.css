@@ -208,7 +208,7 @@
   top: auto;
   bottom: calc(clamp(-6.25rem, -11vh, -4.6rem) - 60px);
   right: clamp(24px, 4.5vw, 74px);
-  width: min(520px, 50vw);
+  width: clamp(520px, 50vw, 820px);
   transform: rotate(18deg);
   transform-origin: center;
   z-index: 2;
@@ -268,6 +268,7 @@
   color: #fff;
   border: none;
   padding: 0.95rem 2.6rem;
+  font-family: 'Andale Mono', var(--font-mono), ui-monospace, monospace;
   font-size: 0.75rem;
   letter-spacing: 0.18em;
   font-weight: 600;
@@ -424,7 +425,7 @@
 
 /* ----- Brand strip (polaroids + logo marquee) ----- */
 .brandStrip {
-  background: #6C1622;
+  background: #7a1020;
   padding: clamp(3.25rem, 7vw, 4.75rem) 0 0 0;
   overflow-x: hidden;
   overflow-y: visible;
@@ -439,23 +440,41 @@
 
 .polaroidRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(1.25rem, 3vw, 2.25rem);
+  grid-template-columns: repeat(2, minmax(0, max-content));
+  gap: clamp(0.2rem, 0.9vw, 0.75rem);
   align-items: start;
   justify-items: center;
+  justify-content: center;
   padding: 0 0 clamp(2rem, 5vw, 3rem) 0;
-  margin-top: clamp(-2.25rem, -4vw, -1.25rem);
+  margin-top: clamp(-1.35rem, -2.8vw, -0.75rem);
   overflow: visible;
 }
 
 .polaroidLeft {
-  transform: rotate(-12deg) translateY(-10px);
+  transform: rotate(-13deg) translate(24px, -6px);
   transform-origin: center;
+  position: relative;
+  z-index: 2;
 }
 
 .polaroidRight {
-  transform: rotate(12deg) translateY(10px);
+  transform: rotate(11deg) translate(-24px, 18px);
   transform-origin: center;
+  position: relative;
+  z-index: 1;
+}
+
+.polaroidLeft,
+.polaroidRight {
+  width: clamp(600px, 54vw, 780px);
+}
+
+.polaroidPngImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  aspect-ratio: auto;
 }
 
 /* ----- Logo marquee (About variant of Home clients marquee) ----- */
@@ -573,6 +592,7 @@
     position: static;
     margin: 2.25rem auto 0 auto;
     transform: rotate(14deg);
+    width: min(680px, 96vw);
   }
 
   .polaroid {
@@ -584,12 +604,14 @@
   }
 
   .polaroidRow {
+    display: grid;
     grid-template-columns: 1fr;
   }
 
   .polaroidLeft,
   .polaroidRight {
     transform: rotate(-6deg);
+    width: min(640px, 94vw);
   }
 }
 
