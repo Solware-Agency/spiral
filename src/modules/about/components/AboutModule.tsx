@@ -43,9 +43,13 @@ const AboutModule = () => {
 
               <p className={styles.lead}>
                 Spiral was created for brands that break the rules. For those who
+                <br />
                 want to be <strong>seen</strong>, heard, and{' '}
-                <strong>remembered</strong>. We work with businesses that aren’t
-                afraid to push boundaries, own their story, and make their mark
+                <strong>remembered</strong>. We work with
+                <br />
+                businesses that aren’t afraid to push boundaries, own their
+                <br />
+                story, and make their mark
                 in bold, <strong>authentic</strong> ways.
               </p>
 
