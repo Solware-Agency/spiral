@@ -13,7 +13,7 @@ const OurServices = () => {
     <section className={styles.ourServices}>
       <div className={styles.ourServicesInner}>
         <div className={styles.servicesHeader} aria-hidden>
-          <h2 className={`${styles.sectionLabel} ${styles.ourServicesLabel}`}>OUR SERVICES</h2>
+          <span className={`${styles.sectionLabel} ${styles.ourServicesLabel}`}>OUR SERVICES</span>
         </div>
 
         <div className={styles.servicesList}>

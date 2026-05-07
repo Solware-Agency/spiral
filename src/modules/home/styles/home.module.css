@@ -697,7 +697,8 @@
 
 /* Título OUR SERVICES: clase dedicada (~+20px vs el mono base; más legible que sumar al clamp genérico) */
 .ourServices .ourServicesLabel {
-  font-size: clamp(28px, 3.2vw, 44px);
+  font-family: 'Andale Mono', var(--font-mono), ui-monospace, monospace;
+  font-size: clamp(0.78rem, 1.05vw, 0.95rem);
   letter-spacing: 0.2em;
   line-height: 1.15;
 }
@@ -1397,7 +1398,7 @@
   }
 
   .ourServices .ourServicesLabel {
-    font-size: clamp(24px, 4.2vw, 34px);
+    font-size: clamp(0.72rem, 2.7vw, 0.84rem);
     letter-spacing: 0.16em;
   }
 
