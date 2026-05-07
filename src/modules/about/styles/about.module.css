@@ -441,7 +441,7 @@
 .polaroidRow {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, max-content));
-  gap: clamp(0.2rem, 0.9vw, 0.75rem);
+  gap: 0;
   align-items: start;
   justify-items: center;
   justify-content: center;
@@ -451,14 +451,14 @@
 }
 
 .polaroidLeft {
-  transform: rotate(-13deg) translate(24px, -6px);
+  transform: rotate(-13deg) translate(44px, -6px);
   transform-origin: center;
   position: relative;
   z-index: 2;
 }
 
 .polaroidRight {
-  transform: rotate(11deg) translate(-24px, 18px);
+  transform: rotate(11deg) translate(-44px, 18px);
   transform-origin: center;
   position: relative;
   z-index: 1;
@@ -466,7 +466,7 @@
 
 .polaroidLeft,
 .polaroidRight {
-  width: clamp(600px, 54vw, 780px);
+  width: clamp(700px, 60vw, 920px);
 }
 
 .polaroidPngImage {
