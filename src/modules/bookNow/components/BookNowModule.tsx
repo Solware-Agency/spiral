@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, Dispatch, SetStateAction } from 'react';
 import LogoPicture from '../../../components/LogoPicture';
 import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
@@ -93,6 +93,7 @@ const monthNames = [
 ];
 
 const dayHeaders = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+const BOOKING_CLOSE_HOUR = 22; // 10:00 PM
 
 const startOfMonth = (d) => new Date(d.getFullYear(), d.getMonth(), 1);
 const addMonths = (d, delta) => new Date(d.getFullYear(), d.getMonth() + delta, 1);
@@ -174,6 +175,29 @@ const sanitizeEmailInput = (value, maxLen = 254) => {
     // Domain shouldn't include underscore or plus; keep it strict.
     .replace(/[^A-Za-z0-9.-]/g, '');
   return `${local}@${domain}`.slice(0, maxLen);
+};
+
+const parseTime12hTo24h = (timeStr) => {
+  const s = String(timeStr ?? '').trim().toUpperCase();
+  const m = s.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/);
+  if (!m) return null;
+  let h = Number(m[1]);
+  const min = Number(m[2]);
+  const ap = m[3];
+  if (h < 1 || h > 12 || min < 0 || min > 59) return null;
+  if (ap === 'AM') {
+    if (h === 12) h = 0;
+  } else if (ap === 'PM') {
+    if (h !== 12) h += 12;
+  }
+  return { hour: h, minute: min };
+};
+
+const slotEndsBeforeClose = (timeStr, durationHours) => {
+  const t = parseTime12hTo24h(timeStr);
+  if (!t || !Number.isFinite(durationHours) || durationHours <= 0) return false;
+  const endMinutes = (t.hour + durationHours) * 60 + t.minute;
+  return endMinutes <= BOOKING_CLOSE_HOUR * 60;
 };
 
 const isValidName = (value) => {
@@ -379,18 +403,20 @@ const BookingSlide = React.memo(function BookingSlide({
               <div className={styles.timeGrid} role="list">
                 {timeSlots.map((t) => {
                   const active = t === selectedTime;
+                  const withinClosingHour = slotEndsBeforeClose(t, hours);
                   const allowed = !selectedDate
                     ? false
                     : !availableTimes
                       ? true
                       : availableTimes.includes(t);
+                  const enabled = !!selectedDate && !isLoadingTimes && allowed && withinClosingHour;
                   return (
                     <button
                       key={t}
                       type="button"
                       className={`${styles.timeSlot} ${active ? styles.timeSlotActive : ''}`}
                       onClick={() => setSelectedTime(t)}
-                      disabled={!selectedDate || isLoadingTimes || !allowed}
+                      disabled={!enabled}
                       aria-pressed={active}
                     >
                       {t}
@@ -572,7 +598,7 @@ const BookingSlide = React.memo(function BookingSlide({
             onClick={onContinue}
             disabled={!validation.isValid || isSubmitting}
           >
-            {isSubmitting ? 'SAVING…' : 'CONTINUE TO PAYMENT'}
+            {isSubmitting ? 'PROCESSING…' : 'CONTINUE TO PAYMENT'}
           </button>
 
           {submitError ? (
@@ -612,10 +638,79 @@ const BookNowModule = () => {
   const [isLoadingTimes, setIsLoadingTimes] = useState(false);
   const [availableDays, setAvailableDays] = useState<Record<string, boolean> | null>(null);
   const [isLoadingDays, setIsLoadingDays] = useState(false);
+  const paymentQueryHandledRef = useRef(false);
 
   useEffect(() => {
     preloadImage('/images/optimized/DSC01989_1600.jpg');
     preloadImage(STUDIO_GALLERY_IMAGE);
+  }, []);
+
+  useEffect(() => {
+    if (paymentQueryHandledRef.current) return;
+    if (typeof window === 'undefined') return;
+
+    const params = new URLSearchParams(window.location.search);
+    const paymentStatus = params.get('payment');
+    const sessionId = params.get('session_id');
+    if (!paymentStatus) return;
+    paymentQueryHandledRef.current = true;
+
+    const clearPaymentParams = () => {
+      const next = `${window.location.pathname}${window.location.hash || ''}`;
+      window.history.replaceState({}, '', next);
+    };
+
+    if (paymentStatus === 'cancelled') {
+      setSubmitError('Pago cancelado. Puedes intentar nuevamente cuando quieras.');
+      setIsSubmitting(false);
+      clearPaymentParams();
+      return;
+    }
+
+    if (paymentStatus !== 'success' || !sessionId) {
+      setSubmitError('No se pudo validar el pago en Stripe.');
+      setIsSubmitting(false);
+      clearPaymentParams();
+      return;
+    }
+
+    setSubmitError(null);
+    setIsSubmitting(true);
+
+    fetch('/api/confirm-booking-after-payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId }),
+    })
+      .then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok || !data?.ok) {
+          const msg = [
+            data?.error || 'No se pudo confirmar la reserva después del pago.',
+            data?.details ? `Details: ${data.details}` : null,
+            Array.isArray(data?.missing) && data.missing.length > 0
+              ? `Faltan variables: ${data.missing.join(', ')}`
+              : null,
+          ]
+            .filter(Boolean)
+            .join(' | ');
+          throw new Error(msg);
+        }
+        const link =
+          typeof data?.calendarTemplateLink === 'string' && data.calendarTemplateLink
+            ? data.calendarTemplateLink
+            : typeof data?.htmlLink === 'string' && data.htmlLink
+              ? data.htmlLink
+              : null;
+        if (link) setCalendarLink(link);
+      })
+      .catch((e) => {
+        setSubmitError(e?.message || 'No se pudo confirmar la reserva después del pago.');
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+        clearPaymentParams();
+      });
   }, []);
 
   const money = useMemo(
@@ -734,12 +829,19 @@ const BookNowModule = () => {
     if (!availableTimes.includes(selectedTime)) setSelectedTime(null);
   }, [availableTimes, selectedTime]);
 
+  useEffect(() => {
+    if (!selectedTime) return;
+    if (!slotEndsBeforeClose(selectedTime, hours)) setSelectedTime(null);
+  }, [hours, selectedTime]);
+
   const validation = useMemo(() => {
     const errors: BookingValidationErrors = {};
 
     if (!activePlan) errors.activePlan = 'Selecciona un plan (Weekday o Weekend).';
     if (!selectedDate) errors.selectedDate = 'Selecciona una fecha.';
     if (!selectedTime) errors.selectedTime = 'Selecciona una hora.';
+    else if (!slotEndsBeforeClose(selectedTime, hours))
+      errors.selectedTime = 'La reserva debe finalizar a las 10:00 PM o antes.';
 
     const firstName = stripNewlines(formValues.firstName).trim();
     const lastName = stripNewlines(formValues.lastName).trim();
@@ -762,7 +864,7 @@ const BookNowModule = () => {
       errors.phone = 'Ingresa un teléfono válido (10–15 dígitos).';
 
     return { errors, isValid: Object.keys(errors).length === 0 };
-  }, [activePlan, formValues, selectedDate, selectedTime]);
+  }, [activePlan, formValues, selectedDate, selectedTime, hours]);
 
   const showErrors = submitAttempted;
 
@@ -784,7 +886,7 @@ const BookNowModule = () => {
       email: normalizeEmail(formValues.email),
     };
 
-    fetch('/api/create-booking-event', {
+    fetch('/api/create-checkout-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -793,7 +895,7 @@ const BookNowModule = () => {
         const data = await r.json().catch(() => ({}));
         if (!r.ok || !data?.ok) {
           const msg = [
-            data?.error || 'No se pudo crear el evento en el calendario.',
+            data?.error || 'No se pudo iniciar el pago con Stripe.',
             data?.details ? `Details: ${data.details}` : null,
             Array.isArray(data?.missing) && data.missing.length > 0
               ? `Faltan variables: ${data.missing.join(', ')}`
@@ -801,19 +903,18 @@ const BookNowModule = () => {
           ]
             .filter(Boolean)
             .join(' | ');
-          console.error('create-booking-event failed', { status: r.status, data });
+          console.error('create-checkout-session failed', { status: r.status, data });
           throw new Error(msg);
         }
-        const link =
-          typeof data?.calendarTemplateLink === 'string' && data.calendarTemplateLink
-            ? data.calendarTemplateLink
-            : typeof data?.htmlLink === 'string' && data.htmlLink
-              ? data.htmlLink
-              : null;
-        if (link) setCalendarLink(link);
+
+        if (typeof window !== 'undefined' && typeof data?.url === 'string' && data.url) {
+          window.location.assign(data.url);
+          return;
+        }
+        throw new Error('Stripe no devolvió una URL de checkout válida.');
       })
       .catch((e) => {
-        setSubmitError(e?.message || 'No se pudo crear el evento en el calendario.');
+        setSubmitError(e?.message || 'No se pudo iniciar el pago con Stripe.');
       })
       .finally(() => {
         setIsSubmitting(false);

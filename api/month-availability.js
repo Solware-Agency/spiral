@@ -4,6 +4,7 @@ import { isAllowedRequestOrigin } from '../server/origin.js';
 import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
 
 const TZ = 'America/New_York';
+const BOOKING_CLOSE_HOUR = 22; // 10:00 PM
 
 const TIME_SLOTS = [
   '7:00 AM',
@@ -136,6 +137,12 @@ export default async function handler(req, res) {
       }
 
       const dateEnd = dateStart.plus({ days: 1 });
+      const bookingClose = dateStart.set({
+        hour: BOOKING_CLOSE_HOUR,
+        minute: 0,
+        second: 0,
+        millisecond: 0,
+      });
 
       let hasAny = false;
       for (const slot of TIME_SLOTS) {
@@ -144,6 +151,7 @@ export default async function handler(req, res) {
         const start = dateStart.set({ hour: t.hour, minute: t.minute, second: 0, millisecond: 0 });
         const end = start.plus({ hours });
         if (end > dateEnd) continue;
+        if (end > bookingClose) continue;
 
         let blocked = false;
         for (const b of busyIntervals) {

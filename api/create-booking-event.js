@@ -6,6 +6,7 @@ import { isAllowedRequestOrigin } from '../server/origin.js';
 import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
 
 const TZ = 'America/New_York';
+const BOOKING_CLOSE_HOUR = 22; // 10:00 PM
 
 function json(res, status, body) {
   res.statusCode = status;
@@ -124,10 +125,22 @@ export default async function handler(req, res) {
   }
 
   const dayStart = DateTime.fromObject({ year, month, day }, { zone: TZ }).startOf('day');
+  const bookingClose = dayStart.set({
+    hour: BOOKING_CLOSE_HOUR,
+    minute: 0,
+    second: 0,
+    millisecond: 0,
+  });
   const start = dayStart.set({ hour: t.hour, minute: t.minute, second: 0, millisecond: 0 });
   const end = start.plus({ hours });
   if (!start.isValid || !end.isValid) {
     return json(res, 400, { ok: false, error: 'Invalid date/time' });
+  }
+  if (end > bookingClose) {
+    return json(res, 400, {
+      ok: false,
+      error: 'La reserva debe finalizar a las 10:00 PM o antes.',
+    });
   }
 
   const calendar = getCalendarClient({ clientEmail, privateKey });

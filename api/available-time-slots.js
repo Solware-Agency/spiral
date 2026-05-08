@@ -4,6 +4,7 @@ import { isAllowedRequestOrigin } from '../server/origin.js';
 import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
 
 const TZ = 'America/New_York';
+const BOOKING_CLOSE_HOUR = 22; // 10:00 PM
 
 const TIME_SLOTS = [
   '7:00 AM',
@@ -90,6 +91,7 @@ export default async function handler(req, res) {
 
   const dayStart = DateTime.fromISO(date, { zone: TZ }).startOf('day');
   const dayEnd = dayStart.plus({ days: 1 });
+  const bookingClose = dayStart.set({ hour: BOOKING_CLOSE_HOUR, minute: 0, second: 0, millisecond: 0 });
 
   const calendar = getCalendarClient({ clientEmail, privateKey });
 
@@ -119,6 +121,7 @@ export default async function handler(req, res) {
       const start = dayStart.set({ hour: t.hour, minute: t.minute, second: 0, millisecond: 0 });
       const end = start.plus({ hours });
       if (end > dayEnd) return false;
+      if (end > bookingClose) return false;
       for (const b of busyIntervals) {
         if (overlaps(start, end, b.start, b.end)) return false;
       }
