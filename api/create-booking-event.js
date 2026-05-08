@@ -4,6 +4,11 @@ import { google } from 'googleapis';
 import { DateTime } from 'luxon';
 import { isAllowedRequestOrigin } from '../server/origin.js';
 import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
+import {
+  getResendClient,
+  getResendEnv,
+  sendBookingConfirmationEmails,
+} from '../server/resend.js';
 
 const TZ = 'America/New_York';
 const BOOKING_CLOSE_HOUR = 22; // 10:00 PM
@@ -201,6 +206,25 @@ export default async function handler(req, res) {
       start,
       end,
     });
+    const resendEnv = getResendEnv();
+    if (!resendEnv.missing.length) {
+      const resend = getResendClient(resendEnv.apiKey);
+      sendBookingConfirmationEmails({
+        resend,
+        fromEmail: resendEnv.fromEmail,
+        ownerEmail: resendEnv.ownerEmail,
+        customerEmail: email,
+        customerName: displayName || '(not provided)',
+        planLabel,
+        hours,
+        date,
+        time,
+        calendarLink: calendarTemplateLink || resp.data.htmlLink || null,
+        paidViaStripe: false,
+      }).catch((err) => {
+        console.error('create-booking-event: resend failed', err);
+      });
+    }
 
     return json(res, 200, {
       ok: true,

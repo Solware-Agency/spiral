@@ -29,7 +29,11 @@ En Vercel → Project → Settings → Environment Variables:
 - `ALLOWED_ORIGIN` (opcional pero recomendado)
   - Ej: `https://tu-dominio.com`
 - `STUDIO_NOTIFICATION_EMAIL` (opcional)
-  - Reservado para otros flujos; las invitaciones de Calendar no salen por service account sin domain-wide delegation.
+  - Email del dueño para notificaciones internas de reserva.
+- `RESEND_API_KEY` (opcional, recomendado)
+  - API key de Resend para enviar confirmaciones.
+- `RESEND_FROM_EMAIL` (opcional, recomendado)
+  - Remitente verificado en Resend (ej: `Spiral Bookings <bookings@tu-dominio.com>`).
 
 ### 4) Endpoint
 
@@ -68,4 +72,13 @@ Respuestas útiles:
 Sin **domain-wide delegation** en Google Workspace, una service account **no puede** añadir `attendees` ni enviar invitaciones de Calendar.
 
 El evento se crea en el calendario compartido con **cliente y datos de contacto en la descripción**. Para correos automáticos al cliente, usa otro canal (por ejemplo el flujo `mailto:` del sitio o un servicio de email).
+
+### 7) Correos de confirmación con Resend
+
+Si defines `RESEND_API_KEY` y `RESEND_FROM_EMAIL`, el backend enviará:
+
+- Email al dueño (`STUDIO_NOTIFICATION_EMAIL`)
+- Email al cliente (`email` del formulario)
+
+El envío es **no bloqueante**: si falla Resend, la reserva igual se mantiene en Calendar y el error se registra en logs.
 

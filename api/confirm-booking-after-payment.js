@@ -3,6 +3,11 @@
 import { DateTime } from 'luxon';
 import { isAllowedRequestOrigin } from '../server/origin.js';
 import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
+import {
+  getResendClient,
+  getResendEnv,
+  sendBookingConfirmationEmails,
+} from '../server/resend.js';
 import { getStripeClient, getStripeEnv } from '../server/stripe.js';
 
 const TZ = 'America/New_York';
@@ -260,6 +265,26 @@ export default async function handler(req, res) {
     });
     const htmlLink = resp?.data?.htmlLink || null;
     const eventId = resp?.data?.id || null;
+
+    const resendEnv = getResendEnv();
+    if (!resendEnv.missing.length) {
+      const resend = getResendClient(resendEnv.apiKey);
+      sendBookingConfirmationEmails({
+        resend,
+        fromEmail: resendEnv.fromEmail,
+        ownerEmail: resendEnv.ownerEmail,
+        customerEmail: email,
+        customerName: displayName || '(not provided)',
+        planLabel,
+        hours,
+        date,
+        time,
+        calendarLink: calendarTemplateLink || htmlLink,
+        paidViaStripe: true,
+      }).catch((err) => {
+        console.error('confirm-booking-after-payment: resend failed', err);
+      });
+    }
 
     if (paymentIntentId && eventId) {
       try {
