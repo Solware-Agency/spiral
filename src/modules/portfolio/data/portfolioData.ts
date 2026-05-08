@@ -67,30 +67,78 @@ export const portfolioVideosRows: PortfolioVideoRow[] = [
     id: 'vrow-sports',
     label: 'SPORTS',
     items: [
-      { id: 'v-sports-24', videoSrc: '/videos/videos/Sports/24.mp4' },
-      { id: 'v-sports-26', videoSrc: '/videos/videos/Sports/26.mp4' },
-      { id: 'v-sports-27', videoSrc: '/videos/videos/Sports/27.mp4' },
-      { id: 'v-sports-28', videoSrc: '/videos/videos/Sports/28.mp4' },
+      {
+        id: 'v-sports-24',
+        videoSrc: '/videos/videos/Sports/24.mp4',
+        posterSrc: '/videos/videos/Sports/24.jpg',
+      },
+      {
+        id: 'v-sports-26',
+        videoSrc: '/videos/videos/Sports/26.mp4',
+        posterSrc: '/videos/videos/Sports/26.jpg',
+      },
+      {
+        id: 'v-sports-27',
+        videoSrc: '/videos/videos/Sports/27.mp4',
+        posterSrc: '/videos/videos/Sports/27.jpg',
+      },
+      {
+        id: 'v-sports-28',
+        videoSrc: '/videos/videos/Sports/28.mp4',
+        posterSrc: '/videos/videos/Sports/28.jpg',
+      },
     ],
   },
   {
     id: 'vrow-fashion',
     label: 'FASHION',
     items: [
-      { id: 'v-fashion-29', videoSrc: '/videos/videos/Fashion/29.mp4' },
-      { id: 'v-fashion-30', videoSrc: '/videos/videos/Fashion/30.mp4' },
-      { id: 'v-fashion-31', videoSrc: '/videos/videos/Fashion/31.mp4' },
-      { id: 'v-fashion-32', videoSrc: '/videos/videos/Fashion/32.mp4' },
+      {
+        id: 'v-fashion-29',
+        videoSrc: '/videos/videos/Fashion/29.mp4',
+        posterSrc: '/videos/videos/Fashion/29.jpg',
+      },
+      {
+        id: 'v-fashion-30',
+        videoSrc: '/videos/videos/Fashion/30.mp4',
+        posterSrc: '/videos/videos/Fashion/30.jpg',
+      },
+      {
+        id: 'v-fashion-31',
+        videoSrc: '/videos/videos/Fashion/31.mp4',
+        posterSrc: '/videos/videos/Fashion/31.jpg',
+      },
+      {
+        id: 'v-fashion-32',
+        videoSrc: '/videos/videos/Fashion/32.mp4',
+        posterSrc: '/videos/videos/Fashion/32.jpg',
+      },
     ],
   },
   {
     id: 'vrow-drinks',
     label: 'DRINKS',
     items: [
-      { id: 'v-drinks-33', videoSrc: '/videos/videos/Drinks/33.mp4' },
-      { id: 'v-drinks-34', videoSrc: '/videos/videos/Drinks/34.mp4' },
-      { id: 'v-drinks-35', videoSrc: '/videos/videos/Drinks/35.mp4' },
-      { id: 'v-drinks-36', videoSrc: '/videos/videos/Drinks/36.mp4' },
+      {
+        id: 'v-drinks-33',
+        videoSrc: '/videos/videos/Drinks/33.mp4',
+        posterSrc: '/videos/videos/Drinks/33.jpg',
+      },
+      {
+        id: 'v-drinks-34',
+        videoSrc: '/videos/videos/Drinks/34.mp4',
+        posterSrc: '/videos/videos/Drinks/34.jpg',
+      },
+      {
+        id: 'v-drinks-35',
+        videoSrc: '/videos/videos/Drinks/35.mp4',
+        posterSrc: '/videos/videos/Drinks/35.jpg',
+      },
+      {
+        id: 'v-drinks-36',
+        videoSrc: '/videos/videos/Drinks/36.mp4',
+        posterSrc: '/videos/videos/Drinks/36.jpg',
+      },
     ],
   },
 ];

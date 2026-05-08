@@ -82,3 +82,20 @@ Si defines `RESEND_API_KEY` y `RESEND_FROM_EMAIL`, el backend enviará:
 
 El envío es **no bloqueante**: si falla Resend, la reserva igual se mantiene en Calendar y el error se registra en logs.
 
+### 8) Webhook Stripe (server-to-server)
+
+Para confirmación 100% server-to-server, el proyecto incluye:
+
+- `POST /api/stripe-webhook`
+  - Verifica firma con `STRIPE_WEBHOOK_SECRET`
+  - Procesa `checkout.session.completed`
+  - Confirma y crea reserva en Google Calendar desde backend
+
+Variables requeridas:
+- `STRIPE_SECRET_KEY`
+- `STRIPE_WEBHOOK_SECRET`
+
+En Stripe Dashboard:
+- Webhooks → Add endpoint → `https://tu-dominio.com/api/stripe-webhook`
+- Evento a suscribir: `checkout.session.completed`
+
