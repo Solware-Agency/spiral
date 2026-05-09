@@ -15,7 +15,6 @@ type BookingFormValues = {
 };
 
 type BookingValidationErrors = Partial<{
-  activePlan: string;
   selectedDate: string;
   selectedTime: string;
   firstName: string;
@@ -366,13 +365,12 @@ const BookingSlide = React.memo(function BookingSlide({
                     return <div key={`empty-${idx}`} className={styles.calendarCellEmpty} />;
                   }
                   const selected = isSameDay(cell, selectedDate);
-                  const allowed = plan === 'weekend' ? isWeekend(cell) : !isWeekend(cell);
                   const ymd = toYmdLocal(cell);
                   const dayHasAvailability =
                     !availableDays || typeof availableDays[ymd] !== 'boolean'
                       ? true
                       : availableDays[ymd];
-                  const enabled = allowed && dayHasAvailability && !isLoadingDays;
+                  const enabled = dayHasAvailability && !isLoadingDays;
                   return (
                     <button
                       key={cell.toISOString()}
@@ -583,12 +581,9 @@ const BookingSlide = React.memo(function BookingSlide({
             </label>
           </div>
 
-          {showErrors &&
-          (validation.errors.activePlan || validation.errors.selectedDate || validation.errors.selectedTime) ? (
+          {showErrors && (validation.errors.selectedDate || validation.errors.selectedTime) ? (
             <div className={styles.formSummaryError} role="alert">
-              {validation.errors.activePlan ??
-                validation.errors.selectedDate ??
-                validation.errors.selectedTime}
+              {validation.errors.selectedDate ?? validation.errors.selectedTime}
             </div>
           ) : null}
 
@@ -619,7 +614,7 @@ const BookingSlide = React.memo(function BookingSlide({
 });
 
 const BookNowModule = () => {
-  const [activePlan, setActivePlan] = useState<Plan | null>(null);
+  const [activePlan, setActivePlan] = useState<Plan | null>('weekday');
   const [hours, setHours] = useState(2);
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -734,24 +729,20 @@ const BookNowModule = () => {
   const price = useMemo(() => {
     const entry = rates.find((r) => r.hours === hours) ?? rates[0];
     if (!entry) return 0;
-    if (activePlan === 'weekend') return entry.weekend;
+    const detectedPlan = selectedDate ? (isWeekend(selectedDate) ? 'weekend' : 'weekday') : activePlan;
+    if (detectedPlan === 'weekend') return entry.weekend;
     return entry.weekday;
-  }, [activePlan, hours]);
+  }, [activePlan, hours, selectedDate]);
 
   const monthWeeks = useMemo(() => getMonthGrid(month), [month]);
 
   useEffect(() => {
-    if (!activePlan) {
-      setAvailableDays(null);
-      setIsLoadingDays(false);
-      return;
-    }
     const controller = new AbortController();
     setIsLoadingDays(true);
     fetch('/api/month-availability', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ month: toYmLocal(month), hours, plan: activePlan }),
+      body: JSON.stringify({ month: toYmLocal(month), hours }),
       signal: controller.signal,
     })
       .then(async (r) => {
@@ -779,10 +770,10 @@ const BookNowModule = () => {
       .finally(() => setIsLoadingDays(false));
 
     return () => controller.abort();
-  }, [activePlan, month, hours]);
+  }, [month, hours]);
 
   useEffect(() => {
-    if (!activePlan || !selectedDate) {
+    if (!selectedDate) {
       setAvailableTimes(null);
       setIsLoadingTimes(false);
       return;
@@ -822,7 +813,13 @@ const BookNowModule = () => {
       .finally(() => setIsLoadingTimes(false));
 
     return () => controller.abort();
-  }, [activePlan, selectedDate, hours]);
+  }, [selectedDate, hours]);
+
+  useEffect(() => {
+    if (!selectedDate) return;
+    const detectedPlan: Plan = isWeekend(selectedDate) ? 'weekend' : 'weekday';
+    if (activePlan !== detectedPlan) setActivePlan(detectedPlan);
+  }, [activePlan, selectedDate]);
 
   useEffect(() => {
     if (!selectedTime || !availableTimes) return;
@@ -837,7 +834,6 @@ const BookNowModule = () => {
   const validation = useMemo(() => {
     const errors: BookingValidationErrors = {};
 
-    if (!activePlan) errors.activePlan = 'Selecciona un plan (Weekday o Weekend).';
     if (!selectedDate) errors.selectedDate = 'Selecciona una fecha.';
     if (!selectedTime) errors.selectedTime = 'Selecciona una hora.';
     else if (!slotEndsBeforeClose(selectedTime, hours))
@@ -864,7 +860,7 @@ const BookNowModule = () => {
       errors.phone = 'Ingresa un teléfono válido (10–15 dígitos).';
 
     return { errors, isValid: Object.keys(errors).length === 0 };
-  }, [activePlan, formValues, selectedDate, selectedTime, hours]);
+  }, [formValues, selectedDate, selectedTime, hours]);
 
   const showErrors = submitAttempted;
 
@@ -876,7 +872,6 @@ const BookNowModule = () => {
     setCalendarLink(null);
 
     const payload = {
-      plan: activePlan,
       hours,
       date: toYmdLocal(selectedDate),
       time: selectedTime,

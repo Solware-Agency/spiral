@@ -100,7 +100,6 @@ export default async function handler(req, res) {
     return json(res, 400, { ok: false, error: 'Invalid JSON' });
   }
 
-  const plan = body?.plan === 'weekend' ? 'weekend' : body?.plan === 'weekday' ? 'weekday' : null;
   const hours = Number(body?.hours);
   const date = String(body?.date ?? '').trim();
   const time = String(body?.time ?? '').trim();
@@ -109,7 +108,7 @@ export default async function handler(req, res) {
   const phone = String(body?.phone ?? '').trim();
   const email = String(body?.email ?? '').trim();
 
-  if (!plan || !Number.isFinite(hours) || !date || !time) {
+  if (!Number.isFinite(hours) || !date || !time) {
     return json(res, 400, { ok: false, error: 'Missing booking fields' });
   }
   if (!Number.isInteger(hours) || hours < 2 || hours > 8) {
@@ -131,12 +130,7 @@ export default async function handler(req, res) {
   const month = Number(dm[2]);
   const day = Number(dm[3]);
   const weekend = isWeekendYMD(year, month, day);
-  if (plan === 'weekend' && !weekend) {
-    return json(res, 400, { ok: false, error: 'Selected date is not a weekend' });
-  }
-  if (plan === 'weekday' && weekend) {
-    return json(res, 400, { ok: false, error: 'Selected date is not a weekday' });
-  }
+  const plan = weekend ? 'weekend' : 'weekday';
 
   const amount = RATE_TABLE[plan]?.[hours];
   if (!Number.isFinite(amount)) {

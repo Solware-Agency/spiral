@@ -93,8 +93,8 @@ export default async function handler(req, res) {
   const plan =
     body?.plan === 'weekend' ? 'weekend' : body?.plan === 'weekday' ? 'weekday' : null;
 
-  if (!/^\d{4}-\d{2}$/.test(ym) || !Number.isFinite(hours) || hours <= 0 || hours > 12 || !plan) {
-    return json(res, 400, { ok: false, error: 'Missing or invalid month/hours/plan' });
+  if (!/^\d{4}-\d{2}$/.test(ym) || !Number.isFinite(hours) || hours <= 0 || hours > 12) {
+    return json(res, 400, { ok: false, error: 'Missing or invalid month/hours' });
   }
 
   const monthStart = DateTime.fromISO(`${ym}-01`, { zone: TZ }).startOf('month');
@@ -128,7 +128,7 @@ export default async function handler(req, res) {
     for (let day = 0; day < monthStart.daysInMonth; day += 1) {
       const dateStart = monthStart.plus({ days: day }).startOf('day');
       const isWeekend = isWeekendDateTime(dateStart);
-      const planOk = plan === 'weekend' ? isWeekend : !isWeekend;
+      const planOk = !plan ? true : plan === 'weekend' ? isWeekend : !isWeekend;
       const ymd = dateStart.toISODate(); // YYYY-MM-DD
 
       if (!planOk) {

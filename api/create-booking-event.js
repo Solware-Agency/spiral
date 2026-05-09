@@ -95,7 +95,6 @@ export default async function handler(req, res) {
     }
   }
 
-  const plan = body?.plan === 'weekend' ? 'weekend' : body?.plan === 'weekday' ? 'weekday' : null;
   const hours = Number(body?.hours);
   const date = String(body?.date ?? '').trim(); // YYYY-MM-DD
   const time = String(body?.time ?? '').trim(); // 7:00 AM
@@ -105,7 +104,7 @@ export default async function handler(req, res) {
   const phone = String(body?.phone ?? '').trim();
   const email = String(body?.email ?? '').trim();
 
-  if (!plan || !Number.isFinite(hours) || hours < 1 || hours > 12 || !date || !time) {
+  if (!Number.isFinite(hours) || hours < 1 || hours > 12 || !date || !time) {
     return json(res, 400, { ok: false, error: 'Missing or invalid booking fields' });
   }
 
@@ -122,12 +121,7 @@ export default async function handler(req, res) {
   if (!t) return json(res, 400, { ok: false, error: 'Invalid time format' });
 
   const weekend = isWeekendYMD(year, month, day);
-  if (plan === 'weekend' && !weekend) {
-    return json(res, 400, { ok: false, error: 'Selected date is not a weekend' });
-  }
-  if (plan === 'weekday' && weekend) {
-    return json(res, 400, { ok: false, error: 'Selected date is not a weekday' });
-  }
+  const plan = weekend ? 'weekend' : 'weekday';
 
   const dayStart = DateTime.fromObject({ year, month, day }, { zone: TZ }).startOf('day');
   const bookingClose = dayStart.set({
