@@ -44,7 +44,7 @@ function renderEmailTemplate({
       <tr>
         <td style="padding:20px 28px 4px;">
           <a href="${esc(calendarLink)}"
-             style="display:inline-block;background:#6f1720;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:8px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">
+            style="display:inline-block;background:#6f1720;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:8px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">
             Ver en Google Calendar / View on Google Calendar
           </a>
         </td>
