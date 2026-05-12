@@ -74,7 +74,10 @@ function overlaps(aStart, aEnd, bStart, bEnd) {
 }
 
 function fail(status, payload) {
-  const err = new Error(payload?.error || 'Request failed');
+  const err = new Error(payload?.error || 'Request failed') as Error & {
+    httpStatus: number;
+    payload: unknown;
+  };
   err.httpStatus = status;
   err.payload = payload;
   throw err;
