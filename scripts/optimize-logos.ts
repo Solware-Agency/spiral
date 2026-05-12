@@ -9,7 +9,7 @@ const projectRoot = path.resolve(__dirname, '..');
 const imagesRoot = path.join(projectRoot, 'public', 'images');
 const outputDir = path.join(projectRoot, 'public', 'images', 'optimized-logos');
 
-async function exists(p) {
+async function exists(p: string) {
   try {
     await fs.access(p);
     return true;
@@ -18,7 +18,7 @@ async function exists(p) {
   }
 }
 
-async function shouldRegenerate(srcPath, outPath) {
+async function shouldRegenerate(srcPath: string, outPath: string) {
   if (!(await exists(outPath))) return true;
   const [srcStat, outStat] = await Promise.all([fs.stat(srcPath), fs.stat(outPath)]);
   return srcStat.mtimeMs > outStat.mtimeMs;
@@ -26,7 +26,7 @@ async function shouldRegenerate(srcPath, outPath) {
 
 async function main() {
   await fs.mkdir(outputDir, { recursive: true });
-  const tasks = [];
+  const tasks: Promise<void>[] = [];
 
   for (const { slug, relativePath } of LOGO_OPTIMIZE_ENTRIES) {
     const srcPath = path.join(imagesRoot, ...relativePath.split('/'));
@@ -48,7 +48,7 @@ async function main() {
             .toFile(outPath);
           const [srcStat, outStat] = await Promise.all([fs.stat(srcPath), fs.stat(outPath)]);
           console.log(
-            `[optimize-logos] ${slug} ${w}w → ${outPath.split('public').pop()} (${outStat.size} B, orig ${srcStat.size} B)`
+            `[optimize-logos] ${slug} ${w}w -> ${outPath.split('public').pop()} (${outStat.size} B, orig ${srcStat.size} B)`
           );
         })()
       );
@@ -57,11 +57,12 @@ async function main() {
 
   await Promise.all(tasks);
   if (tasks.length === 0) {
-    console.log('[optimize-logos] WebP de logos al día.');
+    console.log('[optimize-logos] WebP de logos al dia.');
   }
 }
 
-main().catch((err) => {
+main().catch((err: unknown) => {
   console.error(err);
   process.exit(1);
 });
+

@@ -14,15 +14,19 @@ const skip = onVercel
 
 if (skip) {
   const reason = onVercel
-    ? 'deploy en Vercel (definí RUN_SHARP_OPTIMIZE=1 para regenerar con Sharp).'
+    ? 'deploy en Vercel (defini RUN_SHARP_OPTIMIZE=1 para regenerar con Sharp).'
     : 'SKIP_IMAGE_OPTIMIZE activo.';
   console.log(`[build] Se omite optimize:images/logos (${reason})`);
 } else {
-  const r = spawnSync(process.execPath, [path.join(root, 'scripts', 'optimize-all.mjs')], {
-    cwd: root,
-    stdio: 'inherit',
-    env: process.env,
-  });
+  const r = spawnSync(
+    process.execPath,
+    ['--experimental-strip-types', path.join(root, 'scripts', 'optimize-all.ts')],
+    {
+      cwd: root,
+      stdio: 'inherit',
+      env: process.env,
+    }
+  );
   if (r.status !== 0) process.exit(r.status ?? 1);
 }
 
@@ -33,3 +37,4 @@ const vite = spawnSync('pnpm', ['exec', 'vite', 'build'], {
 });
 
 process.exit(vite.status ?? 0);
+

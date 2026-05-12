@@ -1,6 +1,6 @@
 import { OPTIMIZED_PHOTO_FILES } from '../data/optimizedSources';
 
-/** Anchos alineados con scripts/optimize-images.mjs */
+/** Anchos alineados con scripts/optimize-images.ts */
 export const RESPONSIVE_WIDTHS = [320, 480, 640, 960, 1280, 1600, 2560, 3200];
 
 const baseFromSourceFile = (file) => {

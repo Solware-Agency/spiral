@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 const projectRoot = path.resolve(__dirname, '..');
 const clientLogosDir = path.join(projectRoot, 'public', 'images', 'client logos', 'CLIENT LOGOS');
 
-async function exists(p) {
+async function exists(p: string) {
   try {
     await fs.access(p);
     return true;
@@ -18,7 +18,7 @@ async function exists(p) {
   }
 }
 
-async function shouldRegenerate(srcPath, outPath) {
+async function shouldRegenerate(srcPath: string, outPath: string) {
   if (!(await exists(outPath))) return true;
   const [srcStat, outStat] = await Promise.all([fs.stat(srcPath), fs.stat(outPath)]);
   return srcStat.mtimeMs > outStat.mtimeMs;
@@ -38,7 +38,7 @@ async function main() {
     return;
   }
 
-  const tasks = [];
+  const tasks: Promise<void>[] = [];
 
   for (const name of pngFiles) {
     const srcPath = path.join(clientLogosDir, name);
@@ -59,18 +59,21 @@ async function main() {
           .toFile(webpPath);
         const [srcStat, outStat] = await Promise.all([fs.stat(srcPath), fs.stat(webpPath)]);
         const pct = Math.round((1 - outStat.size / srcStat.size) * 100);
-        console.log(`[optimize-client-logos] ${name} → ${base}.webp (${srcStat.size} → ${outStat.size} B, ~${pct}% menos)`);
+        console.log(
+          `[optimize-client-logos] ${name} -> ${base}.webp (${srcStat.size} -> ${outStat.size} B, ~${pct}% menos)`
+        );
       })()
     );
   }
 
   await Promise.all(tasks);
   if (tasks.length === 0) {
-    console.log('[optimize-client-logos] WebP al día.');
+    console.log('[optimize-client-logos] WebP al dia.');
   }
 }
 
-main().catch((err) => {
+main().catch((err: unknown) => {
   console.error(err);
   process.exit(1);
 });
+

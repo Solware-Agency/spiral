@@ -1,6 +1,6 @@
 /**
  * Logos PNG de marca: variantes WebP en /images/optimized-logos/{slug}_{ancho}.webp
- * (scripts/optimize-logos.mjs). Mantener rutas alineadas con public/images.
+ * (scripts/optimize-logos.ts). Mantener rutas alineadas con public/images.
  */
 export const LOGO_WEBP_WIDTHS = [320, 640, 960, 1280];
 

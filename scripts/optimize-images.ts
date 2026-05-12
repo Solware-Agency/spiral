@@ -13,12 +13,12 @@ const outputDir = path.join(projectRoot, 'public', 'images', 'optimized');
 
 const TARGET_WIDTHS = [320, 480, 640, 960, 1280, 1600, 2560, 3200];
 
-const outName = (file, w, ext) => {
+const outName = (file: string, w: number, ext: string) => {
   const base = path.basename(file, path.extname(file));
   return `${base}_${w}.${ext}`;
 };
 
-async function exists(p) {
+async function exists(p: string) {
   try {
     await fs.access(p);
     return true;
@@ -27,7 +27,7 @@ async function exists(p) {
   }
 }
 
-async function shouldRegenerate(srcPath, outPath) {
+async function shouldRegenerate(srcPath: string, outPath: string) {
   if (!(await exists(outPath))) return true;
   const [srcStat, outStat] = await Promise.all([fs.stat(srcPath), fs.stat(outPath)]);
   return srcStat.mtimeMs > outStat.mtimeMs;
@@ -35,7 +35,7 @@ async function shouldRegenerate(srcPath, outPath) {
 
 async function main() {
   await fs.mkdir(outputDir, { recursive: true });
-  const tasks = [];
+  const tasks: Promise<void>[] = [];
 
   for (const file of OPTIMIZED_PHOTO_FILES) {
     const srcPath = path.join(inputDir, ...file.split('/'));
@@ -71,7 +71,8 @@ async function main() {
   await Promise.all(tasks);
 }
 
-main().catch((err) => {
+main().catch((err: unknown) => {
   console.error(err);
   process.exit(1);
 });
+

@@ -1,6 +1,6 @@
 /**
  * Fotos con variantes en /images/optimized/{base}_{ancho}.webp|.jpg
- * (generadas por scripts/optimize-images.mjs). Mantener sincronizado con ese script.
+ * (generadas por scripts/optimize-images.ts). Mantener sincronizado con ese script.
  */
 export const OPTIMIZED_PHOTO_FILES = [
   'DSC01989.jpg',
