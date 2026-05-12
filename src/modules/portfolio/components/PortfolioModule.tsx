@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ResponsiveImg from '../../../components/ResponsiveImg';
 import styles from '../styles/portfolio.module.css';
 import {
@@ -10,6 +10,7 @@ import {
 } from '../data/portfolioData';
 
 const MEDIA_THUMB_SIZES = '(max-width: 640px) 100vw, (max-width: 1100px) 50vw, min(36vw, 720px)';
+const PHOTO_CAROUSEL_INTERVAL_MS = 3600;
 
 function cleanedPhotoCaption(title) {
   if (title == null || title === '') return '';
@@ -137,6 +138,64 @@ function PortfolioVideoThumb({
   );
 }
 
+function PortfolioPhotoCarouselRow({
+  row,
+}: {
+  row: (typeof portfolioPhotosRows)[number];
+}) {
+  const slides = row.items;
+  const [activeIdx, setActiveIdx] = useState(0);
+
+  useEffect(() => {
+    if (slides.length <= 1) return undefined;
+    const id = window.setInterval(() => {
+      setActiveIdx((prev) => (prev + 1) % slides.length);
+    }, PHOTO_CAROUSEL_INTERVAL_MS);
+    return () => window.clearInterval(id);
+  }, [slides.length]);
+
+  if (slides.length === 0) return null;
+  const activeItem = slides[activeIdx];
+  const activeCaption = activeItem?.title ? cleanedPhotoCaption(activeItem.title) : '';
+
+  return (
+    <div key={row.id} className={styles.mediaRow}>
+      {row.label && <span className={styles.mediaRowLabel}>{row.label}</span>}
+      <div className={styles.mediaGridPhotos}>
+        <div
+          className={styles.mediaGridPhotosTrack}
+          style={{ transform: `translateX(-${activeIdx * 100}%)` }}
+        >
+          {slides.map((item, idx) => (
+            <div
+              key={item.id}
+              className={styles.mediaThumb}
+              data-variant="photo"
+              data-layout={idx + 1}
+            >
+              {(item.src || item.imageUrl) && (
+                <ResponsiveImg
+                  className={styles.mediaThumbImage}
+                  src={item.src || item.imageUrl}
+                  alt={photoImageAlt(item)}
+                  loading={idx === 0 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  sizes="100vw"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+      {activeCaption ? (
+        <span key={`${row.id}-${activeIdx}`} className={styles.mediaPhotoCaptionActive}>
+          {activeCaption}
+        </span>
+      ) : null}
+    </div>
+  );
+}
+
 const PortfolioModule = () => {
   return (
     <section className={styles.portfolioSection}>
@@ -206,36 +265,7 @@ const PortfolioModule = () => {
         <section className={`${styles.mediaBlock} ${styles.mediaBlockPhotos}`}>
           <h2 className={styles.mediaHeading}>Photos</h2>
           {portfolioPhotosRows.map((row) => (
-            <div key={row.id} className={styles.mediaRow}>
-              {row.label && <span className={styles.mediaRowLabel}>{row.label}</span>}
-              <div className={styles.mediaGridPhotos}>
-                {row.items.map((item, idx) => (
-                  <div
-                    key={item.id}
-                    className={styles.mediaThumb}
-                    data-variant="photo"
-                    data-layout={idx + 1}
-                  >
-                    {item.title ? (() => {
-                      const caption = cleanedPhotoCaption(item.title);
-                      return caption ? (
-                        <span className={styles.mediaPhotoCaption}>{caption}</span>
-                      ) : null;
-                    })() : null}
-                    {(item.src || item.imageUrl) && (
-                      <ResponsiveImg
-                        className={styles.mediaThumbImage}
-                        src={item.src || item.imageUrl}
-                        alt={photoImageAlt(item)}
-                        loading="lazy"
-                        decoding="async"
-                        sizes={MEDIA_THUMB_SIZES}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
+            <PortfolioPhotoCarouselRow key={row.id} row={row} />
           ))}
         </section>
       </div>
