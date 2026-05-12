@@ -924,8 +924,8 @@
 .preFooterTestimonialsInner {
   width: min(1400px, 100%);
   margin: 0 auto;
-  min-height: calc(clamp(400px, 30vh, 1200px) - 80px);
-  padding: clamp(0.6rem, 1.5vh, 0.9rem) clamp(1.1rem, 3.6vw, 4rem);
+  min-height: calc(clamp(300px, 22vh, 760px) - 70px);
+  padding: clamp(0.18rem, 0.7vh, 0.42rem) clamp(1.1rem, 3.6vw, 4rem);
   padding-bottom: 0;
   display: flex;
   align-items: center;
@@ -934,38 +934,38 @@
 }
 
 .testimonialsLeft {
-  flex: 0 1 520px;
+  flex: 0 1 760px;
   align-self: flex-start;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-top: clamp(0rem, 0.8vh, 0.45rem);
-  transform: translateX(150px) translateY(140px);
+  padding-top: 0;
+  transform: translateX(-120px) translateY(140px);
   text-align: left;
 }
 
 .testimonialsKicker {
   display: block;
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  font-weight: 700;
+  font-family: 'Andale Mono', 'AndaleMono', 'Lucida Console', monospace;
+  font-size: 0.92rem;
+  font-weight: 500;
   line-height: 1;
-  transform: translateX(4px);
+  transform: translateX(6px) translateY(-20px);
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: rgba(0, 0, 0, 0.65);
 }
 
 .testimonialsTitle {
-  margin: 0.25rem 0 0 0;
+  margin: 0.08rem 0 0 0;
   font-family: 'Loverica DEMO', var(--font-loverica, var(--font-display));
   font-weight: 400;
-  font-size: clamp(2.8rem, 5.8vw, 4.6rem);
+  font-size: clamp(4rem, 8.2vw, 6.8rem);
   line-height: 0.9;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   color: #6f1720;
-  max-width: 18ch;
+  max-width: 24ch;
 }
 
 .testimonialsTitleLine1 {
@@ -982,11 +982,12 @@
 
 .testimonialsAsset {
   width: auto;
-  height: clamp(480px, 82.5vh, 1470px);
-  max-width: min(2400px, 95vw);
+  height: clamp(740px, 114vh, 2100px);
+  max-width: min(3400px, 99.5vw);
+  margin-bottom: -180px;
   display: block;
   filter: drop-shadow(0 22px 55px rgba(0, 0, 0, 0.22)) saturate(0.95) contrast(1.02);
-  transform: translateX(30px) translateY(-10px) rotate(-2deg);
+  transform: translateX(250px) translateY(-90px) rotate(-2deg);
 }
 
 @media (max-width: 920px) {
@@ -996,7 +997,7 @@
     justify-content: center;
     text-align: center;
     min-height: unset;
-    padding: clamp(0.75rem, 2.6vw, 1.05rem) clamp(0.9rem, 3.6vw, 1.35rem);
+    padding: clamp(0.35rem, 1.7vw, 0.62rem) clamp(0.9rem, 3.6vw, 1.35rem);
     padding-bottom: 0;
     gap: 0.75rem;
   }
@@ -1014,8 +1015,8 @@
   }
 
   .testimonialsAsset {
-    max-width: min(720px, 96%);
-    max-height: clamp(230px, 38vh, 570px);
+    max-width: min(1040px, 99.5%);
+    max-height: clamp(380px, 58vh, 900px);
     transform: rotate(-2deg);
   }
 
