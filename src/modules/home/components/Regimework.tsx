@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
-import { clientLogos } from '../../../data/clientLogos';
+import { clientLogos, preloadClientLogos } from '../../../data/clientLogos';
 import styles from '../styles/home.module.css';
 import useMarqueeDrag from '../../../hooks/useMarqueeDrag';
 
 const RegimeWork = () => {
   const { bind, dragStyle, isDragging, contentRef } = useMarqueeDrag();
+
+  useEffect(() => {
+    preloadClientLogos();
+  }, []);
 
   return (
     <section className={styles.clientsSection}>

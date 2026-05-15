@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
-import { clientLogos } from '../../../data/clientLogos';
+import { clientLogos, preloadClientLogos } from '../../../data/clientLogos';
 import styles from '../styles/about.module.css';
 import useMarqueeDrag from '../../../hooks/useMarqueeDrag';
 
 const ClientMarquee = () => {
   const { bind, dragStyle, isDragging, contentRef } = useMarqueeDrag();
+
+  useEffect(() => {
+    preloadClientLogos();
+  }, []);
 
   return (
     <section className={styles.logosSection} aria-label="Client logos">

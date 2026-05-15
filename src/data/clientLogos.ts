@@ -63,3 +63,17 @@ export const clientLogos = [
     instagram: 'https://www.instagram.com/thesetpadelhaus?igsh=anVlZm92M3Vtb2xn',
   },
 ];
+
+let hasPreloadedClientLogos = false;
+
+export const preloadClientLogos = () => {
+  if (hasPreloadedClientLogos) return;
+  if (typeof window === 'undefined') return;
+
+  hasPreloadedClientLogos = true;
+  clientLogos.forEach((logo) => {
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = logo.src;
+  });
+};
