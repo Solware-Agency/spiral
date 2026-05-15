@@ -3,8 +3,109 @@
  * (requisito del script de Elfsight: class^="elfsight-app").
  */
 .shell {
+  position: relative;
   width: 100%;
   min-height: clamp(18rem, 42vw, 32rem);
+}
+
+.preloader {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 120% at 20% 10%, rgb(255 208 0 / 18%), transparent 46%),
+    radial-gradient(120% 120% at 85% 15%, rgb(221 42 123 / 17%), transparent 45%),
+    radial-gradient(120% 120% at 78% 85%, rgb(81 91 212 / 17%), transparent 43%),
+    linear-gradient(180deg, rgb(255 255 255 / 94%), rgb(255 255 255 / 86%));
+  backdrop-filter: blur(2px);
+}
+
+.preloaderCard {
+  display: grid;
+  justify-items: center;
+  gap: 0.45rem;
+  min-width: min(22rem, 72vw);
+  padding: 1.1rem 1.3rem;
+  border: 1px solid rgb(255 255 255 / 76%);
+  border-radius: 1rem;
+  box-shadow:
+    0 10px 30px rgb(0 0 0 / 12%),
+    inset 0 1px 0 rgb(255 255 255 / 75%);
+  background: rgb(255 255 255 / 64%);
+}
+
+.spinner {
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    rgb(131 58 180),
+    rgb(225 48 108),
+    rgb(253 29 29),
+    rgb(252 176 69),
+    rgb(131 58 180)
+  );
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 0);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 0);
+  filter: drop-shadow(0 0 10px rgb(225 48 108 / 30%));
+  animation: spin 0.95s linear infinite;
+}
+
+.preloaderTitle {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: rgb(23 23 23 / 92%);
+}
+
+.preloaderHint {
+  margin: 0;
+  font-size: 0.77rem;
+  color: rgb(64 64 64 / 72%);
+  letter-spacing: 0.01em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .preloader {
+    background:
+      radial-gradient(120% 120% at 20% 10%, rgb(255 208 0 / 18%), transparent 46%),
+      radial-gradient(120% 120% at 85% 15%, rgb(221 42 123 / 20%), transparent 45%),
+      radial-gradient(120% 120% at 78% 85%, rgb(81 91 212 / 21%), transparent 43%),
+      linear-gradient(180deg, rgb(18 18 18 / 88%), rgb(18 18 18 / 78%));
+  }
+
+  .preloaderCard {
+    border-color: rgb(255 255 255 / 16%);
+    box-shadow:
+      0 10px 30px rgb(0 0 0 / 32%),
+      inset 0 1px 0 rgb(255 255 255 / 10%);
+    background: rgb(20 20 20 / 58%);
+  }
+
+  .preloaderTitle {
+    color: rgb(245 245 245 / 95%);
+  }
+
+  .preloaderHint {
+    color: rgb(217 217 217 / 72%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 1.6s;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Popups/previsualización montados dentro del embed (complemento al handler en .tsx) */

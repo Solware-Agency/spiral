@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import styles from './ElfsightInstagramFeed.module.css';
 import {
   eventComposedPathIncludes,
@@ -21,6 +21,7 @@ const ensurePlatformScript = () => {
 const ElfsightInstagramFeed = ({ appId = 'e1077f31-d2f4-4b2c-8d9b-bb2e032f40da' }) => {
   const shellRef = useRef<HTMLDivElement>(null);
   const className = useMemo(() => `elfsight-app-${appId}`, [appId]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
     const shell = shellRef.current;
@@ -45,6 +46,30 @@ const ElfsightInstagramFeed = ({ appId = 'e1077f31-d2f4-4b2c-8d9b-bb2e032f40da' 
     io.observe(shell);
     return () => io.disconnect();
   }, []);
+
+  useEffect(() => {
+    const shell = shellRef.current;
+    if (!shell) return;
+
+    const isWidgetMounted = () => {
+      const appNode = shell.querySelector(`.${className}`);
+      return Boolean(appNode && appNode.childElementCount > 0);
+    };
+
+    if (isWidgetMounted()) {
+      setIsLoaded(true);
+      return;
+    }
+
+    const mo = new MutationObserver(() => {
+      if (!isWidgetMounted()) return;
+      setIsLoaded(true);
+      mo.disconnect();
+    });
+
+    mo.observe(shell, { childList: true, subtree: true });
+    return () => mo.disconnect();
+  }, [className]);
 
   /*
    * Sin depender solo del panel de Elfsight: interceptamos click en captura (antes que el popup)
@@ -80,7 +105,16 @@ const ElfsightInstagramFeed = ({ appId = 'e1077f31-d2f4-4b2c-8d9b-bb2e032f40da' 
    * querySelector('*[class^="elfsight-app"]') y, si hay otra clase delante, no lo encuentra.
    */
   return (
-    <div ref={shellRef} className={styles.shell}>
+    <div ref={shellRef} className={styles.shell} aria-busy={!isLoaded}>
+      {!isLoaded && (
+        <div className={styles.preloader} role="status" aria-live="polite" aria-label="Cargando feed de Instagram">
+          <div className={styles.preloaderCard}>
+            <span className={styles.spinner} />
+            <p className={styles.preloaderTitle}>Cargando Instagram</p>
+            <p className={styles.preloaderHint}>Preparando el feed visual</p>
+          </div>
+        </div>
+      )}
       <div className={className} data-elfsight-app-lazy="" />
     </div>
   );
