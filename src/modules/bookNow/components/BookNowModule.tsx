@@ -93,6 +93,32 @@ const monthNames = [
 
 const dayHeaders = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const BOOKING_CLOSE_HOUR = 22; // 10:00 PM
+const TURNSTILE_SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+const TURNSTILE_ACTION = 'create_checkout_session';
+const CHECKOUT_HEADER_SECRET_NAME = String(
+  import.meta.env.VITE_CHECKOUT_HEADER_SECRET_NAME || 'x-checkout-secret'
+).trim();
+const CHECKOUT_HEADER_SECRET = String(import.meta.env.VITE_CHECKOUT_HEADER_SECRET || '').trim();
+
+type TurnstileApi = {
+  render: (
+    container: HTMLElement,
+    options: {
+      sitekey: string;
+      action?: string;
+      theme?: 'light' | 'dark' | 'auto';
+      callback?: (token: string) => void;
+      'expired-callback'?: () => void;
+      'error-callback'?: () => void;
+    }
+  ) => string;
+  reset: (widgetId?: string) => void;
+  remove?: (widgetId?: string) => void;
+};
+
+type TurnstileWindow = Window & {
+  turnstile?: TurnstileApi;
+};
 
 const startOfMonth = (d) => new Date(d.getFullYear(), d.getMonth(), 1);
 const addMonths = (d, delta) => new Date(d.getFullYear(), d.getMonth() + delta, 1);
@@ -174,6 +200,24 @@ const sanitizeEmailInput = (value, maxLen = 254) => {
     // Domain shouldn't include underscore or plus; keep it strict.
     .replace(/[^A-Za-z0-9.-]/g, '');
   return `${local}@${domain}`.slice(0, maxLen);
+};
+
+const getSupabaseAccessTokenFromStorage = () => {
+  if (typeof window === 'undefined') return '';
+  try {
+    for (let i = 0; i < window.localStorage.length; i += 1) {
+      const key = String(window.localStorage.key(i) || '');
+      if (!/^sb-.*-auth-token$/.test(key)) continue;
+      const raw = window.localStorage.getItem(key);
+      if (!raw) continue;
+      const parsed = JSON.parse(raw);
+      const token = String(parsed?.access_token || parsed?.currentSession?.access_token || '').trim();
+      if (token) return token;
+    }
+  } catch {
+    // Ignore localStorage parse errors; request can still proceed with other controls.
+  }
+  return '';
 };
 
 const parseTime12hTo24h = (timeStr) => {
@@ -614,6 +658,7 @@ const BookingSlide = React.memo(function BookingSlide({
 });
 
 const BookNowModule = () => {
+  const turnstileSiteKey = String(import.meta.env.VITE_TURNSTILE_SITE_KEY || '').trim();
   const [activePlan, setActivePlan] = useState<Plan | null>('weekday');
   const [hours, setHours] = useState(2);
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
@@ -633,12 +678,80 @@ const BookNowModule = () => {
   const [isLoadingTimes, setIsLoadingTimes] = useState(false);
   const [availableDays, setAvailableDays] = useState<Record<string, boolean> | null>(null);
   const [isLoadingDays, setIsLoadingDays] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
   const paymentQueryHandledRef = useRef(false);
+  const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
+  const turnstileWidgetIdRef = useRef<string | null>(null);
 
   useEffect(() => {
     preloadImage('/images/optimized/DSC01989_1600.jpg');
     preloadImage(STUDIO_GALLERY_IMAGE);
   }, []);
+
+  useEffect(() => {
+    if (!turnstileSiteKey) return;
+    if (typeof window === 'undefined') return;
+    if (document.querySelector(`script[src="${TURNSTILE_SCRIPT_SRC}"]`)) return;
+
+    const script = document.createElement('script');
+    script.src = TURNSTILE_SCRIPT_SRC;
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  }, [turnstileSiteKey]);
+
+  useEffect(() => {
+    if (!turnstileSiteKey) return;
+    if (typeof window === 'undefined') return;
+
+    let cancelled = false;
+    let pollTimer = 0;
+
+    const tryRender = () => {
+      const container = turnstileContainerRef.current;
+      const turnstile = (window as TurnstileWindow).turnstile;
+      if (!container || !turnstile || turnstileWidgetIdRef.current) return false;
+      if (cancelled) return false;
+
+      turnstileWidgetIdRef.current = turnstile.render(container, {
+        sitekey: turnstileSiteKey,
+        action: TURNSTILE_ACTION,
+        theme: 'light',
+        callback: (token) => {
+          setTurnstileToken(String(token || '').trim());
+          setSubmitError((prev) =>
+            prev === 'Completa la verificación de seguridad para continuar.' ? null : prev
+          );
+        },
+        'expired-callback': () => setTurnstileToken(''),
+        'error-callback': () => setTurnstileToken(''),
+      });
+      return true;
+    };
+
+    if (!tryRender()) {
+      pollTimer = window.setInterval(() => {
+        if (tryRender() && pollTimer) {
+          window.clearInterval(pollTimer);
+          pollTimer = 0;
+        }
+      }, 250);
+    }
+
+    return () => {
+      cancelled = true;
+      if (pollTimer) window.clearInterval(pollTimer);
+      const turnstile = (window as TurnstileWindow).turnstile;
+      if (turnstile && turnstileWidgetIdRef.current) {
+        try {
+          turnstile.remove?.(turnstileWidgetIdRef.current);
+        } catch {
+          // Ignore widget cleanup failures to avoid blocking unmount.
+        }
+      }
+      turnstileWidgetIdRef.current = null;
+    };
+  }, [turnstileSiteKey]);
 
   useEffect(() => {
     if (paymentQueryHandledRef.current) return;
@@ -867,6 +980,10 @@ const BookNowModule = () => {
   const onContinue = () => {
     setSubmitAttempted(true);
     if (!validation.isValid) return;
+    if (turnstileSiteKey && !turnstileToken) {
+      setSubmitError('Completa la verificación de seguridad para continuar.');
+      return;
+    }
     setIsSubmitting(true);
     setSubmitError(null);
     setCalendarLink(null);
@@ -879,11 +996,21 @@ const BookNowModule = () => {
       lastName: normalizeName(formValues.lastName),
       phone: normalizePhone(formValues.phone),
       email: normalizeEmail(formValues.email),
+      turnstileToken: turnstileSiteKey ? turnstileToken : undefined,
     };
+
+    const checkoutAuthToken = getSupabaseAccessTokenFromStorage();
+    const requestHeaders: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (checkoutAuthToken) {
+      requestHeaders.Authorization = `Bearer ${checkoutAuthToken}`;
+    }
+    if (CHECKOUT_HEADER_SECRET) {
+      requestHeaders[CHECKOUT_HEADER_SECRET_NAME] = CHECKOUT_HEADER_SECRET;
+    }
 
     fetch('/api/create-checkout-session', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: requestHeaders,
       body: JSON.stringify(payload),
     })
       .then(async (r) => {
@@ -909,6 +1036,15 @@ const BookNowModule = () => {
         throw new Error('Stripe no devolvió una URL de checkout válida.');
       })
       .catch((e) => {
+        const turnstile = (window as TurnstileWindow).turnstile;
+        if (turnstile && turnstileWidgetIdRef.current) {
+          try {
+            turnstile.reset(turnstileWidgetIdRef.current);
+          } catch {
+            // Ignore reset issues; user can retry.
+          }
+        }
+        setTurnstileToken('');
         setSubmitError(e?.message || 'No se pudo iniciar el pago con Stripe.');
       })
       .finally(() => {
@@ -966,6 +1102,13 @@ const BookNowModule = () => {
         </div>
 
         <div className={styles.panel}>
+          {turnstileSiteKey ? (
+            <div className={styles.securityBlock}>
+              <p className={styles.securityHint}>Security check required before payment</p>
+              <div className={styles.securityWidget} ref={turnstileContainerRef} />
+            </div>
+          ) : null}
+
           <div className={styles.row}>
             <button
               type="button"

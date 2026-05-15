@@ -1,9 +1,13 @@
 /* eslint-env node */
 /* global Buffer */
 import { isAllowedRequestOrigin } from '../server/origin.js';
+import { validateCheckoutAccess } from '../server/checkoutAccess.js';
+import { consumeRateLimit, getClientIp } from '../server/requestSecurity.js';
 import { getStripeClient, getStripeEnv } from '../server/stripe.js';
 
 const BOOKING_CLOSE_HOUR = 22; // 10:00 PM
+const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+const TURNSTILE_ACTION = 'create_checkout_session';
 
 const RATE_TABLE = {
   weekday: { 2: 160, 3: 240, 4: 320, 5: 390, 6: 460, 7: 530, 8: 600 },
@@ -74,6 +78,64 @@ function parseBody(req, fallbackBody) {
   });
 }
 
+function stripNewlines(value) {
+  return String(value ?? '').replace(/[\r\n]+/g, ' ');
+}
+
+function normalizeName(value, maxLen = 40) {
+  const cleaned = stripNewlines(value)
+    .replace(/[^A-Za-z\u00C0-\u024F\s'-]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/^[-']+/, '')
+    .replace(/[-']+$/, '');
+  return cleaned.slice(0, maxLen);
+}
+
+function normalizeEmail(value, maxLen = 254) {
+  return stripNewlines(value).replace(/\s+/g, '').slice(0, maxLen);
+}
+
+function normalizePhoneDigits(value, maxLenDigits = 15) {
+  return stripNewlines(value).replace(/[^\d]/g, '').slice(0, maxLenDigits);
+}
+
+function isValidName(value) {
+  const v = String(value ?? '').trim();
+  if (v.length < 2 || v.length > 40) return false;
+  return /[A-Za-z\u00C0-\u024F]/.test(v) && /^[A-Za-z\u00C0-\u024F\s'-]+$/.test(v);
+}
+
+function isValidEmailStrict(value) {
+  const v = String(value ?? '').trim();
+  if (!v || v.length > 254) return false;
+  if (/\s/.test(v)) return false;
+  return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(v);
+}
+
+function isValidPhoneDigits(value) {
+  const digits = normalizePhoneDigits(value);
+  return digits.length >= 10 && digits.length <= 15;
+}
+
+async function verifyTurnstileToken({ token, secret, remoteip }) {
+  const body = new URLSearchParams({
+    secret,
+    response: token,
+    remoteip: remoteip || '',
+  });
+
+  const response = await fetch(TURNSTILE_VERIFY_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body.toString(),
+  });
+  const data = await response.json().catch(() => ({}));
+  const success = Boolean(data?.success);
+  const action = String(data?.action || '').trim();
+  return { success, action };
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -82,6 +144,33 @@ export default async function handler(req, res) {
 
   if (!isAllowedRequestOrigin(req)) {
     return json(res, 403, { ok: false, error: 'Forbidden' });
+  }
+  try {
+    const access = await validateCheckoutAccess(req);
+    if (!access.ok) {
+      return json(res, access.status || 401, { ok: false, error: access.error || 'Unauthorized' });
+    }
+  } catch (accessErr) {
+    console.error('checkout access validation failed', accessErr);
+    return json(res, 500, { ok: false, error: 'Unable to validate request security.' });
+  }
+  const requestOrigin = String(req?.headers?.origin || '').trim();
+  if (!requestOrigin) {
+    return json(res, 403, { ok: false, error: 'Missing request origin' });
+  }
+
+  const clientIp = getClientIp(req);
+  const rateLimit = consumeRateLimit({
+    key: `checkout-session:${clientIp}`,
+    max: Number(process.env.BOOKING_RATE_LIMIT_MAX || 10),
+    windowMs: Number(process.env.BOOKING_RATE_LIMIT_WINDOW_MS || 60_000),
+  });
+  res.setHeader('X-RateLimit-Limit', String(rateLimit.limit));
+  res.setHeader('X-RateLimit-Remaining', String(rateLimit.remaining));
+  res.setHeader('X-RateLimit-Reset', String(Math.ceil(rateLimit.resetAt / 1000)));
+  if (!rateLimit.allowed) {
+    res.setHeader('Retry-After', String(rateLimit.retryAfterSeconds));
+    return json(res, 429, { ok: false, error: 'Too many requests. Try again shortly.' });
   }
 
   const { secretKey, siteOrigin, missing, debug } = getStripeEnv();
@@ -104,10 +193,11 @@ export default async function handler(req, res) {
   const hours = Number(body?.hours);
   const date = String(body?.date ?? '').trim();
   const time = String(body?.time ?? '').trim();
-  const firstName = String(body?.firstName ?? '').trim();
-  const lastName = String(body?.lastName ?? '').trim();
-  const phone = String(body?.phone ?? '').trim();
-  const email = String(body?.email ?? '').trim();
+  const firstName = normalizeName(body?.firstName);
+  const lastName = normalizeName(body?.lastName);
+  const phone = normalizePhoneDigits(body?.phone);
+  const email = normalizeEmail(body?.email);
+  const turnstileToken = String(body?.turnstileToken ?? '').trim();
 
   if (!Number.isFinite(hours) || !date || !time) {
     return json(res, 400, { ok: false, error: 'Missing booking fields' });
@@ -123,6 +213,40 @@ export default async function handler(req, res) {
   }
   if (!endsBeforeClose(time, hours)) {
     return json(res, 400, { ok: false, error: 'La reserva debe finalizar a las 10:00 PM o antes.' });
+  }
+  if (!isValidName(firstName) || !isValidName(lastName)) {
+    return json(res, 400, { ok: false, error: 'Nombre o apellido inválido.' });
+  }
+  if (!isValidEmailStrict(email)) {
+    return json(res, 400, { ok: false, error: 'Email inválido.' });
+  }
+  if (!isValidPhoneDigits(phone)) {
+    return json(res, 400, { ok: false, error: 'Teléfono inválido (10-15 dígitos).' });
+  }
+
+  const turnstileSecret = String(process.env.TURNSTILE_SECRET_KEY || '').trim();
+  const deployEnv = String(process.env.VERCEL_ENV || process.env.NODE_ENV || '').trim().toLowerCase();
+  const isProduction = deployEnv === 'production';
+  if (isProduction && !turnstileSecret) {
+    return json(res, 500, { ok: false, error: 'Security challenge is not configured' });
+  }
+  if (turnstileSecret) {
+    if (!turnstileToken) {
+      return json(res, 400, { ok: false, error: 'Completa la verificación de seguridad.' });
+    }
+    try {
+      const challenge = await verifyTurnstileToken({
+        token: turnstileToken,
+        secret: turnstileSecret,
+        remoteip: clientIp,
+      });
+      if (!challenge.success || (challenge.action && challenge.action !== TURNSTILE_ACTION)) {
+        return json(res, 403, { ok: false, error: 'No se pudo validar la verificación de seguridad.' });
+      }
+    } catch (challengeErr) {
+      console.error('turnstile verify failed', challengeErr);
+      return json(res, 502, { ok: false, error: 'Security verification unavailable' });
+    }
   }
 
   const dm = date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -194,7 +318,6 @@ export default async function handler(req, res) {
     return json(res, 500, {
       ok: false,
       error: 'No se pudo iniciar el pago con Stripe.',
-      details: String(e?.message || e),
     });
   }
 }
