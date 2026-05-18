@@ -97,6 +97,7 @@ const dayHeaders = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const BOOKING_CLOSE_HOUR = 22; // 10:00 PM
 const TURNSTILE_SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 const TURNSTILE_ACTION = 'create_checkout_session';
+const BOOKING_SUCCESS_POPUP_STORAGE_KEY = 'book_now_booking_success_popup';
 const CHECKOUT_HEADER_SECRET_NAME = String(
   import.meta.env.VITE_CHECKOUT_HEADER_SECRET_NAME || 'x-checkout-secret'
 ).trim();
@@ -711,6 +712,14 @@ const BookNowModule = () => {
   }, []);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const shouldShow = window.sessionStorage.getItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY) === '1';
+    if (shouldShow) {
+      setShowBookingSuccessPopup(true);
+    }
+  }, []);
+
+  useEffect(() => {
     preloadImage('/images/optimized/DSC01989_1600.jpg');
     preloadImage(STUDIO_GALLERY_IMAGE);
   }, []);
@@ -807,6 +816,9 @@ const BookNowModule = () => {
     };
 
     if (paymentStatus === 'cancelled') {
+      if (typeof window !== 'undefined') {
+        window.sessionStorage.removeItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY);
+      }
       setShowBookingSuccessPopup(false);
       setSubmitError('Pago cancelado. Puedes intentar nuevamente cuando quieras.');
       setIsSubmitting(false);
@@ -815,6 +827,9 @@ const BookNowModule = () => {
     }
 
     if (paymentStatus !== 'success' || !sessionId) {
+      if (typeof window !== 'undefined') {
+        window.sessionStorage.removeItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY);
+      }
       setShowBookingSuccessPopup(false);
       setSubmitError('No se pudo validar el pago en Stripe.');
       setIsSubmitting(false);
@@ -851,9 +866,15 @@ const BookNowModule = () => {
               ? data.htmlLink
               : null;
         if (link) setCalendarLink(link);
+        if (typeof window !== 'undefined') {
+          window.sessionStorage.setItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY, '1');
+        }
         setShowBookingSuccessPopup(true);
       })
       .catch((e) => {
+        if (typeof window !== 'undefined') {
+          window.sessionStorage.removeItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY);
+        }
         setShowBookingSuccessPopup(false);
         setSubmitError(e?.message || 'No se pudo confirmar la reserva después del pago.');
       })
@@ -1038,6 +1059,9 @@ const BookNowModule = () => {
     setSubmitError(null);
     setCalendarLink(null);
     setShowBookingSuccessPopup(false);
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.removeItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY);
+    }
 
     const payload = {
       hours,
@@ -1293,7 +1317,12 @@ const BookNowModule = () => {
             <button
               type="button"
               className={styles.popupOkButton}
-              onClick={() => setShowBookingSuccessPopup(false)}
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.sessionStorage.removeItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY);
+                }
+                setShowBookingSuccessPopup(false);
+              }}
             >
               OK
             </button>
