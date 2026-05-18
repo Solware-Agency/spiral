@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import type { CSSProperties, Dispatch, SetStateAction } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { CSSProperties, Dispatch, RefCallback, SetStateAction } from 'react';
 import LogoPicture from '../../../components/LogoPicture';
 import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
 import styles from '../styles/bookNow.module.css';
@@ -50,6 +50,8 @@ type BookingSlideProps = {
   isSubmitting: boolean;
   submitError: string | null;
   calendarLink: string | null;
+  turnstileSiteKey: string;
+  turnstileContainerRef: RefCallback<HTMLDivElement>;
 };
 
 const bgSet = (id: string, w: number) =>
@@ -333,6 +335,8 @@ const BookingSlide = React.memo(function BookingSlide({
   isSubmitting,
   submitError,
   calendarLink,
+  turnstileSiteKey,
+  turnstileContainerRef,
 }: BookingSlideProps) {
   const isOpen = activePlan === plan;
   const todayStart = startOfDayLocal(new Date());
@@ -642,6 +646,13 @@ const BookingSlide = React.memo(function BookingSlide({
             </div>
           ) : null}
 
+          {isOpen && turnstileSiteKey ? (
+            <div className={styles.securityBlock}>
+              <p className={styles.securityHint}>Security check required before payment</p>
+              <div className={styles.securityWidget} ref={turnstileContainerRef} />
+            </div>
+          ) : null}
+
           <button
             type="button"
             className={styles.continueButton}
@@ -692,8 +703,11 @@ const BookNowModule = () => {
   const [turnstileToken, setTurnstileToken] = useState('');
   const todayStartTs = useMemo(() => startOfDayLocal(new Date()).getTime(), []);
   const paymentQueryHandledRef = useRef(false);
-  const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
+  const [turnstileContainerEl, setTurnstileContainerEl] = useState<HTMLDivElement | null>(null);
   const turnstileWidgetIdRef = useRef<string | null>(null);
+  const handleTurnstileContainerRef = useCallback((node: HTMLDivElement | null) => {
+    setTurnstileContainerEl(node);
+  }, []);
 
   useEffect(() => {
     preloadImage('/images/optimized/DSC01989_1600.jpg');
@@ -715,15 +729,25 @@ const BookNowModule = () => {
   useEffect(() => {
     if (!turnstileSiteKey) return;
     if (typeof window === 'undefined') return;
+    if (!turnstileContainerEl) return;
 
     let cancelled = false;
     let pollTimer = 0;
 
     const tryRender = () => {
-      const container = turnstileContainerRef.current;
+      const container = turnstileContainerEl;
       const turnstile = (window as TurnstileWindow).turnstile;
-      if (!container || !turnstile || turnstileWidgetIdRef.current) return false;
+      if (!container || !turnstile) return false;
       if (cancelled) return false;
+
+      if (turnstileWidgetIdRef.current) {
+        try {
+          turnstile.remove?.(turnstileWidgetIdRef.current);
+        } catch {
+          // Ignore cleanup errors and re-render widget in current container.
+        }
+        turnstileWidgetIdRef.current = null;
+      }
 
       turnstileWidgetIdRef.current = turnstile.render(container, {
         sitekey: turnstileSiteKey,
@@ -762,8 +786,9 @@ const BookNowModule = () => {
         }
       }
       turnstileWidgetIdRef.current = null;
+      setTurnstileToken('');
     };
-  }, [turnstileSiteKey]);
+  }, [turnstileContainerEl, turnstileSiteKey]);
 
   useEffect(() => {
     if (paymentQueryHandledRef.current) return;
@@ -1122,13 +1147,6 @@ const BookNowModule = () => {
         </div>
 
         <div className={styles.panel}>
-          {turnstileSiteKey ? (
-            <div className={styles.securityBlock}>
-              <p className={styles.securityHint}>Security check required before payment</p>
-              <div className={styles.securityWidget} ref={turnstileContainerRef} />
-            </div>
-          ) : null}
-
           <div className={styles.row}>
             <button
               type="button"
@@ -1175,6 +1193,8 @@ const BookNowModule = () => {
             isSubmitting={isSubmitting}
             submitError={submitError}
             calendarLink={calendarLink}
+            turnstileSiteKey={turnstileSiteKey}
+            turnstileContainerRef={handleTurnstileContainerRef}
           />
 
           <div className={styles.divider} aria-hidden />
@@ -1225,6 +1245,8 @@ const BookNowModule = () => {
             isSubmitting={isSubmitting}
             submitError={submitError}
             calendarLink={calendarLink}
+            turnstileSiteKey={turnstileSiteKey}
+            turnstileContainerRef={handleTurnstileContainerRef}
           />
         </div>
       </section>
