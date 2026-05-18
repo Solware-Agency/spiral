@@ -90,6 +90,10 @@ export default async function handler(req, res) {
   }
 
   const dayStart = DateTime.fromISO(date, { zone: TZ }).startOf('day');
+  const todayStart = DateTime.now().setZone(TZ).startOf('day');
+  if (dayStart < todayStart) {
+    return json(res, 200, { ok: true, available: [] });
+  }
   const dayEnd = dayStart.plus({ days: 1 });
   const bookingClose = dayStart.set({ hour: BOOKING_CLOSE_HOUR, minute: 0, second: 0, millisecond: 0 });
 

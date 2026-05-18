@@ -100,6 +100,7 @@ export default async function handler(req, res) {
   const monthStart = DateTime.fromISO(`${ym}-01`, { zone: TZ }).startOf('month');
   if (!monthStart.isValid) return json(res, 400, { ok: false, error: 'Invalid month' });
   const monthEndExclusive = monthStart.plus({ months: 1 });
+  const todayStart = DateTime.now().setZone(TZ).startOf('day');
 
   const calendar = getCalendarClient({ clientEmail, privateKey });
 
@@ -130,6 +131,11 @@ export default async function handler(req, res) {
       const isWeekend = isWeekendDateTime(dateStart);
       const planOk = !plan ? true : plan === 'weekend' ? isWeekend : !isWeekend;
       const ymd = dateStart.toISODate(); // YYYY-MM-DD
+
+      if (dateStart < todayStart) {
+        availability[ymd] = false;
+        continue;
+      }
 
       if (!planOk) {
         availability[ymd] = false;

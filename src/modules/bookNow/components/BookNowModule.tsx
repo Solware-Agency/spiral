@@ -171,6 +171,12 @@ const toYmLocal = (d) => {
   return `${y}-${m}`;
 };
 
+const startOfDayLocal = (d) => {
+  const next = new Date(d);
+  next.setHours(0, 0, 0, 0);
+  return next;
+};
+
 const normalizeName = (value, maxLen = 40) => {
   const cleaned = stripNewlines(String(value ?? ''))
     .replace(/[^A-Za-z\u00C0-\u024F\s'-]/g, '')
@@ -329,6 +335,9 @@ const BookingSlide = React.memo(function BookingSlide({
   calendarLink,
 }: BookingSlideProps) {
   const isOpen = activePlan === plan;
+  const todayStart = startOfDayLocal(new Date());
+  const currentMonthStart = startOfMonth(todayStart);
+  const canGoToPreviousMonth = startOfMonth(month).getTime() > currentMonthStart.getTime();
 
   return (
     <section
@@ -382,6 +391,7 @@ const BookingSlide = React.memo(function BookingSlide({
                   className={styles.calendarNav}
                   onClick={() => setMonth((m) => addMonths(m, -1))}
                   aria-label="Previous month"
+                  disabled={!canGoToPreviousMonth}
                 >
                   ‹
                 </button>
@@ -410,11 +420,12 @@ const BookingSlide = React.memo(function BookingSlide({
                   }
                   const selected = isSameDay(cell, selectedDate);
                   const ymd = toYmdLocal(cell);
+                  const isPastDate = startOfDayLocal(cell).getTime() < todayStart.getTime();
                   const dayHasAvailability =
                     !availableDays || typeof availableDays[ymd] !== 'boolean'
                       ? true
                       : availableDays[ymd];
-                  const enabled = dayHasAvailability && !isLoadingDays;
+                  const enabled = !isPastDate && dayHasAvailability && !isLoadingDays;
                   return (
                     <button
                       key={cell.toISOString()}
@@ -679,6 +690,7 @@ const BookNowModule = () => {
   const [availableDays, setAvailableDays] = useState<Record<string, boolean> | null>(null);
   const [isLoadingDays, setIsLoadingDays] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState('');
+  const todayStartTs = useMemo(() => startOfDayLocal(new Date()).getTime(), []);
   const paymentQueryHandledRef = useRef(false);
   const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
   const turnstileWidgetIdRef = useRef<string | null>(null);
@@ -933,6 +945,14 @@ const BookNowModule = () => {
     const detectedPlan: Plan = isWeekend(selectedDate) ? 'weekend' : 'weekday';
     if (activePlan !== detectedPlan) setActivePlan(detectedPlan);
   }, [activePlan, selectedDate]);
+
+  useEffect(() => {
+    if (!selectedDate) return;
+    if (startOfDayLocal(selectedDate).getTime() < todayStartTs) {
+      setSelectedDate(null);
+      setSelectedTime(null);
+    }
+  }, [selectedDate, todayStartTs]);
 
   useEffect(() => {
     if (!selectedTime || !availableTimes) return;
