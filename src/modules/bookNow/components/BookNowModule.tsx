@@ -696,6 +696,7 @@ const BookNowModule = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [calendarLink, setCalendarLink] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [showBookingSuccessPopup, setShowBookingSuccessPopup] = useState(false);
   const [availableTimes, setAvailableTimes] = useState<string[] | null>(null);
   const [isLoadingTimes, setIsLoadingTimes] = useState(false);
   const [availableDays, setAvailableDays] = useState<Record<string, boolean> | null>(null);
@@ -806,6 +807,7 @@ const BookNowModule = () => {
     };
 
     if (paymentStatus === 'cancelled') {
+      setShowBookingSuccessPopup(false);
       setSubmitError('Pago cancelado. Puedes intentar nuevamente cuando quieras.');
       setIsSubmitting(false);
       clearPaymentParams();
@@ -813,6 +815,7 @@ const BookNowModule = () => {
     }
 
     if (paymentStatus !== 'success' || !sessionId) {
+      setShowBookingSuccessPopup(false);
       setSubmitError('No se pudo validar el pago en Stripe.');
       setIsSubmitting(false);
       clearPaymentParams();
@@ -848,8 +851,10 @@ const BookNowModule = () => {
               ? data.htmlLink
               : null;
         if (link) setCalendarLink(link);
+        setShowBookingSuccessPopup(true);
       })
       .catch((e) => {
+        setShowBookingSuccessPopup(false);
         setSubmitError(e?.message || 'No se pudo confirmar la reserva después del pago.');
       })
       .finally(() => {
@@ -1032,6 +1037,7 @@ const BookNowModule = () => {
     setIsSubmitting(true);
     setSubmitError(null);
     setCalendarLink(null);
+    setShowBookingSuccessPopup(false);
 
     const payload = {
       hours,
@@ -1278,6 +1284,22 @@ const BookNowModule = () => {
           <ElfsightInstagramFeed />
         </div>
       </section>
+      {showBookingSuccessPopup ? (
+        <div className={styles.popupOverlay} role="dialog" aria-modal="true" aria-label="Booking success">
+          <div className={styles.popupCard}>
+            <p className={styles.popupMessage}>
+              Reserva confirmada. Tu pago fue procesado con exito y tu studio booking ya esta listo.
+            </p>
+            <button
+              type="button"
+              className={styles.popupOkButton}
+              onClick={() => setShowBookingSuccessPopup(false)}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 };

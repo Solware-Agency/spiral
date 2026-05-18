@@ -695,6 +695,58 @@
   outline-offset: 3px;
 }
 
+.popupOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1400;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.popupCard {
+  width: min(480px, 100%);
+  background: #fff;
+  border-radius: 14px;
+  padding: 1.25rem 1.1rem 1rem;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.25);
+  text-align: center;
+}
+
+.popupMessage {
+  margin: 0;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  color: rgba(17, 17, 17, 0.92);
+  text-transform: uppercase;
+}
+
+.popupOkButton {
+  margin-top: 1rem;
+  background: #000;
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  min-width: 120px;
+  min-height: 42px;
+  padding: 0.6rem 1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.popupOkButton:hover {
+  background: #0f0f0f;
+}
+
+.popupOkButton:focus-visible {
+  outline: 2px solid rgba(0, 0, 0, 0.55);
+  outline-offset: 3px;
+}
+
 .bookingEmail {
   display: block;
   margin: 1.15rem auto 0 auto;
