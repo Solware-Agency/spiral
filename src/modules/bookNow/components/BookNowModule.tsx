@@ -805,9 +805,14 @@ const BookNowModule = () => {
     if (typeof window === 'undefined') return;
 
     const params = new URLSearchParams(window.location.search);
-    const paymentStatus = params.get('payment');
-    const sessionId = params.get('session_id');
-    if (!paymentStatus) return;
+    const paymentStatusRaw =
+      params.get('payment') || params.get('redirect_status') || params.get('status') || '';
+    const paymentStatus = String(paymentStatusRaw).trim().toLowerCase();
+    const sessionId = String(params.get('session_id') || params.get('sessionId') || '').trim();
+    const isCancelledReturn = paymentStatus === 'cancelled' || paymentStatus === 'canceled';
+    const isSuccessReturn =
+      paymentStatus === 'success' || paymentStatus === 'succeeded' || (!paymentStatus && !!sessionId);
+    if (!isCancelledReturn && !isSuccessReturn) return;
     paymentQueryHandledRef.current = true;
 
     const clearPaymentParams = () => {
@@ -815,7 +820,7 @@ const BookNowModule = () => {
       window.history.replaceState({}, '', next);
     };
 
-    if (paymentStatus === 'cancelled') {
+    if (isCancelledReturn) {
       if (typeof window !== 'undefined') {
         window.sessionStorage.removeItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY);
       }
@@ -826,18 +831,17 @@ const BookNowModule = () => {
       return;
     }
 
-    if (paymentStatus !== 'success' || !sessionId) {
-      if (typeof window !== 'undefined') {
-        window.sessionStorage.removeItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY);
-      }
-      setShowBookingSuccessPopup(false);
-      setSubmitError('No se pudo validar el pago en Stripe.');
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.setItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY, '1');
+    }
+    setShowBookingSuccessPopup(true);
+    setSubmitError(null);
+
+    if (!sessionId) {
       setIsSubmitting(false);
       clearPaymentParams();
       return;
     }
-
-    setSubmitError(null);
     setIsSubmitting(true);
 
     fetch('/api/confirm-booking-after-payment', {
@@ -872,10 +876,7 @@ const BookNowModule = () => {
         setShowBookingSuccessPopup(true);
       })
       .catch((e) => {
-        if (typeof window !== 'undefined') {
-          window.sessionStorage.removeItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY);
-        }
-        setShowBookingSuccessPopup(false);
+        // Keep popup visible because Stripe already returned as paid.
         setSubmitError(e?.message || 'No se pudo confirmar la reserva después del pago.');
       })
       .finally(() => {
