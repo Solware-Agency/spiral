@@ -918,6 +918,64 @@
   }
 }
 
+/* Desktop/tablet landscape corto (ej. 1071x897): reduce escala para evitar solapamientos. */
+@media (min-width: 1025px) and (max-width: 1150px) and (max-height: 920px) {
+  .brandMaroon {
+    min-height: clamp(31rem, 58vw, 38rem);
+    padding: clamp(0.45rem, 1.2vw, 0.75rem) clamp(0.6rem, 1.6vw, 1rem);
+  }
+
+  .brandCenter {
+    left: 50%;
+    width: min(68rem, 74vw);
+  }
+
+  .brandMonogram {
+    transform: translateX(0);
+  }
+
+  .brandScript {
+    font-size: clamp(5.2rem, 10.2vw, 7.6rem);
+    line-height: 0.88;
+  }
+
+  .brandCaps {
+    font-size: clamp(3.7rem, 7.4vw, 5.25rem);
+    margin-top: -0.42rem;
+    letter-spacing: 0.01em;
+  }
+
+  .brandSub {
+    margin-top: clamp(1.1rem, 2.2vw, 1.8rem);
+    font-size: 0.62rem;
+    letter-spacing: 0.19em;
+  }
+
+  .polaroidTopLeft {
+    width: clamp(132px, 13.8vw, 160px);
+    left: clamp(2.8rem, 4.8vw, 4rem);
+    transform: rotate(-11deg);
+  }
+
+  .polaroidTopRight {
+    width: clamp(122px, 13vw, 150px);
+    right: clamp(1.9rem, 3.5vw, 3.1rem);
+    transform: rotate(8deg);
+  }
+
+  .polaroidBottomLeft {
+    width: clamp(120px, 12.8vw, 146px);
+    left: clamp(1.9rem, 3.8vw, 3rem);
+    transform: rotate(6deg);
+  }
+
+  .polaroidBottomRight {
+    width: clamp(138px, 14.5vw, 170px);
+    right: clamp(0.5rem, 2.2vw, 1.2rem);
+    transform: rotate(-7deg);
+  }
+}
+
 @media (max-width: 360px) {
   .brandMaroon {
     min-height: clamp(25rem, 136vw, 31rem);
