@@ -693,7 +693,7 @@ const BookingSlide = React.memo(function BookingSlide({
 
 const BookNowModule = () => {
   const turnstileSiteKey = String(import.meta.env.VITE_TURNSTILE_SITE_KEY || '').trim();
-  const [activePlan, setActivePlan] = useState<Plan | null>('weekday');
+  const [activePlan, setActivePlan] = useState<Plan | null>(null);
   const [hours, setHours] = useState(2);
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
