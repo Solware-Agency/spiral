@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ResponsiveImg from '../../../components/ResponsiveImg';
 import styles from '../styles/portfolio.module.css';
 import {
@@ -52,6 +52,8 @@ function PortfolioVideoThumb({
   row: PortfolioVideoRow;
   layoutIdx: number;
 }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const [isInView, setIsInView] = useState(false);
   const [videoBroken, setVideoBroken] = useState(false);
   const [posterBroken, setPosterBroken] = useState(false);
   const [posterImgBroken, setPosterImgBroken] = useState(false);
@@ -59,8 +61,28 @@ function PortfolioVideoThumb({
 
   const posterUrl = videoPosterUrl(item);
   const alt = videoFallbackImageAlt(item, row);
-  const showPosterOnly = videoBroken && posterUrl && !posterBroken;
+  const showPosterOnly = (isInView ? videoBroken : true) && posterUrl && !posterBroken;
   const showMissing = videoBroken && (!posterUrl || posterBroken);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    if (!('IntersectionObserver' in window)) {
+      setIsInView(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setIsInView(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: '280px 0px' }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   const syncPosterOverlay = (v) => {
     if (!posterUrl || posterImgBroken) {
@@ -72,18 +94,19 @@ function PortfolioVideoThumb({
 
   return (
     <div
+      ref={containerRef}
       className={styles.mediaThumb}
       data-variant="video"
       data-layout={layoutIdx}
       data-video-missing={showMissing ? 'true' : undefined}
     >
-      {!videoBroken ? (
+      {isInView && !videoBroken ? (
         <div className={styles.mediaThumbVideoStack}>
           <video
             className={styles.mediaThumbVideo}
             src={item.videoSrc}
             poster={posterUrl || undefined}
-            preload="auto"
+            preload="metadata"
             playsInline
             muted
             loop
@@ -110,7 +133,7 @@ function PortfolioVideoThumb({
                 showPosterOverlay ? styles.mediaThumbPosterOverlayVisible : ''
               }`}
               aria-hidden
-              loading="eager"
+              loading="lazy"
               decoding="async"
               draggable={false}
               onError={() => setPosterImgBroken(true)}
