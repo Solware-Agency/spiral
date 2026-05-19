@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import LogoPicture from '../../../components/LogoPicture';
 import ResponsiveImg from '../../../components/ResponsiveImg';
 import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
+import InstagramGrid from '../../home/components/InstagramGrid';
 import styles from '../styles/studio.module.css';
 
 const GALLERY_SIZES = '(max-width: 900px) 94vw, 1200px';
@@ -354,6 +355,8 @@ const StudioModule = () => {
           782 NW 42ND AVE MIAMI FL 33126
         </div>
       </section>
+
+      <InstagramGrid />
     </section>
   );
 };
