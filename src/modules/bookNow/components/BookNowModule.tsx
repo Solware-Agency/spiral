@@ -98,10 +98,21 @@ const BOOKING_CLOSE_HOUR = 22; // 10:00 PM
 const TURNSTILE_SCRIPT_SRC = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 const TURNSTILE_ACTION = 'create_checkout_session';
 const BOOKING_SUCCESS_POPUP_STORAGE_KEY = 'book_now_booking_success_popup';
+const BOOKING_SUMMARY_STORAGE_KEY = 'book_now_booking_summary';
+const BOOKING_POPUP_INSTRUCTIONS =
+  'Please arrive 10 minutes early and bring a valid ID. Lighting setup is included.';
 const CHECKOUT_HEADER_SECRET_NAME = String(
   import.meta.env.VITE_CHECKOUT_HEADER_SECRET_NAME || 'x-checkout-secret'
 ).trim();
 const CHECKOUT_HEADER_SECRET = String(import.meta.env.VITE_CHECKOUT_HEADER_SECRET || '').trim();
+
+type BookingPopupSummary = {
+  date: string;
+  time: string;
+  amount: string;
+  payment: string;
+  instructions: string;
+};
 
 type TurnstileApi = {
   render: (
@@ -698,6 +709,7 @@ const BookNowModule = () => {
   const [calendarLink, setCalendarLink] = useState<string | null>(null);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showBookingSuccessPopup, setShowBookingSuccessPopup] = useState(false);
+  const [bookingPopupSummary, setBookingPopupSummary] = useState<BookingPopupSummary | null>(null);
   const [availableTimes, setAvailableTimes] = useState<string[] | null>(null);
   const [isLoadingTimes, setIsLoadingTimes] = useState(false);
   const [availableDays, setAvailableDays] = useState<Record<string, boolean> | null>(null);
@@ -716,6 +728,20 @@ const BookNowModule = () => {
     const shouldShow = window.sessionStorage.getItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY) === '1';
     if (shouldShow) {
       setShowBookingSuccessPopup(true);
+    }
+    const rawSummary = window.sessionStorage.getItem(BOOKING_SUMMARY_STORAGE_KEY);
+    if (!rawSummary) return;
+    try {
+      const parsed = JSON.parse(rawSummary);
+      const date = String(parsed?.date || '').trim();
+      const time = String(parsed?.time || '').trim();
+      const amount = String(parsed?.amount || '').trim();
+      const payment = String(parsed?.payment || '').trim();
+      const instructions = String(parsed?.instructions || '').trim();
+      if (!date || !time || !amount || !payment || !instructions) return;
+      setBookingPopupSummary({ date, time, amount, payment, instructions });
+    } catch {
+      // Ignore invalid summary payload.
     }
   }, []);
 
@@ -823,8 +849,10 @@ const BookNowModule = () => {
     if (isCancelledReturn) {
       if (typeof window !== 'undefined') {
         window.sessionStorage.removeItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY);
+        window.sessionStorage.removeItem(BOOKING_SUMMARY_STORAGE_KEY);
       }
       setShowBookingSuccessPopup(false);
+      setBookingPopupSummary(null);
       setSubmitError('Pago cancelado. Puedes intentar nuevamente cuando quieras.');
       setIsSubmitting(false);
       clearPaymentParams();
@@ -1060,8 +1088,10 @@ const BookNowModule = () => {
     setSubmitError(null);
     setCalendarLink(null);
     setShowBookingSuccessPopup(false);
+    setBookingPopupSummary(null);
     if (typeof window !== 'undefined') {
       window.sessionStorage.removeItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY);
+      window.sessionStorage.removeItem(BOOKING_SUMMARY_STORAGE_KEY);
     }
 
     const payload = {
@@ -1082,6 +1112,18 @@ const BookNowModule = () => {
     }
     if (CHECKOUT_HEADER_SECRET) {
       requestHeaders[CHECKOUT_HEADER_SECRET_NAME] = CHECKOUT_HEADER_SECRET;
+    }
+
+    const popupSummary: BookingPopupSummary = {
+      date: toYmdLocal(selectedDate),
+      time: selectedTime || '',
+      amount: money.format(price),
+      payment: 'Paid via Stripe',
+      instructions: BOOKING_POPUP_INSTRUCTIONS,
+    };
+    setBookingPopupSummary(popupSummary);
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.setItem(BOOKING_SUMMARY_STORAGE_KEY, JSON.stringify(popupSummary));
     }
 
     fetch('/api/create-checkout-session', {
@@ -1313,14 +1355,45 @@ const BookNowModule = () => {
         <div className={styles.popupOverlay} role="dialog" aria-modal="true" aria-label="Booking success">
           <div className={styles.popupCard}>
             <p className={styles.popupMessage}>
-              Reserva confirmada. Tu pago fue procesado con exito y tu studio booking ya esta listo.
+              Booking confirmed! Your payment was successfully processed.
             </p>
+            {bookingPopupSummary ? (
+              <div className={styles.popupSummary} aria-label="Booking summary">
+                <div className={styles.popupSummaryRow}>
+                  <span>Time</span>
+                  <span>
+                    {bookingPopupSummary.date} at {bookingPopupSummary.time}
+                  </span>
+                </div>
+                <div className={styles.popupSummaryRow}>
+                  <span>Payment</span>
+                  <span>
+                    {bookingPopupSummary.amount} - {bookingPopupSummary.payment}
+                  </span>
+                </div>
+                <div className={styles.popupSummaryInstructions}>
+                  <span>Instructions</span>
+                  <p>{bookingPopupSummary.instructions}</p>
+                </div>
+              </div>
+            ) : null}
+            {calendarLink ? (
+              <a
+                className={styles.popupCalendarButton}
+                href={calendarLink}
+                target="_blank"
+                rel="noreferrer"
+              >
+                ADD TO MY CALENDAR
+              </a>
+            ) : null}
             <button
               type="button"
               className={styles.popupOkButton}
               onClick={() => {
                 if (typeof window !== 'undefined') {
                   window.sessionStorage.removeItem(BOOKING_SUCCESS_POPUP_STORAGE_KEY);
+                  window.sessionStorage.removeItem(BOOKING_SUMMARY_STORAGE_KEY);
                 }
                 setShowBookingSuccessPopup(false);
               }}

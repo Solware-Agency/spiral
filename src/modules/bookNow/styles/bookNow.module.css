@@ -794,13 +794,71 @@
   margin: 0;
   font-size: 0.95rem;
   letter-spacing: 0.04em;
-  line-height: 1.6;
+  line-height: 1.5;
   color: rgba(17, 17, 17, 0.92);
   text-transform: uppercase;
 }
 
+.popupSummary {
+  margin-top: 0.9rem;
+  text-align: left;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 10px;
+  padding: 0.7rem 0.75rem;
+  background: rgba(245, 245, 245, 0.92);
+  display: grid;
+  gap: 0.5rem;
+}
+
+.popupSummaryRow {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: rgba(20, 20, 20, 0.9);
+}
+
+.popupSummaryInstructions {
+  display: grid;
+  gap: 0.24rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: rgba(20, 20, 20, 0.9);
+}
+
+.popupSummaryInstructions p {
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.45;
+  color: rgba(32, 32, 32, 0.86);
+}
+
+.popupCalendarButton {
+  margin-top: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  background: #000;
+  color: #fff;
+  border-radius: 999px;
+  min-width: 220px;
+  min-height: 42px;
+  padding: 0.6rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+}
+
+.popupCalendarButton:hover {
+  background: #0f0f0f;
+}
+
 .popupOkButton {
-  margin-top: 1rem;
+  margin-top: 0.75rem;
   background: #000;
   color: #fff;
   border: 0;
