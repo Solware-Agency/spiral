@@ -116,3 +116,15 @@
   visibility: hidden !important;
   pointer-events: none !important;
 }
+
+/* Oculta badge/toolbar promocional del widget en el embed. */
+.shell :global(.eapps-widget-toolbar),
+.shell :global([class*='eapps-widget-toolbar']),
+.shell :global(.es-widget-footer),
+.shell :global([class*='es-widget-footer']),
+.shell :global(a[href*='elfsight.com'][class*='eapps']),
+.shell :global(a[href*='elfsight.com'][class*='es-']) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

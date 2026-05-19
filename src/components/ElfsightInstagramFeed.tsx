@@ -101,6 +101,52 @@ const ElfsightInstagramFeed = ({ appId = 'e1077f31-d2f4-4b2c-8d9b-bb2e032f40da' 
   }, []);
 
   /*
+   * Algunos badges "Free Instagram Feed Widget" se montan fuera del contenedor del widget
+   * o con clases dinámicas. Este guardado por DOM los oculta de forma defensiva.
+   */
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    const hideNode = (node: Element | null) => {
+      if (!node || !(node instanceof HTMLElement)) return;
+      if (node === document.body || node === document.documentElement) return;
+      node.style.setProperty('display', 'none', 'important');
+      node.style.setProperty('visibility', 'hidden', 'important');
+      node.style.setProperty('pointer-events', 'none', 'important');
+      node.setAttribute('aria-hidden', 'true');
+    };
+
+    const candidateSelectors = [
+      '.eapps-widget-toolbar',
+      '[class*="eapps-widget-toolbar"]',
+      '.es-widget-footer',
+      '[class*="es-widget-footer"]',
+      'a[href*="elfsight.com"]',
+      '[aria-label*="Instagram Feed Widget"]',
+      '[title*="Instagram Feed Widget"]',
+    ];
+
+    const hideBranding = () => {
+      for (const selector of candidateSelectors) {
+        document.querySelectorAll(selector).forEach((el) => hideNode(el));
+      }
+      document.querySelectorAll('a, button').forEach((el) => {
+        const text = String(el.textContent || '').trim().toLowerCase();
+        if (text === 'free instagram feed widget' || text === 'instagram feed widget') {
+          hideNode(el);
+        }
+      });
+    };
+
+    hideBranding();
+    const mo = new MutationObserver(() => hideBranding());
+    mo.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      mo.disconnect();
+    };
+  }, []);
+
+  /*
    * El nodo con elfsight-app-* debe tener SOLO esa clase: el platform usa
    * querySelector('*[class^="elfsight-app"]') y, si hay otra clase delante, no lo encuentra.
    */
