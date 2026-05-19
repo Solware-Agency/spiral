@@ -16,11 +16,20 @@ const WhatWeDo = () => {
     const photoEl = root.querySelector<HTMLElement>('[data-marquee-photo-group]');
     const galleryEl = root.querySelector<HTMLElement>('[data-marquee-gallery-segment]');
     if (!photoEl || !galleryEl) return;
+    const mobileMq = window.matchMedia('(max-width: 900px)');
 
     let rafId = 0;
     let prevPhotoSec = '';
 
     const measureAndApply = () => {
+      if (mobileMq.matches) {
+        const sameSec = `${STUDIO_MARQUEE_BASE_SEC}s`;
+        if (prevPhotoSec === sameSec) return;
+        prevPhotoSec = sameSec;
+        root.style.setProperty('--studio-marquee-duration-gallery', sameSec);
+        root.style.setProperty('--studio-marquee-duration-photo', sameSec);
+        return;
+      }
       const wPhoto = photoEl.clientWidth;
       const wGallery = galleryEl.clientWidth;
       if (wGallery < 1 || wPhoto < 1) return;
@@ -41,6 +50,7 @@ const WhatWeDo = () => {
     ro.observe(root);
     ro.observe(photoEl);
     ro.observe(galleryEl);
+    mobileMq.addEventListener('change', queueMeasure);
 
     queueMeasure();
 
@@ -53,6 +63,7 @@ const WhatWeDo = () => {
     return () => {
       cancelAnimationFrame(rafId);
       ro.disconnect();
+      mobileMq.removeEventListener('change', queueMeasure);
     };
   }, []);
 
