@@ -109,6 +109,7 @@ const CHECKOUT_HEADER_SECRET = String(import.meta.env.VITE_CHECKOUT_HEADER_SECRE
 type BookingPopupSummary = {
   date: string;
   time: string;
+  hours: number;
   amount: string;
   payment: string;
   instructions: string;
@@ -254,6 +255,35 @@ const parseTime12hTo24h = (timeStr) => {
     if (h !== 12) h += 12;
   }
   return { hour: h, minute: min };
+};
+
+const toCalendarToken = (d) => {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  const ss = String(d.getSeconds()).padStart(2, '0');
+  return `${y}${m}${day}T${hh}${mm}${ss}`;
+};
+
+const buildGoogleCalendarTemplateLink = (summary: BookingPopupSummary | null) => {
+  if (!summary) return null;
+  const dm = String(summary.date || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!dm) return null;
+  const t = parseTime12hTo24h(summary.time);
+  if (!t) return null;
+  const durationHours = Number.isFinite(summary.hours) && summary.hours > 0 ? summary.hours : 2;
+  const start = new Date(Number(dm[1]), Number(dm[2]) - 1, Number(dm[3]), t.hour, t.minute, 0, 0);
+  const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000);
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: 'CASA STUDIO Booking',
+    dates: `${toCalendarToken(start)}/${toCalendarToken(end)}`,
+    ctz: 'America/New_York',
+    details: `Payment: ${summary.amount} (${summary.payment})\nInstructions: ${summary.instructions}`,
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
 };
 
 const slotEndsBeforeClose = (timeStr, durationHours) => {
@@ -735,11 +765,13 @@ const BookNowModule = () => {
       const parsed = JSON.parse(rawSummary);
       const date = String(parsed?.date || '').trim();
       const time = String(parsed?.time || '').trim();
+      const hoursFromStorage = Number(parsed?.hours);
+      const hours = Number.isFinite(hoursFromStorage) && hoursFromStorage > 0 ? hoursFromStorage : 2;
       const amount = String(parsed?.amount || '').trim();
       const payment = String(parsed?.payment || '').trim();
       const instructions = String(parsed?.instructions || '').trim();
       if (!date || !time || !amount || !payment || !instructions) return;
-      setBookingPopupSummary({ date, time, amount, payment, instructions });
+      setBookingPopupSummary({ date, time, hours, amount, payment, instructions });
     } catch {
       // Ignore invalid summary payload.
     }
@@ -1117,6 +1149,7 @@ const BookNowModule = () => {
     const popupSummary: BookingPopupSummary = {
       date: toYmdLocal(selectedDate),
       time: selectedTime || '',
+      hours,
       amount: money.format(price),
       payment: 'Paid via Stripe',
       instructions: BOOKING_POPUP_INSTRUCTIONS,
@@ -1190,6 +1223,10 @@ const BookNowModule = () => {
       '10:00 PM',
     ],
     []
+  );
+  const popupCalendarHref = useMemo(
+    () => calendarLink || buildGoogleCalendarTemplateLink(bookingPopupSummary),
+    [calendarLink, bookingPopupSummary]
   );
 
   return (
@@ -1377,10 +1414,10 @@ const BookNowModule = () => {
                 </div>
               </div>
             ) : null}
-            {calendarLink ? (
+            {popupCalendarHref ? (
               <a
                 className={styles.popupCalendarButton}
-                href={calendarLink}
+                href={popupCalendarHref}
                 target="_blank"
                 rel="noreferrer"
               >
