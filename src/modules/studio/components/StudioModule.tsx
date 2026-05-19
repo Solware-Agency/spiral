@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import LogoPicture from '../../../components/LogoPicture';
@@ -6,8 +6,7 @@ import ResponsiveImg from '../../../components/ResponsiveImg';
 import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
 import styles from '../styles/studio.module.css';
 
-const GALLERY_SIZES = '(max-width: 519px) 92vw, (max-width: 900px) 46vw, 34vw';
-const GALLERY_GAP_PX = 10;
+const GALLERY_SIZES = '(max-width: 900px) 94vw, 1200px';
 const GALLERY_AUTO_MS = 4500;
 const RATES_POLAROID_SIZES = '(max-width: 900px) 72vw, min(300px, 32vw)';
 
@@ -49,87 +48,41 @@ const galleryPhotos = [
   {
     src: '/images/photos/DSC02380.jpg',
     alt: 'Casa Spiral studio space',
+    objectPosition: '50% 44%',
   },
   {
     src: '/images/photos/DSC02040.jpg',
     alt: 'Studio content setup',
+    objectPosition: '50% 42%',
   },
   {
     src: '/images/photos/DSC01963.jpg',
     alt: 'Studio lighting and backdrop',
+    objectPosition: '50% 40%',
   },
   {
     src: '/images/photos/DSC01973.jpg',
     alt: 'Ambiente de estudio Casa Spiral',
+    objectPosition: '50% 41%',
   },
   {
     src: '/images/photos/DSC02545.jpg',
     alt: 'Studio creative corner',
+    objectPosition: '50% 43%',
   },
   {
     src: '/images/photos/DSC02285.jpg',
     alt: 'Espacio y estética del estudio',
+    objectPosition: '50% 42%',
   },
 ];
 
-function useGalleryVisibleCount(): 1 | 2 | 3 {
-  const [visible, setVisible] = useState<1 | 2 | 3>(1);
-
-  useEffect(() => {
-    const mqDesktop = window.matchMedia('(min-width: 901px)');
-    const mqTwo = window.matchMedia('(min-width: 520px)');
-    const sync = () => {
-      if (mqDesktop.matches) setVisible(3);
-      else if (mqTwo.matches) setVisible(2);
-      else setVisible(1);
-    };
-    sync();
-    mqDesktop.addEventListener('change', sync);
-    mqTwo.addEventListener('change', sync);
-    return () => {
-      mqDesktop.removeEventListener('change', sync);
-      mqTwo.removeEventListener('change', sync);
-    };
-  }, []);
-
-  return visible;
-}
-
 const StudioGalleryCarousel = () => {
-  const viewportRef = useRef<HTMLDivElement>(null);
-  const [slotPx, setSlotPx] = useState(0);
-  const [slide, setSlide] = useState({ index: 0, snap: false });
-  const visible = useGalleryVisibleCount();
+  const [index, setIndex] = useState(0);
   const n = galleryPhotos.length;
-  const { index, snap } = slide;
-
-  useLayoutEffect(() => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const measure = () => {
-      const w = el.clientWidth;
-      const gaps = GALLERY_GAP_PX * Math.max(0, visible - 1);
-      const slot = visible > 0 ? (w - gaps) / visible : 0;
-      setSlotPx(Math.max(0, slot));
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [visible]);
-
-  const advance = useCallback(() => {
-    setSlide((s) => {
-      if (s.index >= n - 1) return { index: 0, snap: true };
-      return { index: s.index + 1, snap: false };
-    });
-  }, [n]);
-
-  useLayoutEffect(() => {
-    if (snap) {
-      setSlide((s) => ({ ...s, snap: false }));
-    }
-  }, [snap]);
+  const advance = useCallback(() => setIndex((current) => (current + 1) % n), [n]);
+  const goPrev = useCallback(() => setIndex((current) => (current - 1 + n) % n), [n]);
+  const activePhoto = galleryPhotos[index];
 
   useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -138,36 +91,59 @@ const StudioGalleryCarousel = () => {
     return () => clearInterval(id);
   }, [advance, n]);
 
-  const offsetPx = index * (slotPx + GALLERY_GAP_PX);
-  const trackStyle: CSSProperties = {
-    transform: slotPx > 0 ? `translate3d(${-offsetPx}px, 0, 0)` : undefined,
-    transition: snap ? 'none' : 'transform 0.55s ease',
-  };
-
-  const viewportCss = slotPx > 0 ? ({ '--gallery-slot': `${slotPx}px` } as CSSProperties) : undefined;
-
   return (
-    <div
-      className={styles.galleryViewport}
-      ref={viewportRef}
-      style={viewportCss}
-      aria-roledescription="carousel"
-      aria-label="Studio photo gallery"
-    >
-      <div className={styles.galleryTrack} style={trackStyle}>
-        {galleryPhotos.map((photo) => (
-          <figure key={photo.src} className={styles.gallerySlide}>
-            <ResponsiveImg
-              className={styles.galleryImg}
-              src={photo.src}
-              alt={photo.alt}
-              loading="lazy"
-              decoding="async"
-              sizes={GALLERY_SIZES}
-            />
-          </figure>
-        ))}
+    <div className={styles.galleryViewport} aria-roledescription="carousel" aria-label="Studio photo gallery">
+      <div className={styles.galleryTrack}>
+        <figure
+          key={activePhoto.src}
+          className={styles.gallerySlide}
+          style={{ '--gallery-object-position': activePhoto.objectPosition || '50% 50%' } as CSSProperties}
+        >
+          <ResponsiveImg
+            className={styles.galleryImg}
+            src={activePhoto.src}
+            alt={activePhoto.alt}
+            loading="lazy"
+            decoding="async"
+            sizes={GALLERY_SIZES}
+          />
+        </figure>
       </div>
+
+      {n > 1 ? (
+        <>
+          <button
+            type="button"
+            className={`${styles.galleryNav} ${styles.galleryNavPrev}`}
+            aria-label="Previous photo"
+            onClick={goPrev}
+          >
+            ←
+          </button>
+          <button
+            type="button"
+            className={`${styles.galleryNav} ${styles.galleryNavNext}`}
+            aria-label="Next photo"
+            onClick={advance}
+          >
+            →
+          </button>
+
+          <div className={styles.galleryDots} role="tablist" aria-label="Gallery slides">
+            {galleryPhotos.map((photo, dotIndex) => (
+              <button
+                key={`dot-${photo.src}`}
+                type="button"
+                role="tab"
+                aria-label={`Go to slide ${dotIndex + 1}`}
+                aria-selected={dotIndex === index}
+                className={`${styles.galleryDot} ${dotIndex === index ? styles.galleryDotActive : ''}`}
+                onClick={() => setIndex(dotIndex)}
+              />
+            ))}
+          </div>
+        </>
+      ) : null}
     </div>
   );
 };
