@@ -918,8 +918,8 @@
   }
 }
 
-/* Desktop/tablet landscape corto (ej. 1071x897): reduce escala para evitar solapamientos. */
-@media (min-width: 1025px) and (max-width: 1150px) and (max-height: 920px) {
+/* Desktop/tablet estrecho (ej. 1039×1065, 1071×897): reduce escala para evitar solapamientos. */
+@media (min-width: 1025px) and (max-width: 1150px) and (max-height: 1120px) {
   .brandMaroon {
     min-height: clamp(31rem, 58vw, 38rem);
     padding: clamp(0.45rem, 1.2vw, 0.75rem) clamp(0.6rem, 1.6vw, 1rem);
@@ -928,9 +928,14 @@
   .brandCenter {
     left: 50%;
     width: min(68rem, 74vw);
+    transform: translate(-50%, -50%);
   }
 
   .brandMonogram {
+    transform: translateX(0);
+  }
+
+  .brandHeadline {
     transform: translateX(0);
   }
 
@@ -972,6 +977,69 @@
   .polaroidBottomRight {
     width: clamp(138px, 14.5vw, 170px);
     right: clamp(0.5rem, 2.2vw, 1.2rem);
+    transform: rotate(-7deg);
+  }
+}
+
+/* Desktop medio (ej. 1272×1065): tipografía y polaroids más compactas para evitar solapamiento. */
+@media (min-width: 1151px) and (max-width: 1400px) and (max-height: 1120px) {
+  .brandMaroon {
+    min-height: clamp(32rem, 54vw, 40rem);
+    padding: clamp(0.5rem, 1.1vw, 0.75rem) clamp(0.65rem, 1.5vw, 1rem);
+  }
+
+  .brandCenter {
+    left: 50%;
+    width: min(60rem, 68vw);
+    transform: translate(-50%, -50%);
+  }
+
+  .brandMonogram {
+    transform: translateX(0);
+  }
+
+  .brandHeadline {
+    transform: translateX(0);
+  }
+
+  .brandScript {
+    font-size: clamp(5.4rem, 9.2vw, 8rem);
+    line-height: 0.88;
+  }
+
+  .brandCaps {
+    font-size: clamp(3.8rem, 6.5vw, 5.4rem);
+    margin-top: -0.4rem;
+    letter-spacing: 0.012em;
+  }
+
+  .brandSub {
+    margin-top: clamp(1rem, 2vw, 1.65rem);
+    font-size: 0.64rem;
+    letter-spacing: 0.2em;
+  }
+
+  .polaroidTopLeft {
+    width: clamp(138px, 14.2vw, 168px);
+    left: clamp(2.6rem, 4.2vw, 3.6rem);
+    transform: rotate(-11deg);
+  }
+
+  .polaroidTopRight {
+    width: clamp(128px, 13.2vw, 158px);
+    right: clamp(1.6rem, 3vw, 2.6rem);
+    transform: rotate(8deg);
+  }
+
+  .polaroidBottomLeft {
+    width: clamp(126px, 12.8vw, 152px);
+    left: clamp(1.6rem, 3.2vw, 2.6rem);
+    transform: rotate(6deg);
+  }
+
+  .polaroidBottomRight {
+    width: clamp(148px, 14.8vw, 178px);
+    right: clamp(0.45rem, 1.8vw, 1rem);
     transform: rotate(-7deg);
   }
 }

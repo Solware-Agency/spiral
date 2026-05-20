@@ -26,8 +26,10 @@ En Vercel → Project → Settings → Environment Variables:
 - `GOOGLE_SERVICE_ACCOUNT_EMAIL`
 - `GOOGLE_PRIVATE_KEY`
   - Pega el private key tal cual (Vercel lo guarda como string; el código soporta `\n`).
-- `ALLOWED_ORIGIN` (opcional pero recomendado)
-  - Ej: `https://tu-dominio.com`
+- `ALLOWED_ORIGIN` (opcional)
+  - Lista separada por comas. Ej: `https://spiralmstudio.com,https://www.spiralmstudio.com`
+  - Si el valor no incluye el dominio de producción, Book Now devolverá `403 Forbidden`.
+  - El backend también permite `spiralmstudio.com` y los orígenes de `VITE_SITE_ORIGIN` / `PUBLIC_SITE_ORIGIN`.
 - `STUDIO_NOTIFICATION_EMAIL` (opcional)
   - Email del dueño para notificaciones internas de reserva.
 - `RESEND_API_KEY` (opcional, recomendado)

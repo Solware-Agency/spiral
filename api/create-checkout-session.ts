@@ -1,6 +1,6 @@
 /* eslint-env node */
 /* global Buffer */
-import { isAllowedRequestOrigin } from '../server/origin.js';
+import { getRequestOrigin, isAllowedRequestOrigin } from '../server/origin.js';
 import { validateCheckoutAccess } from '../server/checkoutAccess.js';
 import { consumeRateLimit, getClientIp } from '../server/requestSecurity.js';
 import { getStripeClient, getStripeEnv } from '../server/stripe.js';
@@ -154,7 +154,7 @@ export default async function handler(req, res) {
     console.error('checkout access validation failed', accessErr);
     return json(res, 500, { ok: false, error: 'Unable to validate request security.' });
   }
-  const requestOrigin = String(req?.headers?.origin || '').trim();
+  const requestOrigin = getRequestOrigin(req);
   if (!requestOrigin) {
     return json(res, 403, { ok: false, error: 'Missing request origin' });
   }

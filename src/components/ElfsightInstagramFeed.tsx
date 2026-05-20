@@ -8,6 +8,9 @@ import {
 /* Misma URL que el paquete oficial react-elfsight-widget. */
 const PLATFORM_SRC = 'https://static.elfsight.com/platform/platform.js';
 
+/** Tiempo mínimo visible del preloader (todos los módulos que usan este componente). */
+const PRELOADER_MIN_MS = 3500;
+
 const ensurePlatformScript = () => {
   if (typeof document === 'undefined') return;
   if ('eapps' in window || document.querySelector(`script[src="${PLATFORM_SRC}"]`)) return;
@@ -51,24 +54,37 @@ const ElfsightInstagramFeed = ({ appId = 'e1077f31-d2f4-4b2c-8d9b-bb2e032f40da' 
     const shell = shellRef.current;
     if (!shell) return;
 
+    const shownAt = Date.now();
+    let hideTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const scheduleLoaded = () => {
+      const remaining = PRELOADER_MIN_MS - (Date.now() - shownAt);
+      hideTimer = setTimeout(() => setIsLoaded(true), Math.max(0, remaining));
+    };
+
     const isWidgetMounted = () => {
       const appNode = shell.querySelector(`.${className}`);
       return Boolean(appNode && appNode.childElementCount > 0);
     };
 
     if (isWidgetMounted()) {
-      setIsLoaded(true);
-      return;
+      scheduleLoaded();
+      return () => {
+        if (hideTimer) clearTimeout(hideTimer);
+      };
     }
 
     const mo = new MutationObserver(() => {
       if (!isWidgetMounted()) return;
-      setIsLoaded(true);
+      scheduleLoaded();
       mo.disconnect();
     });
 
     mo.observe(shell, { childList: true, subtree: true });
-    return () => mo.disconnect();
+    return () => {
+      mo.disconnect();
+      if (hideTimer) clearTimeout(hideTimer);
+    };
   }, [className]);
 
   /*
