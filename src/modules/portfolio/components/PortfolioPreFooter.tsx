@@ -20,26 +20,28 @@ const PortfolioPreFooter = () => {
       </section>
 
       <section className={styles.preFooterTestimonials}>
-        <div className={styles.preFooterTestimonialsInner}>
-          <div className={styles.testimonialsLeft}>
-            <span className={styles.testimonialsKicker}>FROM OUR CLIENTS</span>
-            <h2 className={styles.testimonialsTitle}>
-              <span className={styles.testimonialsTitleLine1}>DON&apos;T JUST TAKE IT</span>
-              <br />
-              FROM US -
-            </h2>
-          </div>
+        <div className={styles.preFooterTestimonialsScaler}>
+          <div className={styles.preFooterTestimonialsInner}>
+            <div className={styles.testimonialsLeft}>
+              <span className={styles.testimonialsKicker}>FROM OUR CLIENTS</span>
+              <h2 className={styles.testimonialsTitle}>
+                <span className={styles.testimonialsTitleLine1}>DON&apos;T JUST TAKE IT</span>
+                <br />
+                FROM US -
+              </h2>
+            </div>
 
-          <div className={styles.testimonialsRight} aria-hidden>
-            <img
-              className={styles.testimonialsAsset}
-              src="/images/photos/ENVELOPE.png"
-              alt=""
-              width={1080}
-              height={1080}
-              loading="lazy"
-              decoding="async"
-            />
+            <div className={styles.testimonialsRight} aria-hidden>
+              <img
+                className={styles.testimonialsAsset}
+                src="/images/photos/ENVELOPE.png"
+                alt=""
+                width={1080}
+                height={1080}
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
           </div>
         </div>
       </section>

@@ -203,21 +203,23 @@ export default async function handler(req, res) {
     const resendEnv = getResendEnv();
     if (!resendEnv.missing.length) {
       const resend = getResendClient(resendEnv.apiKey);
-      sendBookingConfirmationEmails({
-        resend,
-        fromEmail: resendEnv.fromEmail,
-        ownerEmail: resendEnv.ownerEmail,
-        customerEmail: email,
-        customerName: displayName || '(not provided)',
-        planLabel,
-        hours,
-        date,
-        time,
-        calendarLink: calendarTemplateLink || resp.data.htmlLink || null,
-        paidViaStripe: false,
-      }).catch((err) => {
+      try {
+        await sendBookingConfirmationEmails({
+          resend,
+          fromEmail: resendEnv.fromEmail,
+          ownerEmail: resendEnv.ownerEmail,
+          customerEmail: email,
+          customerName: displayName || '(not provided)',
+          planLabel,
+          hours,
+          date,
+          time,
+          calendarLink: calendarTemplateLink || resp.data.htmlLink || null,
+          paidViaStripe: false,
+        });
+      } catch (err) {
         console.error('create-booking-event: resend failed', err);
-      });
+      }
     }
 
     return json(res, 200, {

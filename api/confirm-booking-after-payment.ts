@@ -255,21 +255,23 @@ export async function confirmBookingFromSessionId(sessionId) {
   const resendEnv = getResendEnv();
   if (!resendEnv.missing.length) {
     const resend = getResendClient(resendEnv.apiKey);
-    sendBookingConfirmationEmails({
-      resend,
-      fromEmail: resendEnv.fromEmail,
-      ownerEmail: resendEnv.ownerEmail,
-      customerEmail: email,
-      customerName: displayName || '(not provided)',
-      planLabel,
-      hours,
-      date,
-      time,
-      calendarLink: calendarTemplateLink || htmlLink,
-      paidViaStripe: true,
-    }).catch((err) => {
+    try {
+      await sendBookingConfirmationEmails({
+        resend,
+        fromEmail: resendEnv.fromEmail,
+        ownerEmail: resendEnv.ownerEmail,
+        customerEmail: email,
+        customerName: displayName || '(not provided)',
+        planLabel,
+        hours,
+        date,
+        time,
+        calendarLink: calendarTemplateLink || htmlLink,
+        paidViaStripe: true,
+      });
+    } catch (err) {
       console.error('confirm-booking-after-payment: resend failed', err);
-    });
+    }
   }
 
   if (paymentIntentId && eventId) {
