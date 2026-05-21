@@ -197,11 +197,19 @@ export async function sendBookingConfirmationEmails({
   }
 
   if (tasks.length === 0) return { sent: 0, skipped: true };
-  const settled = await Promise.allSettled(tasks);
-  const sent = settled.filter((r) => r.status === 'fulfilled').length;
-  const errors = settled
-    .filter((r) => r.status === 'rejected')
-    .map((r) => String(r.reason?.message || r.reason));
+  const results = await Promise.all(tasks);
+  
+  let sent = 0;
+  const errors = [];
+
+  for (const res of results) {
+    if (res.error) {
+      errors.push(String(res.error.message || res.error));
+    } else if (res.data) {
+      sent++;
+    }
+  }
+
   return { sent, errors };
 }
 

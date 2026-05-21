@@ -256,7 +256,7 @@ export async function confirmBookingFromSessionId(sessionId) {
   if (!resendEnv.missing.length) {
     const resend = getResendClient(resendEnv.apiKey);
     try {
-      await sendBookingConfirmationEmails({
+      const emailResult = await sendBookingConfirmationEmails({
         resend,
         fromEmail: resendEnv.fromEmail,
         ownerEmail: resendEnv.ownerEmail,
@@ -269,9 +269,16 @@ export async function confirmBookingFromSessionId(sessionId) {
         calendarLink: calendarTemplateLink || htmlLink,
         paidViaStripe: true,
       });
+      if (emailResult.errors && emailResult.errors.length > 0) {
+        console.error('confirm-booking-after-payment: resend returned errors', emailResult.errors);
+      } else {
+        console.log('confirm-booking-after-payment: emails sent successfully');
+      }
     } catch (err) {
       console.error('confirm-booking-after-payment: resend failed', err);
     }
+  } else {
+    console.warn('confirm-booking-after-payment: skipping emails because Resend is not configured', resendEnv.missing);
   }
 
   if (paymentIntentId && eventId) {

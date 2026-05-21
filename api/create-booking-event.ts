@@ -204,7 +204,7 @@ export default async function handler(req, res) {
     if (!resendEnv.missing.length) {
       const resend = getResendClient(resendEnv.apiKey);
       try {
-        await sendBookingConfirmationEmails({
+        const emailResult = await sendBookingConfirmationEmails({
           resend,
           fromEmail: resendEnv.fromEmail,
           ownerEmail: resendEnv.ownerEmail,
@@ -217,9 +217,16 @@ export default async function handler(req, res) {
           calendarLink: calendarTemplateLink || resp.data.htmlLink || null,
           paidViaStripe: false,
         });
+        if (emailResult.errors && emailResult.errors.length > 0) {
+          console.error('create-booking-event: resend returned errors', emailResult.errors);
+        } else {
+          console.log('create-booking-event: emails sent successfully');
+        }
       } catch (err) {
         console.error('create-booking-event: resend failed', err);
       }
+    } else {
+      console.warn('create-booking-event: skipping emails because Resend is not configured', resendEnv.missing);
     }
 
     return json(res, 200, {
