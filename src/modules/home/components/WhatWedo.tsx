@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { hydrateStudioCarouselImages } from '../../../data/studioCarouselPhotos';
 import styles from '../styles/home.module.css';
 import PhotoCarousel from './PhotoCarousel';
 import GalleryCarousel from './GalleryCarousel';
@@ -11,6 +12,10 @@ const WhatWeDo = () => {
   const studioMarqueesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    hydrateStudioCarouselImages();
+  }, []);
+
+  useEffect(() => {
     const root = studioMarqueesRef.current;
     if (!root) return;
     const photoEl = root.querySelector<HTMLElement>('[data-marquee-photo-group]');
@@ -20,8 +25,18 @@ const WhatWeDo = () => {
 
     let rafId = 0;
     let prevPhotoSec = '';
+    let prevGalleryShift = '';
 
     const measureAndApply = () => {
+      const wGallery = galleryEl.offsetWidth;
+      if (wGallery >= 1) {
+        const nextShift = `${wGallery}px`;
+        if (nextShift !== prevGalleryShift) {
+          prevGalleryShift = nextShift;
+          root.style.setProperty('--studio-marquee-shift-gallery', nextShift);
+        }
+      }
+
       if (mobileMq.matches) {
         const sameSec = `${STUDIO_MARQUEE_BASE_SEC}s`;
         if (prevPhotoSec === sameSec) return;
@@ -30,8 +45,7 @@ const WhatWeDo = () => {
         root.style.setProperty('--studio-marquee-duration-photo', sameSec);
         return;
       }
-      const wPhoto = photoEl.clientWidth;
-      const wGallery = galleryEl.clientWidth;
+      const wPhoto = photoEl.offsetWidth;
       if (wGallery < 1 || wPhoto < 1) return;
       const photoSec = (STUDIO_MARQUEE_BASE_SEC * wPhoto) / wGallery;
       const nextPhotoSec = `${photoSec}s`;
@@ -53,6 +67,10 @@ const WhatWeDo = () => {
     mobileMq.addEventListener('change', queueMeasure);
 
     queueMeasure();
+
+    if (document.fonts?.ready) {
+      document.fonts.ready.then(queueMeasure).catch(() => undefined);
+    }
 
     const imgs = root.querySelectorAll<HTMLImageElement>('img');
     const onImgLoad = () => queueMeasure();

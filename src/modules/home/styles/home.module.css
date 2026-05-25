@@ -534,7 +534,7 @@
   width: clamp(140px, 14vw, 240px);
   height: clamp(220px, 30vh, 420px);
   overflow: hidden;
-  background: transparent;
+  background: var(--photo-bg-underlay);
 }
 
 .photoCarouselImg {
@@ -558,7 +558,6 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .photoCarouselMarquee {
-    will-change: transform;
     animation: photoCarouselScroll var(--studio-marquee-duration-photo, var(--studio-marquee-duration, 26s)) linear
       infinite;
   }
@@ -591,7 +590,6 @@
 .galleryTrack {
   display: flex;
   align-items: center;
-  justify-content: center;
   width: 100%;
   min-height: 0;
   overflow: hidden;
@@ -599,6 +597,7 @@
 
 .galleryMarquee {
   display: flex;
+  gap: 0;
   width: max-content;
   padding-left: 0;
   align-items: center;
@@ -626,16 +625,15 @@
 
 @keyframes galleryMarqueeScroll {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translate3d(calc(-1 * var(--studio-marquee-shift-gallery, 50%)), 0, 0);
   }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .galleryMarquee {
-    will-change: transform;
     animation: galleryMarqueeScroll var(--studio-marquee-duration-gallery, var(--studio-marquee-duration, 26s))
       linear infinite;
   }

@@ -1,82 +1,64 @@
-import React from 'react';
-import { optimizedSrcSet, optimizedUrl } from '../../../utils/responsiveImage';
+import React, { useEffect, useState } from 'react';
+import {
+  studioCarouselPhotos,
+  hydrateStudioCarouselImages,
+  getStudioCarouselDisplaySrc,
+} from '../../../data/studioCarouselPhotos';
 import styles from '../styles/home.module.css';
 
-/** id = base de archivo en /images/optimized; alt describe el contenido para WCAG 1.1.1 */
-const photos = [
-  {
-    id: 'DSC02040',
-    alt: 'Content production setup in the Spiral photo studio, styled for brand shoots',
-  },
-  {
-    id: 'DSC01963',
-    alt: 'Studio lighting equipment and photography backdrop in Casa Spiral',
-  },
-  {
-    id: 'DSC02380',
-    alt: 'Interior view of Casa Spiral creative studio space',
-  },
-  {
-    id: 'DSC02285',
-    alt: 'Studio interior with styling and aesthetic detail',
-  },
-  {
-    id: 'DSC01989',
-    alt: 'Atmospheric brand and studio photography',
-  },
-  {
-    id: 'DSC02408',
-    alt: 'Lifestyle and brand imagery from Spiral client work',
-  },
-  {
-    id: 'DSC02284',
-    alt: 'Modern creative studio seating area and aesthetic',
-  },
-];
+type CarouselPhotoProps = {
+  id: string;
+  alt: string;
+  hidden?: boolean;
+  fetchPriority?: 'high' | 'low' | 'auto';
+};
 
-const SIZES = '(max-width: 600px) 140px, (max-width: 1200px) 14vw, 240px';
-const srcFor = (id, width, ext) => optimizedUrl(id, width, ext);
-const srcSetFor = (id, ext) => optimizedSrcSet(id, ext);
+const CarouselPhoto = ({ id, alt, hidden = false, fetchPriority = 'auto' }: CarouselPhotoProps) => (
+  <figure className={styles.photoCarouselItem}>
+    <img
+      className={styles.photoCarouselImg}
+      src={getStudioCarouselDisplaySrc(id)}
+      alt={hidden ? '' : alt}
+      width={640}
+      height={960}
+      loading="eager"
+      decoding="async"
+      fetchPriority={fetchPriority}
+      aria-hidden={hidden || undefined}
+    />
+  </figure>
+);
 
 const PhotoCarousel = () => {
+  const [, setHydrated] = useState(0);
+
+  useEffect(() => {
+    let alive = true;
+    hydrateStudioCarouselImages().then(() => {
+      if (alive) setHydrated((n) => n + 1);
+    });
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   return (
     <div className={styles.photoCarousel} aria-label="Home photo carousel">
       <div className={styles.photoCarouselTrack}>
         <div className={styles.photoCarouselMarquee}>
           <div className={styles.photoCarouselGroup} data-marquee-photo-group>
-            {photos.map(({ id, alt }) => (
-              <figure key={`a-${id}`} className={styles.photoCarouselItem}>
-                <picture>
-                  <source type="image/webp" srcSet={srcSetFor(id, 'webp')} sizes={SIZES} />
-                  <img
-                    className={styles.photoCarouselImg}
-                    src={srcFor(id, 480, 'jpg')}
-                    alt={alt}
-                    width={640}
-                    height={960}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </picture>
-              </figure>
+            {studioCarouselPhotos.map(({ id, alt }, index) => (
+              <CarouselPhoto
+                key={`a-${id}`}
+                id={id}
+                alt={alt}
+                fetchPriority={index < 3 ? 'high' : 'auto'}
+              />
             ))}
           </div>
           <div className={styles.photoCarouselGroup} aria-hidden="true">
-            {photos.map(({ id }) => (
-              <figure key={`b-${id}`} className={styles.photoCarouselItem}>
-                <picture>
-                  <source type="image/webp" srcSet={srcSetFor(id, 'webp')} sizes={SIZES} />
-                  <img
-                    className={styles.photoCarouselImg}
-                    src={srcFor(id, 480, 'jpg')}
-                    alt=""
-                    width={640}
-                    height={960}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </picture>
-              </figure>
+            {studioCarouselPhotos.map(({ id }) => (
+              <CarouselPhoto key={`b-${id}`} id={id} alt="" hidden fetchPriority="low" />
             ))}
           </div>
         </div>
@@ -86,4 +68,3 @@ const PhotoCarousel = () => {
 };
 
 export default PhotoCarousel;
-

@@ -1,4 +1,5 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
+import { hydrateStudioCarouselImages } from '../../../data/studioCarouselPhotos';
 import Navigation from '../components/Navigation';
 import Hero from '../components/Hero';
 import WhatWeDo from '../components/WhatWedo';
@@ -60,6 +61,10 @@ function DeferredSection({
 }
 
 const HomePage = () => {
+  useEffect(() => {
+    hydrateStudioCarouselImages();
+  }, []);
+
   return (
     <>
       <Navigation />

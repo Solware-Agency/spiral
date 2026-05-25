@@ -97,6 +97,40 @@
       fetchpriority="high"
       data-lcp-hero="default"
     />
+    <!-- Home: carrusel What We Do (~13 KB × 7); prioridad baja para no competir con el hero LCP -->
+    <script>
+      (function () {
+        var path = location.pathname.replace(/\/+$/, '') || '/';
+        if (path !== '/') return;
+        var ids = [
+          'DSC02040',
+          'DSC01963',
+          'DSC02380',
+          'DSC02285',
+          'DSC01989',
+          'DSC02408',
+          'DSC02284',
+        ];
+        ids.forEach(function (id) {
+          var mobile = document.createElement('link');
+          mobile.rel = 'preload';
+          mobile.as = 'image';
+          mobile.href = '/images/optimized/' + id + '_320.webp';
+          mobile.type = 'image/webp';
+          mobile.media = '(max-width: 600px)';
+          mobile.setAttribute('fetchpriority', 'low');
+          document.head.appendChild(mobile);
+          var desktop = document.createElement('link');
+          desktop.rel = 'preload';
+          desktop.as = 'image';
+          desktop.href = '/images/optimized/' + id + '_480.webp';
+          desktop.type = 'image/webp';
+          desktop.media = '(min-width: 601px)';
+          desktop.setAttribute('fetchpriority', 'low');
+          document.head.appendChild(desktop);
+        });
+      })();
+    </script>
     <script>
       (function () {
         var path = location.pathname.replace(/\/+$/, '').toLowerCase() || '/';
