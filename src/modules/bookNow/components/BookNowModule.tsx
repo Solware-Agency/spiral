@@ -1109,7 +1109,7 @@ const BookNowModule = () => {
 
   const showErrors = submitAttempted;
 
-  const onContinue = () => {
+  const onContinue = async () => {
     setSubmitAttempted(true);
     if (!validation.isValid) return;
     if (turnstileSiteKey && !turnstileToken) {
@@ -1126,16 +1126,42 @@ const BookNowModule = () => {
       window.sessionStorage.removeItem(BOOKING_SUMMARY_STORAGE_KEY);
     }
 
-    const payload = {
-      hours,
-      date: toYmdLocal(selectedDate),
-      time: selectedTime,
+    const contact = {
       firstName: normalizeName(formValues.firstName),
       lastName: normalizeName(formValues.lastName),
       phone: normalizePhone(formValues.phone),
       email: normalizeEmail(formValues.email),
+    };
+
+    let payload: Record<string, unknown> = {
+      hours,
+      date: toYmdLocal(selectedDate),
+      time: selectedTime,
       turnstileToken: turnstileSiteKey ? turnstileToken : undefined,
     };
+
+    try {
+      const { encryptBookingContact, getCheckoutContactPublicKeyPem, isCheckoutContactEncryptionConfigured } =
+        await import('../../../utils/bookingContactCrypto');
+
+      if (isCheckoutContactEncryptionConfigured()) {
+        payload = {
+          ...payload,
+          contact: await encryptBookingContact(getCheckoutContactPublicKeyPem(), contact),
+        };
+      } else if (import.meta.env.DEV) {
+        payload = { ...payload, ...contact };
+      } else {
+        setIsSubmitting(false);
+        setSubmitError('El formulario no está configurado para envío seguro. Intenta más tarde.');
+        return;
+      }
+    } catch (encryptErr) {
+      console.error('checkout contact encrypt failed', encryptErr);
+      setIsSubmitting(false);
+      setSubmitError('No se pudo proteger tus datos. Intenta de nuevo.');
+      return;
+    }
 
     const checkoutAuthToken = getSupabaseAccessTokenFromStorage();
     const requestHeaders: Record<string, string> = { 'Content-Type': 'application/json' };
