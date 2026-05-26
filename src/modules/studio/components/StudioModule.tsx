@@ -9,7 +9,7 @@ import styles from '../styles/studio.module.css';
 
 const GALLERY_SIZES = '(max-width: 900px) 94vw, 1200px';
 const GALLERY_AUTO_MS = 4500;
-const RATES_POLAROID_SIZES = '(max-width: 900px) 72vw, min(300px, 32vw)';
+const RATES_POLAROID_SIZES = '(max-width: 900px) 72vw, min(420px, 38vw)';
 
 const bgSet = (id: string, w: number) =>
   `image-set(url("/images/optimized/${id}_${w}.webp") type("image/webp"), url("/images/optimized/${id}_${w}.jpg") type("image/jpeg"))`;

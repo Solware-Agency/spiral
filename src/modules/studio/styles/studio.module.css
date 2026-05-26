@@ -719,6 +719,7 @@
   display: grid;
   justify-items: end;
   align-items: start;
+  overflow: visible;
 }
 
 .mapSection {
@@ -794,6 +795,13 @@
   transform: translateX(120px) rotate(11deg);
   transform-origin: right top;
   filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.18));
+}
+
+/* Studio Rates: polaroid más grande sin cambiar tabla, textos ni padding de la sección */
+.ratesRight .polaroidPngWrap {
+  width: clamp(300px, 34vw, 500px);
+  transform: translateX(120px) rotate(11deg) scale(1.32);
+  transform-origin: right top;
 }
 
 .polaroidPngImg {
@@ -902,11 +910,11 @@
     transform: rotate(-6deg);
   }
 
-  .polaroidPngWrap {
+  .ratesRight .polaroidPngWrap {
     margin: 0 auto;
     width: min(500px, 96vw);
-    transform: rotate(6deg);
-    transform-origin: right top;
+    transform: rotate(6deg) scale(1.18);
+    transform-origin: center top;
   }
 
   /* Sin franja negra: el gris monta un poco más sobre la fila inferior de tarjetas */
