@@ -11,6 +11,7 @@
     "optimize:logos": "node --experimental-strip-types scripts/optimize-logos.ts",
     "build": "node --experimental-strip-types scripts/build.ts",
     "optimize:all": "node --experimental-strip-types scripts/optimize-all.ts",
+    "keys:checkout-contact": "node scripts/generate-checkout-contact-keys.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview"

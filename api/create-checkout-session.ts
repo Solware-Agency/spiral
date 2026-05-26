@@ -2,6 +2,7 @@
 /* global Buffer */
 import { getRequestOrigin, isAllowedRequestOrigin } from '../server/origin.js';
 import { validateCheckoutAccess } from '../server/checkoutAccess.js';
+import { parseCheckoutContactBody } from '../server/parseCheckoutContact.js';
 import { consumeRateLimit, getClientIp } from '../server/requestSecurity.js';
 import { getStripeClient, getStripeEnv } from '../server/stripe.js';
 
@@ -190,14 +191,25 @@ export default async function handler(req, res) {
     return json(res, 400, { ok: false, error: 'Invalid JSON' });
   }
 
+  const deployEnv = String(process.env.VERCEL_ENV || process.env.NODE_ENV || '').trim().toLowerCase();
+  const isProduction = deployEnv === 'production';
+
   const hours = Number(body?.hours);
   const date = String(body?.date ?? '').trim();
   const time = String(body?.time ?? '').trim();
-  const firstName = normalizeName(body?.firstName);
-  const lastName = normalizeName(body?.lastName);
-  const phone = normalizePhoneDigits(body?.phone);
-  const email = normalizeEmail(body?.email);
   const turnstileToken = String(body?.turnstileToken ?? '').trim();
+
+  const contactResult = parseCheckoutContactBody(
+    body,
+    { normalizeName, normalizeEmail, normalizePhoneDigits },
+    { isProduction }
+  );
+
+  if (contactResult.ok === false) {
+    return json(res, contactResult.status, { ok: false, error: contactResult.error });
+  }
+
+  const { firstName, lastName, phone, email } = contactResult.contact;
 
   if (!Number.isFinite(hours) || !date || !time) {
     return json(res, 400, { ok: false, error: 'Missing booking fields' });
@@ -225,8 +237,6 @@ export default async function handler(req, res) {
   }
 
   const turnstileSecret = String(process.env.TURNSTILE_SECRET_KEY || '').trim();
-  const deployEnv = String(process.env.VERCEL_ENV || process.env.NODE_ENV || '').trim().toLowerCase();
-  const isProduction = deployEnv === 'production';
   if (isProduction && !turnstileSecret) {
     return json(res, 500, { ok: false, error: 'Security challenge is not configured' });
   }
