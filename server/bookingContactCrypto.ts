@@ -23,7 +23,16 @@ export function pemFromEnv(raw: string): string {
 export function isBookingContactEnvelope(value: unknown): value is BookingContactEnvelope {
   if (!value || typeof value !== 'object') return false;
   const o = value as Record<string, unknown>;
-  return o.v === 1 && typeof o.ek === 'string' && typeof o.iv === 'string' && typeof o.ct === 'string';
+  const version = o.v;
+  return (
+    (version === 1 || version === '1') &&
+    typeof o.ek === 'string' &&
+    o.ek.length > 0 &&
+    typeof o.iv === 'string' &&
+    o.iv.length > 0 &&
+    typeof o.ct === 'string' &&
+    o.ct.length > 0
+  );
 }
 
 export function decryptBookingContact(

@@ -8,11 +8,11 @@ function pemFromEnv(raw: string): string {
     .replace(/\\n/g, '\n');
 }
 
-function toBase64Url(buffer: ArrayBuffer): string {
-  const bytes = new Uint8Array(buffer);
+function toBase64Url(bytes: Uint8Array | ArrayBuffer): string {
+  const view = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
   let binary = '';
-  for (let i = 0; i < bytes.length; i += 1) {
-    binary += String.fromCharCode(bytes[i]!);
+  for (let i = 0; i < view.length; i += 1) {
+    binary += String.fromCharCode(view[i]!);
   }
   return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
 }
@@ -51,7 +51,7 @@ export async function encryptBookingContact(
   return {
     v: 1,
     ek: toBase64Url(ekBuffer),
-    iv: toBase64Url(iv.buffer),
+    iv: toBase64Url(iv),
     ct: toBase64Url(ctBuffer),
   };
 }

@@ -5,6 +5,7 @@ import { validateCheckoutAccess } from '../server/checkoutAccess.js';
 import { parseCheckoutContactBody } from '../server/parseCheckoutContact.js';
 import { consumeRateLimit, getClientIp } from '../server/requestSecurity.js';
 import { getStripeClient, getStripeEnv } from '../server/stripe.js';
+import { isValidEmailStrict, isValidName, isValidPhoneDigits } from '../shared/bookingFields.js';
 
 const BOOKING_CLOSE_HOUR = 22; // 10:00 PM
 const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
@@ -81,42 +82,6 @@ function parseBody(req, fallbackBody) {
 
 function stripNewlines(value) {
   return String(value ?? '').replace(/[\r\n]+/g, ' ');
-}
-
-function normalizeName(value, maxLen = 40) {
-  const cleaned = stripNewlines(value)
-    .replace(/[^A-Za-z\u00C0-\u024F\s'-]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .replace(/^[-']+/, '')
-    .replace(/[-']+$/, '');
-  return cleaned.slice(0, maxLen);
-}
-
-function normalizeEmail(value, maxLen = 254) {
-  return stripNewlines(value).replace(/\s+/g, '').slice(0, maxLen);
-}
-
-function normalizePhoneDigits(value, maxLenDigits = 15) {
-  return stripNewlines(value).replace(/[^\d]/g, '').slice(0, maxLenDigits);
-}
-
-function isValidName(value) {
-  const v = String(value ?? '').trim();
-  if (v.length < 2 || v.length > 40) return false;
-  return /[A-Za-z\u00C0-\u024F]/.test(v) && /^[A-Za-z\u00C0-\u024F\s'-]+$/.test(v);
-}
-
-function isValidEmailStrict(value) {
-  const v = String(value ?? '').trim();
-  if (!v || v.length > 254) return false;
-  if (/\s/.test(v)) return false;
-  return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(v);
-}
-
-function isValidPhoneDigits(value) {
-  const digits = normalizePhoneDigits(value);
-  return digits.length >= 10 && digits.length <= 15;
 }
 
 async function verifyTurnstileToken({ token, secret, remoteip }) {
@@ -199,11 +164,7 @@ export default async function handler(req, res) {
   const time = String(body?.time ?? '').trim();
   const turnstileToken = String(body?.turnstileToken ?? '').trim();
 
-  const contactResult = parseCheckoutContactBody(
-    body,
-    { normalizeName, normalizeEmail, normalizePhoneDigits },
-    { isProduction }
-  );
+  const contactResult = parseCheckoutContactBody(body);
 
   if (contactResult.ok === false) {
     return json(res, contactResult.status, { ok: false, error: contactResult.error });

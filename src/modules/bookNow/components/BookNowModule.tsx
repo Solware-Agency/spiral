@@ -4,6 +4,15 @@ import LogoPicture from '../../../components/LogoPicture';
 import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
 import styles from '../styles/bookNow.module.css';
 import ElfsightInstagramFeed from '../../../components/ElfsightInstagramFeed';
+import {
+  isValidEmailStrict,
+  isValidName,
+  isValidPhoneDigits,
+  normalizeEmail,
+  normalizeName,
+  normalizePhoneDigits,
+  stripNewlines,
+} from '../../../../shared/bookingFields';
 
 type Plan = 'weekday' | 'weekend';
 
@@ -167,9 +176,8 @@ const formatPickerDateHeading = (d) => {
   return `${weekday} ${month} ${dayNum}${ordinalSuffixEn(dayNum)}`;
 };
 
-const normalizePhoneDigits = (value) => value.replace(/[^\d]/g, '');
-
-const stripNewlines = (value) => value.replace(/[\r\n]+/g, ' ');
+const normalizePhone = (value, maxLenDigits = 15) =>
+  normalizePhoneDigits(stripNewlines(String(value ?? ''))).slice(0, maxLenDigits);
 
 const toYmdLocal = (d) => {
   if (!d) return '';
@@ -191,22 +199,6 @@ const startOfDayLocal = (d) => {
   next.setHours(0, 0, 0, 0);
   return next;
 };
-
-const normalizeName = (value, maxLen = 40) => {
-  const cleaned = stripNewlines(String(value ?? ''))
-    .replace(/[^A-Za-z\u00C0-\u024F\s'-]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .replace(/^[-']+/, '')
-    .replace(/[-']+$/, '');
-  return cleaned.slice(0, maxLen);
-};
-
-const normalizeEmail = (value, maxLen = 254) =>
-  stripNewlines(String(value ?? '')).replace(/\s+/g, '').slice(0, maxLen);
-
-const normalizePhone = (value, maxLenDigits = 15) =>
-  normalizePhoneDigits(stripNewlines(String(value ?? ''))).slice(0, maxLenDigits);
 
 const sanitizeEmailInput = (value, maxLen = 254) => {
   const raw = stripNewlines(String(value ?? '')).slice(0, maxLen);
@@ -291,26 +283,6 @@ const slotEndsBeforeClose = (timeStr, durationHours) => {
   if (!t || !Number.isFinite(durationHours) || durationHours <= 0) return false;
   const endMinutes = (t.hour + durationHours) * 60 + t.minute;
   return endMinutes <= BOOKING_CLOSE_HOUR * 60;
-};
-
-const isValidName = (value) => {
-  const v = String(value ?? '').trim();
-  if (v.length < 2 || v.length > 40) return false;
-  // Must contain at least one letter; allow spaces, hyphens, apostrophes.
-  return /[A-Za-z\u00C0-\u024F]/.test(v) && /^[A-Za-z\u00C0-\u024F\s'-]+$/.test(v);
-};
-
-const isValidEmailStrict = (value) => {
-  const v = String(value ?? '').trim();
-  if (!v || v.length > 254) return false;
-  if (/\s/.test(v)) return false;
-  // Basic sanity: one @, sensible local+domain, and a TLD of >=2 letters.
-  return /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(v);
-};
-
-const isValidPhoneDigits = (digits) => {
-  const d = normalizePhoneDigits(String(digits ?? ''));
-  return d.length >= 10 && d.length <= 15;
 };
 
 const preloadImage = async (src) => {
@@ -1084,10 +1056,10 @@ const BookNowModule = () => {
     else if (!slotEndsBeforeClose(selectedTime, hours))
       errors.selectedTime = 'La reserva debe finalizar a las 10:00 PM o antes.';
 
-    const firstName = stripNewlines(formValues.firstName).trim();
-    const lastName = stripNewlines(formValues.lastName).trim();
-    const email = stripNewlines(formValues.email).trim();
-    const phoneDigits = normalizePhoneDigits(stripNewlines(formValues.phone));
+    const firstName = normalizeName(formValues.firstName);
+    const lastName = normalizeName(formValues.lastName);
+    const email = normalizeEmail(formValues.email);
+    const phoneDigits = normalizePhoneDigits(formValues.phone);
 
     if (!firstName) errors.firstName = 'Ingresa tu nombre.';
     else if (!isValidName(firstName))

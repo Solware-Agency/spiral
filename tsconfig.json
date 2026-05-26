@@ -17,5 +17,5 @@
     "noFallthroughCasesInSwitch": true,
     "types": ["vite/client", "node"]
   },
-  "include": ["src", "server", "api", "scripts"]
+  "include": ["src", "server", "api", "scripts", "shared"]
 }
