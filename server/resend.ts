@@ -100,9 +100,26 @@ function renderEmailTemplate({
   `;
 }
 
+/** Extrae la dirección si RESEND_FROM_EMAIL viene como `Nombre <correo@dominio>`. */
+function extractEmailAddress(rawFrom) {
+  const raw = String(rawFrom ?? '').trim();
+  if (!raw) return '';
+  const bracketed = raw.match(/<([^>]+)>/);
+  return (bracketed?.[1] ?? raw).trim();
+}
+
+/** Nombre visible en la bandeja (Gmail, etc.). Por defecto: Spiral. */
+export function buildResendFromAddress() {
+  const email = extractEmailAddress(process.env.RESEND_FROM_EMAIL);
+  if (!email) return '';
+  const displayName =
+    String(process.env.RESEND_FROM_NAME || 'Spiral').trim().replace(/[<>]/g, '') || 'Spiral';
+  return `${displayName} <${email}>`;
+}
+
 export function getResendEnv() {
   const apiKey = String(process.env.RESEND_API_KEY || '').trim();
-  const fromEmail = String(process.env.RESEND_FROM_EMAIL || '').trim();
+  const fromEmail = buildResendFromAddress();
   const ownerEmail = String(
     process.env.STUDIO_NOTIFICATION_EMAIL || process.env.BOOKING_OWNER_EMAIL || ''
   ).trim();
