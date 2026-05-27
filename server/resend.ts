@@ -13,6 +13,12 @@ function toListLine(label, value) {
   return `${label}: ${value || '(not provided)'}`;
 }
 
+function formatHours(hours) {
+  const n = Number(hours);
+  if (!Number.isFinite(n) || n < 1) return `${hours} hour(s)`;
+  return n === 1 ? '1 hour' : `${n} hours`;
+}
+
 function detailRow(label, value) {
   return `
     <tr>
@@ -39,13 +45,14 @@ function renderEmailTemplate({
   customerEmail,
   calendarLink,
 }) {
+  const durationLabel = formatHours(hours);
   const calendarCta = calendarLink
     ? `
       <tr>
         <td style="padding:20px 28px 4px;">
           <a href="${esc(calendarLink)}"
             style="display:inline-block;background:#6f1720;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:8px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">
-            Ver en Google Calendar / View on Google Calendar
+            View on Google Calendar
           </a>
         </td>
       </tr>
@@ -78,12 +85,12 @@ function renderEmailTemplate({
         <tr>
           <td style="background:#ffffff;padding:4px 28px 10px;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
-              ${detailRow('Cliente / Customer', customerName || '(not provided)')}
+              ${detailRow('Customer', customerName || '(not provided)')}
               ${detailRow('Email', customerEmail || '(not provided)')}
               ${detailRow('Plan', planLabel)}
-              ${detailRow('Duracion / Duration', `${hours} hour(s)`)}
-              ${detailRow('Fecha / Date', date)}
-              ${detailRow('Hora / Time', time)}
+              ${detailRow('Duration', durationLabel)}
+              ${detailRow('Date', date)}
+              ${detailRow('Time', time)}
             </table>
           </td>
         </tr>
@@ -91,7 +98,7 @@ function renderEmailTemplate({
         <tr>
           <td style="background:#ffffff;padding:16px 28px 24px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 14px 14px;">
             <div style="margin-top:6px;padding-top:14px;border-top:1px solid #ececec;color:#6b7280;font-size:12px;line-height:1.55;">
-              SPIRAL M STUDIO · Email de confirmacion / Confirmation email
+              SPIRAL M STUDIO · Booking confirmation
             </div>
           </td>
         </tr>
@@ -146,19 +153,18 @@ export async function sendBookingConfirmationEmails({
   calendarLink,
   paidViaStripe,
 }) {
-  const statusLine = paidViaStripe
-    ? 'Pago confirmado en Stripe / Stripe payment confirmed'
-    : 'Reserva creada / Booking created';
-  const subjectBase = `Reserva confirmada / Booking confirmed — ${date} ${time}`;
+  const statusLine = paidViaStripe ? 'Stripe payment confirmed' : 'Booking created';
+  const subjectBase = `Booking confirmed — ${date} ${time}`;
+  const durationLabel = formatHours(hours);
   const detailLines = [
-    toListLine('Estado / Status', statusLine),
+    toListLine('Status', statusLine),
     toListLine('Plan', planLabel),
-    toListLine('Duracion / Duration', `${hours} hour(s)`),
-    toListLine('Fecha / Date', date),
-    toListLine('Hora / Time', time),
-    toListLine('Cliente / Customer', customerName),
-    toListLine('Email cliente / Customer email', customerEmail),
-    toListLine('Calendario / Calendar', calendarLink || 'N/A'),
+    toListLine('Duration', durationLabel),
+    toListLine('Date', date),
+    toListLine('Time', time),
+    toListLine('Customer', customerName),
+    toListLine('Customer email', customerEmail),
+    toListLine('Calendar', calendarLink || 'N/A'),
   ];
   const detailText = detailLines.join('\n');
 
@@ -169,12 +175,11 @@ export async function sendBookingConfirmationEmails({
         from: fromEmail,
         to: ownerEmail,
         subject: `[OWNER] ${subjectBase}`,
-        text: `Nueva reserva confirmada / New booking confirmed.\n\n${detailText}`,
+        text: `New booking confirmed.\n\n${detailText}`,
         html: renderEmailTemplate({
-          eyebrow: 'Spiral Bookings / Reservas Spiral',
-          title: 'Nueva reserva confirmada / New booking confirmed',
-          subtitle:
-            'Se registro una nueva reserva desde Book Now. / A new booking was submitted from Book Now.',
+          eyebrow: 'Spiral Bookings',
+          title: 'New booking confirmed',
+          subtitle: 'A new booking was submitted from Book Now.',
           statusBadge: statusLine,
           customerName,
           planLabel,
@@ -193,13 +198,13 @@ export async function sendBookingConfirmationEmails({
       resend.emails.send({
         from: fromEmail,
         to: customerEmail,
-        subject: `Tu reserva en CASA SPIRAL esta confirmada / Your CASA SPIRAL booking is confirmed`,
-        text: `Gracias por tu reserva. / Thank you for your booking.\n\n${detailText}`,
+        subject: 'Your CASA SPIRAL booking is confirmed',
+        text: `Thank you for your booking.\n\n${detailText}`,
         html: renderEmailTemplate({
           eyebrow: 'Casa Spiral',
-          title: 'Tu reserva esta confirmada / Your booking is confirmed',
+          title: 'Your booking is confirmed',
           subtitle:
-            'Gracias por elegir Spiral. Te esperamos en el estudio. / Thanks for choosing Spiral. We look forward to seeing you at the studio.',
+            'Thanks for choosing Spiral. We look forward to seeing you at the studio.',
           statusBadge: statusLine,
           customerName,
           planLabel,
@@ -215,7 +220,7 @@ export async function sendBookingConfirmationEmails({
 
   if (tasks.length === 0) return { sent: 0, skipped: true };
   const results = await Promise.all(tasks);
-  
+
   let sent = 0;
   const errors = [];
 
@@ -229,4 +234,3 @@ export async function sendBookingConfirmationEmails({
 
   return { sent, errors };
 }
-

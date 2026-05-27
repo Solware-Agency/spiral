@@ -4,6 +4,10 @@ import { DateTime } from 'luxon';
 import { isAllowedRequestOrigin } from '../server/origin.js';
 import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
 import {
+  buildBookingCalendarDescription,
+  buildBookingCalendarSummary,
+} from '../server/bookingCalendarText.js';
+import {
   getResendClient,
   getResendEnv,
   sendBookingConfirmationEmails,
@@ -190,22 +194,18 @@ export async function confirmBookingFromSessionId(sessionId) {
 
   const planLabel = plan === 'weekend' ? 'Weekend' : 'Weekday';
   const displayName = [firstName, lastName].filter(Boolean).join(' ').trim();
-  const summary = displayName ? `Reserva Studio Spiral — ${displayName}` : 'Reserva Studio Spiral';
-  const descriptionLines = [
-    'Booking request from website (paid via Stripe).',
-    '',
-    `Plan: ${planLabel}`,
-    `Hours: ${hours}`,
-    `Date: ${date}`,
-    `Time: ${time}`,
-    '',
-    'Customer info:',
-    `Name: ${displayName || '(not provided)'}`,
-    `Email: ${email || '(not provided)'}`,
-    `Phone: ${phone || '(not provided)'}`,
-    '',
-    `Stripe Checkout Session: ${normalizedSessionId}`,
-  ];
+  const summary = buildBookingCalendarSummary(displayName);
+  const description = buildBookingCalendarDescription({
+    planLabel,
+    hours,
+    date,
+    time,
+    displayName,
+    email,
+    phone,
+    paidViaStripe: true,
+    stripeSessionId: normalizedSessionId,
+  });
 
   // Hard block: don't allow overlaps with existing events.
   const fb = await calendar.freebusy.query({
@@ -234,7 +234,7 @@ export async function confirmBookingFromSessionId(sessionId) {
     sendUpdates: 'none',
     requestBody: {
       summary,
-      description: descriptionLines.join('\n'),
+      description,
       start: { dateTime: start.toISO(), timeZone: TZ },
       end: { dateTime: end.toISO(), timeZone: TZ },
       guestsCanInviteOthers: false,
@@ -245,7 +245,7 @@ export async function confirmBookingFromSessionId(sessionId) {
 
   const calendarTemplateLink = buildGoogleCalendarTemplateLink({
     summary,
-    description: descriptionLines.join('\n'),
+    description,
     start,
     end,
   });

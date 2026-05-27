@@ -5,6 +5,10 @@ import { DateTime } from 'luxon';
 import { isAllowedRequestOrigin } from '../server/origin.js';
 import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
 import {
+  buildBookingCalendarDescription,
+  buildBookingCalendarSummary,
+} from '../server/bookingCalendarText.js';
+import {
   getResendClient,
   getResendEnv,
   sendBookingConfirmationEmails,
@@ -146,22 +150,17 @@ export default async function handler(req, res) {
 
   const planLabel = plan === 'weekend' ? 'Weekend' : 'Weekday';
   const displayName = [firstName, lastName].filter(Boolean).join(' ').trim();
-  const summary = displayName
-    ? `Reserva Studio Spiral — ${displayName}`
-    : 'Reserva Studio Spiral';
-  const descriptionLines = [
-    'Booking request from website.',
-    '',
-    `Plan: ${planLabel}`,
-    `Hours: ${hours}`,
-    `Date: ${date}`,
-    `Time: ${time}`,
-    '',
-    'Customer info:',
-    `Name: ${displayName || '(not provided)'}`,
-    `Email: ${email || '(not provided)'}`,
-    `Phone: ${phone || '(not provided)'}`,
-  ];
+  const summary = buildBookingCalendarSummary(displayName);
+  const description = buildBookingCalendarDescription({
+    planLabel,
+    hours,
+    date,
+    time,
+    displayName,
+    email,
+    phone,
+    paidViaStripe: false,
+  });
 
   try {
     // Hard block: don't allow overlaps with existing events.
@@ -185,7 +184,7 @@ export default async function handler(req, res) {
       sendUpdates: 'none',
       requestBody: {
         summary,
-        description: descriptionLines.join('\n'),
+        description,
         start: { dateTime: start.toISO(), timeZone: TZ },
         end: { dateTime: end.toISO(), timeZone: TZ },
         guestsCanInviteOthers: false,
@@ -193,7 +192,6 @@ export default async function handler(req, res) {
         guestsCanSeeOtherGuests: false,
       },
     });
-    const description = descriptionLines.join('\n');
     const calendarTemplateLink = buildGoogleCalendarTemplateLink({
       summary,
       description,
