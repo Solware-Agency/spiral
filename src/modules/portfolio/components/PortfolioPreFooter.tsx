@@ -19,7 +19,7 @@ const PortfolioPreFooter = () => {
         </div>
       </section>
 
-      <section className={styles.preFooterTestimonials}>
+      <section className={styles.preFooterTestimonials} data-testimonials-layout="compact">
         <div className={styles.preFooterTestimonialsScaler}>
           <div className={styles.preFooterTestimonialsInner}>
             <div className={styles.testimonialsLeft}>
@@ -27,18 +27,18 @@ const PortfolioPreFooter = () => {
               <h2 className={styles.testimonialsTitle}>
                 <span className={styles.testimonialsTitleLine1}>DON&apos;T JUST TAKE IT</span>
                 <br />
-                FROM US -
+                FROM US —
               </h2>
             </div>
 
-            <div className={styles.testimonialsRight} aria-hidden>
+            <div className={styles.testimonialsRight} aria-hidden="true">
               <img
                 className={styles.testimonialsAsset}
                 src="/images/photos/ENVELOPE.png"
                 alt=""
                 width={1080}
                 height={1080}
-                loading="lazy"
+                loading="eager"
                 decoding="async"
               />
             </div>
