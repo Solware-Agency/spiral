@@ -66,7 +66,13 @@ function renderEmailTemplate({
       <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;border-collapse:collapse;border:1px solid #d1d1d1;">
         <tr>
           <td style="background:#6f1720;padding:28px 28px 22px;border-radius:0;">
-            <img src="${esc(logoSrc)}" alt="Spiral" width="192" style="display:block;width:192px;max-width:192px;height:auto;border:0;outline:none;text-decoration:none;margin:0 0 18px 0;-ms-interpolation-mode:bicubic;" />
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
+              <tr>
+                <td align="center" style="padding:0 0 18px;text-align:center;">
+                  <img src="${esc(logoSrc)}" alt="Spiral" width="192" style="display:block;width:192px;max-width:192px;height:auto;margin:0 auto;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;" />
+                </td>
+              </tr>
+            </table>
             <div style="color:#f0e6e8;font-size:11px;letter-spacing:.16em;text-transform:uppercase;">${esc(
               eyebrow
             )}</div>
