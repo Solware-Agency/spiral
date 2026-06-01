@@ -22,14 +22,31 @@ function formatHours(hours) {
 function detailRow(label, value) {
   return `
     <tr>
-      <td style="padding:8px 0;color:#6b7280;font-size:12px;letter-spacing:.08em;text-transform:uppercase;vertical-align:top;">
+      <td style="padding:8px 0;color:#6b6b6b;font-size:12px;letter-spacing:.08em;text-transform:uppercase;vertical-align:top;">
         ${esc(label)}
       </td>
-      <td style="padding:8px 0;color:#111827;font-size:14px;font-weight:600;text-align:right;vertical-align:top;">
+      <td style="padding:8px 0;color:#3d3d3d;font-size:14px;font-weight:600;text-align:right;vertical-align:top;">
         ${esc(value || 'N/A')}
       </td>
     </tr>
   `;
+}
+
+function getPublicSiteOrigin() {
+  const raw = String(
+    process.env.PUBLIC_SITE_ORIGIN ||
+      process.env.VITE_SITE_ORIGIN ||
+      process.env.SITE_ORIGIN ||
+      'https://spiralmstudio.com'
+  ).trim();
+  return raw.replace(/\/+$/, '');
+}
+
+/** Logo público para clientes de correo (cabecera burdeos). */
+function getEmailLogoUrl() {
+  const override = String(process.env.RESEND_EMAIL_LOGO_URL || '').trim();
+  if (override) return override;
+  return `${getPublicSiteOrigin()}/images/optimized-logos/spiral-logo-white_640.webp`;
 }
 
 function renderEmailTemplate({
@@ -46,12 +63,13 @@ function renderEmailTemplate({
   calendarLink,
 }) {
   const durationLabel = formatHours(hours);
+  const logoUrl = getEmailLogoUrl();
   const calendarCta = calendarLink
     ? `
       <tr>
-        <td style="padding:20px 28px 4px;">
+        <td style="padding:20px 28px 4px;background:#ffffff;border-left:1px solid #d1d1d1;border-right:1px solid #d1d1d1;">
           <a href="${esc(calendarLink)}"
-            style="display:inline-block;background:#6f1720;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:8px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">
+            style="display:inline-block;background:#6f1720;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">
             View on Google Calendar
           </a>
         </td>
@@ -60,30 +78,31 @@ function renderEmailTemplate({
     : '';
 
   return `
-    <div style="margin:0;background:#0b0b0b;padding:24px 12px;font-family:Arial,'Helvetica Neue',sans-serif;">
-      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;border-collapse:collapse;">
+    <div style="margin:0;background:#e3e3e3;padding:28px 16px;font-family:Arial,'Helvetica Neue',sans-serif;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;border-collapse:collapse;border:1px solid #d1d1d1;">
         <tr>
-          <td style="background:linear-gradient(135deg,#140608 0%,#6f1720 100%);padding:26px 28px;border-radius:14px 14px 0 0;">
-            <div style="color:#f3f4f6;font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.9;">${esc(
+          <td style="background:#6f1720;padding:28px 28px 22px;border-radius:0;">
+            <img src="${esc(logoUrl)}" alt="Spiral" width="168" height="auto" style="display:block;max-width:168px;width:168px;height:auto;border:0;outline:none;text-decoration:none;margin:0 0 18px 0;" />
+            <div style="color:#f0e6e8;font-size:11px;letter-spacing:.16em;text-transform:uppercase;">${esc(
               eyebrow
             )}</div>
-            <div style="margin-top:8px;color:#ffffff;font-size:26px;line-height:1.15;font-weight:700;">${esc(
+            <div style="margin-top:10px;color:#ffffff;font-size:26px;line-height:1.15;font-weight:700;">${esc(
               title
             )}</div>
-            <div style="margin-top:8px;color:#f3f4f6;font-size:13px;line-height:1.5;max-width:42ch;">${esc(
+            <div style="margin-top:10px;color:#f0e6e8;font-size:13px;line-height:1.55;max-width:42ch;">${esc(
               subtitle
             )}</div>
           </td>
         </tr>
         <tr>
-          <td style="background:#ffffff;padding:18px 28px;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;">
-            <span style="display:inline-block;background:#fef2f2;color:#7f1d1d;border:1px solid #fecaca;border-radius:999px;padding:7px 12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;">
+          <td style="background:#ffffff;padding:18px 28px;border-left:1px solid #d1d1d1;border-right:1px solid #d1d1d1;">
+            <span style="display:inline-block;background:#faf5f5;color:#6f1720;border:1px solid #e8c4c8;border-radius:0;padding:7px 12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;">
               ${esc(statusBadge)}
             </span>
           </td>
         </tr>
         <tr>
-          <td style="background:#ffffff;padding:4px 28px 10px;border-left:1px solid #e5e7eb;border-right:1px solid #e5e7eb;">
+          <td style="background:#ffffff;padding:4px 28px 10px;border-left:1px solid #d1d1d1;border-right:1px solid #d1d1d1;">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
               ${detailRow('Customer', customerName || '(not provided)')}
               ${detailRow('Email', customerEmail || '(not provided)')}
@@ -96,9 +115,9 @@ function renderEmailTemplate({
         </tr>
         ${calendarCta}
         <tr>
-          <td style="background:#ffffff;padding:16px 28px 24px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 14px 14px;">
-            <div style="margin-top:6px;padding-top:14px;border-top:1px solid #ececec;color:#6b7280;font-size:12px;line-height:1.55;">
-              SPIRAL M STUDIO · Booking confirmation
+          <td style="background:#f7f7f7;padding:16px 28px 24px;border:1px solid #d1d1d1;border-top:1px solid #e0e0e0;border-radius:0;">
+            <div style="color:#7a7a7a;font-size:12px;line-height:1.55;">
+              Spiral · Booking confirmation
             </div>
           </td>
         </tr>
