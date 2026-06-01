@@ -445,7 +445,7 @@
 }
 
 .studioMarquees {
-  /* Base del texto; la foto usa --studio-marquee-duration-photo (ratio por JS = misma velocidad px/s) */
+  /* Texto y fotos: misma duración por vuelta (26s, fijada en WhatWedo.tsx) */
   --studio-marquee-duration: 26s;
   --studio-marquee-duration-gallery: var(--studio-marquee-duration);
   --studio-marquee-duration-photo: var(--studio-marquee-duration);

@@ -5,7 +5,7 @@ import styles from '../styles/home.module.css';
 import PhotoCarousel from './PhotoCarousel';
 import GalleryCarousel from './GalleryCarousel';
 
-/** Segundos de una vuelta del carrusel de texto (referencia para igualar velocidad lineal con las fotos). */
+/** Segundos de una vuelta completa (texto y fotos; misma velocidad en móvil y desktop). */
 const STUDIO_MARQUEE_BASE_SEC = 26;
 
 const WhatWeDo = () => {
@@ -18,13 +18,11 @@ const WhatWeDo = () => {
   useEffect(() => {
     const root = studioMarqueesRef.current;
     if (!root) return;
-    const photoEl = root.querySelector<HTMLElement>('[data-marquee-photo-group]');
     const galleryEl = root.querySelector<HTMLElement>('[data-marquee-gallery-segment]');
-    if (!photoEl || !galleryEl) return;
-    const mobileMq = window.matchMedia('(max-width: 900px)');
+    if (!galleryEl) return;
 
     let rafId = 0;
-    let prevPhotoSec = '';
+    let prevDurations = '';
     let prevGalleryShift = '';
 
     const measureAndApply = () => {
@@ -37,22 +35,11 @@ const WhatWeDo = () => {
         }
       }
 
-      if (mobileMq.matches) {
-        const sameSec = `${STUDIO_MARQUEE_BASE_SEC}s`;
-        if (prevPhotoSec === sameSec) return;
-        prevPhotoSec = sameSec;
-        root.style.setProperty('--studio-marquee-duration-gallery', sameSec);
-        root.style.setProperty('--studio-marquee-duration-photo', sameSec);
-        return;
-      }
-      const wPhoto = photoEl.offsetWidth;
-      if (wGallery < 1 || wPhoto < 1) return;
-      const photoSec = (STUDIO_MARQUEE_BASE_SEC * wPhoto) / wGallery;
-      const nextPhotoSec = `${photoSec}s`;
-      if (nextPhotoSec === prevPhotoSec) return;
-      prevPhotoSec = nextPhotoSec;
-      root.style.setProperty('--studio-marquee-duration-gallery', `${STUDIO_MARQUEE_BASE_SEC}s`);
-      root.style.setProperty('--studio-marquee-duration-photo', nextPhotoSec);
+      const sameSec = `${STUDIO_MARQUEE_BASE_SEC}s`;
+      if (sameSec === prevDurations) return;
+      prevDurations = sameSec;
+      root.style.setProperty('--studio-marquee-duration-gallery', sameSec);
+      root.style.setProperty('--studio-marquee-duration-photo', sameSec);
     };
 
     const queueMeasure = () => {
@@ -62,9 +49,7 @@ const WhatWeDo = () => {
 
     const ro = new ResizeObserver(queueMeasure);
     ro.observe(root);
-    ro.observe(photoEl);
     ro.observe(galleryEl);
-    mobileMq.addEventListener('change', queueMeasure);
 
     queueMeasure();
 
@@ -81,7 +66,6 @@ const WhatWeDo = () => {
     return () => {
       cancelAnimationFrame(rafId);
       ro.disconnect();
-      mobileMq.removeEventListener('change', queueMeasure);
     };
   }, []);
 
