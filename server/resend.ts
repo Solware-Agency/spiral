@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { resolveEmailLogoForSend } from './emailLogo.js';
 
 function esc(value) {
   return String(value ?? '')
@@ -32,23 +33,6 @@ function detailRow(label, value) {
   `;
 }
 
-function getPublicSiteOrigin() {
-  const raw = String(
-    process.env.PUBLIC_SITE_ORIGIN ||
-      process.env.VITE_SITE_ORIGIN ||
-      process.env.SITE_ORIGIN ||
-      'https://spiralmstudio.com'
-  ).trim();
-  return raw.replace(/\/+$/, '');
-}
-
-/** Logo público para clientes de correo (cabecera burdeos). */
-function getEmailLogoUrl() {
-  const override = String(process.env.RESEND_EMAIL_LOGO_URL || '').trim();
-  if (override) return override;
-  return `${getPublicSiteOrigin()}/images/optimized-logos/spiral-logo-white_640.webp`;
-}
-
 function renderEmailTemplate({
   eyebrow,
   title,
@@ -61,9 +45,9 @@ function renderEmailTemplate({
   time,
   customerEmail,
   calendarLink,
+  logoSrc,
 }) {
   const durationLabel = formatHours(hours);
-  const logoUrl = getEmailLogoUrl();
   const calendarCta = calendarLink
     ? `
       <tr>
@@ -82,7 +66,7 @@ function renderEmailTemplate({
       <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;margin:0 auto;border-collapse:collapse;border:1px solid #d1d1d1;">
         <tr>
           <td style="background:#6f1720;padding:28px 28px 22px;border-radius:0;">
-            <img src="${esc(logoUrl)}" alt="Spiral" width="168" height="auto" style="display:block;max-width:168px;width:168px;height:auto;border:0;outline:none;text-decoration:none;margin:0 0 18px 0;" />
+            <img src="${esc(logoSrc)}" alt="Spiral" width="192" style="display:block;width:192px;max-width:192px;height:auto;border:0;outline:none;text-decoration:none;margin:0 0 18px 0;-ms-interpolation-mode:bicubic;" />
             <div style="color:#f0e6e8;font-size:11px;letter-spacing:.16em;text-transform:uppercase;">${esc(
               eyebrow
             )}</div>
@@ -186,6 +170,7 @@ export async function sendBookingConfirmationEmails({
     toListLine('Calendar', calendarLink || 'N/A'),
   ];
   const detailText = detailLines.join('\n');
+  const { src: logoSrc, attachments } = await resolveEmailLogoForSend();
 
   const tasks = [];
   if (ownerEmail) {
@@ -207,7 +192,9 @@ export async function sendBookingConfirmationEmails({
           time,
           customerEmail,
           calendarLink,
+          logoSrc,
         }),
+        attachments: attachments.length ? attachments : undefined,
       })
     );
   }
@@ -232,7 +219,9 @@ export async function sendBookingConfirmationEmails({
           time,
           customerEmail,
           calendarLink,
+          logoSrc,
         }),
+        attachments: attachments.length ? attachments : undefined,
       })
     );
   }

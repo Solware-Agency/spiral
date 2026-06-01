@@ -8,6 +8,10 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
 const imagesRoot = path.join(projectRoot, 'public', 'images');
 const outputDir = path.join(projectRoot, 'public', 'images', 'optimized-logos');
+const emailDir = path.join(projectRoot, 'public', 'images', 'email');
+/** Cabecera de correos de reserva — logo sin alpha (evita fondo negro en Gmail/Outlook). */
+const EMAIL_HEADER_BG = { r: 111, g: 23, b: 32 };
+const EMAIL_LOGO_WIDTH = 480;
 
 async function exists(p: string) {
   try {
@@ -24,6 +28,23 @@ async function shouldRegenerate(srcPath: string, outPath: string) {
   return srcStat.mtimeMs > outStat.mtimeMs;
 }
 
+async function buildEmailLogoPng(srcPath: string) {
+  const outPath = path.join(emailDir, 'spiral-logo-white.png');
+  const regen = await shouldRegenerate(srcPath, outPath);
+  if (!regen) return;
+
+  await fs.mkdir(emailDir, { recursive: true });
+  await sharp(srcPath)
+    .resize({ width: EMAIL_LOGO_WIDTH, withoutEnlargement: true })
+    .flatten({ background: EMAIL_HEADER_BG })
+    .png({ compressionLevel: 9 })
+    .toFile(outPath);
+  const outStat = await fs.stat(outPath);
+  console.log(
+    `[optimize-logos] email PNG -> ${outPath.split('public').pop()} (${outStat.size} B, ${EMAIL_LOGO_WIDTH}w, bg #6f1720)`
+  );
+}
+
 async function main() {
   await fs.mkdir(outputDir, { recursive: true });
   const tasks: Promise<void>[] = [];
@@ -33,6 +54,10 @@ async function main() {
     if (!(await exists(srcPath))) {
       console.warn('[optimize-logos] Origen no encontrado, se omite:', srcPath);
       continue;
+    }
+
+    if (slug === 'spiral-logo-white') {
+      tasks.push(buildEmailLogoPng(srcPath));
     }
 
     for (const w of LOGO_WEBP_WIDTHS) {
