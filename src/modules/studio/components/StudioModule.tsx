@@ -7,7 +7,7 @@ import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/log
 import InstagramGrid from '../../home/components/InstagramGrid';
 import styles from '../styles/studio.module.css';
 
-const GALLERY_SIZES = '(max-width: 900px) 94vw, 1200px';
+const GALLERY_SIZES = '(max-width: 900px) 94vw, min(1240px, 92vw)';
 const GALLERY_AUTO_MS = 4500;
 const RATES_POLAROID_SIZES = '(max-width: 900px) 72vw, min(420px, 38vw)';
 
@@ -47,34 +47,34 @@ const features = [
 
 const galleryPhotos = [
   {
-    src: '/images/photos/DSC02380.jpg',
-    alt: 'Casa Spiral studio space',
-    objectPosition: '50% 44%',
+    src: '/images/photos/DSC01989.jpg',
+    alt: 'Atmospheric brand and studio photography',
+    objectPosition: '70% 30%',
   },
   {
     src: '/images/photos/DSC02040.jpg',
     alt: 'Studio content setup',
-    objectPosition: '50% 42%',
+    objectPosition: '50% 3%',
   },
   {
     src: '/images/photos/DSC01963.jpg',
     alt: 'Studio lighting and backdrop',
-    objectPosition: '50% 40%',
+    objectPosition: '50% 24%',
   },
   {
     src: '/images/photos/DSC01973.jpg',
     alt: 'Ambiente de estudio Casa Spiral',
-    objectPosition: '50% 41%',
+    objectPosition: '50% 20%',
   },
   {
     src: '/images/photos/DSC02545.jpg',
     alt: 'Studio creative corner',
-    objectPosition: '50% 43%',
+    objectPosition: '50% 26%',
   },
   {
     src: '/images/photos/DSC02285.jpg',
     alt: 'Espacio y estética del estudio',
-    objectPosition: '50% 42%',
+    objectPosition: '50% 69%',
   },
 ];
 
@@ -104,9 +104,10 @@ const StudioGalleryCarousel = () => {
             className={styles.galleryImg}
             src={activePhoto.src}
             alt={activePhoto.alt}
-            loading="lazy"
+            loading={index === 0 ? 'eager' : 'lazy'}
             decoding="async"
             sizes={GALLERY_SIZES}
+            fetchPriority={index === 0 ? 'high' : 'auto'}
           />
         </figure>
       </div>

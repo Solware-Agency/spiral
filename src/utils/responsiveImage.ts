@@ -39,7 +39,8 @@ export function buildOptimizedPictureProps(src) {
   if (!base || !OPTIMIZED_IMAGE_BASE_IDS.has(base)) return null;
   return {
     webpSrcSet: optimizedSrcSet(base, 'webp'),
-    fallbackSrc: optimizedUrl(base, 960, 'jpg'),
+    jpgSrcSet: optimizedSrcSet(base, 'jpg'),
+    fallbackSrc: optimizedUrl(base, 1280, 'jpg'),
   };
 }
 

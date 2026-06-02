@@ -34,11 +34,14 @@ export const studioCarouselPhotos = [
 
 export const STUDIO_CAROUSEL_IDS = studioCarouselPhotos.map((p) => p.id);
 
-/** Alineado al tamaño real del carrusel (~140–240px de ancho). */
+/** Ancho de red según slot del carrusel y DPR (~140–240px CSS × hasta 2×). */
 export function resolveStudioCarouselImageWidth(): number {
-  if (typeof window === 'undefined') return 480;
-  if (window.matchMedia('(max-width: 600px)').matches) return 320;
-  return 480;
+  if (typeof window === 'undefined') return 640;
+  const slotCss = window.matchMedia('(max-width: 600px)').matches ? 160 : 240;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const needed = Math.ceil(slotCss * dpr);
+  const tiers = [320, 480, 640, 960] as const;
+  return tiers.find((w) => w >= needed) ?? 960;
 }
 
 export function resolveStudioCarouselImageSrc(id: string): string {

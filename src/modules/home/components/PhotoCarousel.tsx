@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import {
-  studioCarouselPhotos,
-  hydrateStudioCarouselImages,
-  getStudioCarouselDisplaySrc,
-} from '../../../data/studioCarouselPhotos';
+import React from 'react';
+import ResponsiveImg from '../../../components/ResponsiveImg';
+import { studioCarouselPhotos } from '../../../data/studioCarouselPhotos';
 import styles from '../styles/home.module.css';
+
+const CAROUSEL_SIZES = '(max-width: 600px) 42vw, 240px';
 
 type CarouselPhotoProps = {
   id: string;
@@ -14,34 +13,20 @@ type CarouselPhotoProps = {
 };
 
 const CarouselPhoto = ({ id, alt, hidden = false, fetchPriority = 'auto' }: CarouselPhotoProps) => (
-  <figure className={styles.photoCarouselItem}>
-    <img
+  <figure className={styles.photoCarouselItem} aria-hidden={hidden || undefined}>
+    <ResponsiveImg
       className={styles.photoCarouselImg}
-      src={getStudioCarouselDisplaySrc(id)}
+      src={`/images/photos/${id}.jpg`}
       alt={hidden ? '' : alt}
-      width={640}
-      height={960}
+      sizes={CAROUSEL_SIZES}
       loading="eager"
       decoding="async"
       fetchPriority={fetchPriority}
-      aria-hidden={hidden || undefined}
     />
   </figure>
 );
 
 const PhotoCarousel = () => {
-  const [, setHydrated] = useState(0);
-
-  useEffect(() => {
-    let alive = true;
-    hydrateStudioCarouselImages().then(() => {
-      if (alive) setHydrated((n) => n + 1);
-    });
-    return () => {
-      alive = false;
-    };
-  }, []);
-
   return (
     <div className={styles.photoCarousel} aria-label="Home photo carousel">
       <div className={styles.photoCarouselTrack}>

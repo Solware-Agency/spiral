@@ -36,6 +36,8 @@ export default function ResponsiveImg({
         <img
           className={className}
           src={opt.fallbackSrc}
+          srcSet={opt.jpgSrcSet}
+          sizes={sizes}
           alt={alt}
           loading={loading}
           decoding={decoding}
