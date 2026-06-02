@@ -3,6 +3,7 @@
 import { DateTime } from 'luxon';
 import { isAllowedRequestOrigin } from '../server/origin.js';
 import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
+import { resolveBookingCalendarViewLink } from '../server/bookingCalendarLink.js';
 import {
   buildBookingCalendarDescription,
   buildBookingCalendarSummary,
@@ -266,7 +267,7 @@ export async function confirmBookingFromSessionId(sessionId) {
         hours,
         date,
         time,
-        calendarLink: calendarTemplateLink || htmlLink,
+        calendarLink: resolveBookingCalendarViewLink(htmlLink),
         paidViaStripe: true,
       });
       if (emailResult.errors && emailResult.errors.length > 0) {

@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { resolveBookingCalendarViewLink } from './bookingCalendarLink.js';
 import { resolveEmailLogoForSend } from './emailLogo.js';
 
 function esc(value) {
@@ -48,13 +49,14 @@ function renderEmailTemplate({
   logoSrc,
 }) {
   const durationLabel = formatHours(hours);
-  const calendarCta = calendarLink
+  const calendarViewLink = resolveBookingCalendarViewLink(calendarLink);
+  const calendarCta = calendarViewLink
     ? `
       <tr>
         <td style="padding:20px 28px 4px;background:#ffffff;border-left:1px solid #d1d1d1;border-right:1px solid #d1d1d1;">
-          <a href="${esc(calendarLink)}"
+          <a href="${esc(calendarViewLink)}"
             style="display:inline-block;background:#6f1720;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;">
-            View on Google Calendar
+            Open in Google Calendar
           </a>
         </td>
       </tr>
@@ -165,6 +167,7 @@ export async function sendBookingConfirmationEmails({
   const statusLine = paidViaStripe ? 'Stripe payment confirmed' : 'Booking created';
   const subjectBase = `Booking confirmed — ${date} ${time}`;
   const durationLabel = formatHours(hours);
+  const calendarViewLink = resolveBookingCalendarViewLink(calendarLink);
   const detailLines = [
     toListLine('Status', statusLine),
     toListLine('Plan', planLabel),
@@ -173,7 +176,7 @@ export async function sendBookingConfirmationEmails({
     toListLine('Time', time),
     toListLine('Customer', customerName),
     toListLine('Customer email', customerEmail),
-    toListLine('Calendar', calendarLink || 'N/A'),
+    ...(calendarViewLink ? [toListLine('Google Calendar', calendarViewLink)] : []),
   ];
   const detailText = detailLines.join('\n');
   const { src: logoSrc, attachments } = await resolveEmailLogoForSend();

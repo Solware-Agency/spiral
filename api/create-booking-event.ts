@@ -4,6 +4,7 @@ import { google } from 'googleapis';
 import { DateTime } from 'luxon';
 import { isAllowedRequestOrigin } from '../server/origin.js';
 import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
+import { resolveBookingCalendarViewLink } from '../server/bookingCalendarLink.js';
 import {
   buildBookingCalendarDescription,
   buildBookingCalendarSummary,
@@ -212,7 +213,7 @@ export default async function handler(req, res) {
           hours,
           date,
           time,
-          calendarLink: calendarTemplateLink || resp.data.htmlLink || null,
+          calendarLink: resolveBookingCalendarViewLink(resp.data.htmlLink),
           paidViaStripe: false,
         });
         if (emailResult.errors && emailResult.errors.length > 0) {
