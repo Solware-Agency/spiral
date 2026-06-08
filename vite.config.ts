@@ -1,17 +1,30 @@
 import process from 'node:process';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+import {
+  buildMediaCdnUrl,
+  isInvalidSupabaseDashboardCdnOrigin,
+  normalizeMediaCdnOrigin,
+} from './scripts/mediaCdnShared.ts';
 
 const DEFAULT_SITE_ORIGIN = 'https://spiralmstudio.com';
 
-function mediaCdnPlugin(cdnOrigin: string) {
-  const origin = cdnOrigin.replace(/\/$/, '');
+function mediaCdnPlugin(cdnOrigin: string, stripPrefix: string) {
+  const origin = normalizeMediaCdnOrigin(cdnOrigin);
   if (!origin) return null;
+
+  if (isInvalidSupabaseDashboardCdnOrigin(origin)) {
+    throw new Error(
+      'VITE_MEDIA_CDN_ORIGIN apunta al dashboard de Supabase, no al CDN público. ' +
+        'Usa: https://TU-PROJECT.supabase.co/storage/v1/object/public/NOMBRE-BUCKET/Spiral'
+    );
+  }
 
   const rewrite = (code: string) =>
     code.replace(
       /url\((['"]?)(\/(?:images|videos|Polaroids)(?:[^'")]|\\.)*)\1\)/gi,
-      (_match, quote: string, assetPath: string) => `url(${quote}${origin}${assetPath}${quote})`
+      (_match, quote: string, assetPath: string) =>
+        `url(${quote}${buildMediaCdnUrl(assetPath, origin, stripPrefix)}${quote})`
     );
 
   return {
@@ -29,6 +42,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const siteOrigin = (env.VITE_SITE_ORIGIN || DEFAULT_SITE_ORIGIN).replace(/\/$/, '');
   const mediaCdnOrigin = String(env.VITE_MEDIA_CDN_ORIGIN || '').trim();
+  const mediaCdnStripPrefix = String(env.VITE_MEDIA_CDN_STRIP_PREFIX ?? '/images').trim();
   const devHost = env.VITE_DEV_HOST || 'localhost';
   const devPort = Number(env.VITE_DEV_PORT || 5173);
   const hmrHost = env.VITE_HMR_HOST;
@@ -39,7 +53,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
-      mediaCdnPlugin(mediaCdnOrigin),
+      mediaCdnPlugin(mediaCdnOrigin, mediaCdnStripPrefix),
       {
         name: 'html-site-origin',
         transformIndexHtml(html: string) {

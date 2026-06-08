@@ -2,6 +2,21 @@ const CDN_ORIGIN = String(import.meta.env.VITE_MEDIA_CDN_ORIGIN || '')
   .trim()
   .replace(/\/$/, '');
 
+const CDN_STRIP_PREFIX = String(import.meta.env.VITE_MEDIA_CDN_STRIP_PREFIX ?? '/images')
+  .trim();
+
+function resolveCdnAssetPath(path: string): string {
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  if (!CDN_ORIGIN || !CDN_STRIP_PREFIX) return normalized;
+
+  if (normalized === CDN_STRIP_PREFIX || normalized.startsWith(`${CDN_STRIP_PREFIX}/`)) {
+    const rest = normalized.slice(CDN_STRIP_PREFIX.length);
+    return rest.startsWith('/') ? rest : `/${rest}`;
+  }
+
+  return normalized;
+}
+
 /** true cuando los assets se sirven desde un bucket/CDN externo (no desde /public). */
 export function usesExternalMediaCdn(): boolean {
   return CDN_ORIGIN.length > 0;
@@ -13,7 +28,7 @@ export function mediaUrl(path: string): string {
   if (/^https?:\/\//i.test(path)) return path;
   const normalized = path.startsWith('/') ? path : `/${path}`;
   if (!CDN_ORIGIN) return normalized;
-  return `${CDN_ORIGIN}${normalized}`;
+  return `${CDN_ORIGIN}${resolveCdnAssetPath(normalized)}`;
 }
 
 /** URL absoluta para Open Graph, preload, etc. */
@@ -26,7 +41,8 @@ export function absoluteMediaUrl(path: string, siteOrigin?: string): string {
     String(siteOrigin || import.meta.env.VITE_SITE_ORIGIN || '')
       .trim()
       .replace(/\/$/, '');
-  return origin ? `${origin}${normalized}` : normalized;
+  const assetPath = CDN_ORIGIN ? resolveCdnAssetPath(normalized) : normalized;
+  return origin ? `${origin}${assetPath}` : assetPath;
 }
 
 export function optimizedImageSet(baseId: string, width: number): string {

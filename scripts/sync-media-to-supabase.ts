@@ -4,7 +4,7 @@
  * Requiere:
  *   SUPABASE_URL=https://xxxx.supabase.co
  *   SUPABASE_SERVICE_ROLE_KEY=eyJ...
- *   SUPABASE_STORAGE_BUCKET=imagnes          (opcional, default spiral-media)
+ *   SUPABASE_STORAGE_BUCKET=imagenes         (opcional, default spiral-media)
  *   SUPABASE_STORAGE_PREFIX=Spiral             (opcional, carpeta raíz dentro del bucket)
  *
  * Uso: pnpm media:sync-supabase
