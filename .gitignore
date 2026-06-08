@@ -29,3 +29,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Media estático servido desde Supabase CDN (ver VITE_MEDIA_CDN_ORIGIN en .env.example).
+# Mantener fuera del repo para deploys rápidos; subir con pnpm media:sync-supabase.
+public/images/
+public/Polaroids/
