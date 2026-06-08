@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { metaForPathname } from '../seo/routeMeta';
 import { SITE_ORIGIN } from '../seo/siteOrigin';
+import { absoluteMediaUrl } from '../utils/mediaCdn';
 
 function upsertMetaByName(name: string, content: string) {
   let el = document.querySelector(`meta[name="${name}"]`);
@@ -41,7 +42,7 @@ export default function SeoHead() {
     const path = pathname.endsWith('/') && pathname !== '/' ? pathname.slice(0, -1) : pathname;
     const canonicalPath = path === '' ? '/' : path;
     const canonicalUrl = `${SITE_ORIGIN}${canonicalPath === '/' ? '/' : canonicalPath}`;
-    const imageUrl = `${SITE_ORIGIN}${meta.imagePath}`;
+    const imageUrl = absoluteMediaUrl(meta.imagePath, SITE_ORIGIN);
 
     document.title = meta.title;
     upsertMetaByName('description', meta.description);

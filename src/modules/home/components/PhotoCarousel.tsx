@@ -1,5 +1,6 @@
 import React from 'react';
 import ResponsiveImg from '../../../components/ResponsiveImg';
+import { mediaUrl } from '../../../utils/mediaCdn';
 import { studioCarouselPhotos } from '../../../data/studioCarouselPhotos';
 import styles from '../styles/home.module.css';
 
@@ -16,7 +17,7 @@ const CarouselPhoto = ({ id, alt, hidden = false, fetchPriority = 'auto' }: Caro
   <figure className={styles.photoCarouselItem} aria-hidden={hidden || undefined}>
     <ResponsiveImg
       className={styles.photoCarouselImg}
-      src={`/images/photos/${id}.jpg`}
+      src={mediaUrl(`/images/photos/${id}.jpg`)}
       alt={hidden ? '' : alt}
       sizes={CAROUSEL_SIZES}
       loading="eager"

@@ -1,4 +1,5 @@
 import { OPTIMIZED_PHOTO_FILES } from '../data/optimizedSources';
+import { mediaUrl } from './mediaCdn';
 
 /** Anchos alineados con scripts/optimize-images.ts */
 export const RESPONSIVE_WIDTHS = [320, 480, 640, 960, 1280, 1600, 2560, 3200];
@@ -11,7 +12,7 @@ const baseFromSourceFile = (file) => {
 export const OPTIMIZED_IMAGE_BASE_IDS = new Set(OPTIMIZED_PHOTO_FILES.map(baseFromSourceFile));
 
 export function optimizedUrl(baseId, width, ext) {
-  return `/images/optimized/${baseId}_${width}.${ext}`;
+  return mediaUrl(`/images/optimized/${baseId}_${width}.${ext}`);
 }
 
 export function optimizedSrcSet(baseId, ext) {

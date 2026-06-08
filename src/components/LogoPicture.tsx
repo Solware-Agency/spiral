@@ -1,9 +1,10 @@
 import type { ImgHTMLAttributes } from 'react';
 import { LOGO_WEBP_WIDTHS } from '../data/logoSources';
+import { mediaUrl } from '../utils/mediaCdn';
 import styles from './ResponsiveImg.module.css';
 
 function webpSrcSet(slug: string) {
-  return LOGO_WEBP_WIDTHS.map((w) => `/images/optimized-logos/${slug}_${w}.webp ${w}w`).join(', ');
+  return LOGO_WEBP_WIDTHS.map((w) => `${mediaUrl(`/images/optimized-logos/${slug}_${w}.webp`)} ${w}w`).join(', ');
 }
 
 export type LogoPictureProps = {

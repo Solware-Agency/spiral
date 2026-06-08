@@ -1,0 +1,36 @@
+const CDN_ORIGIN = String(import.meta.env.VITE_MEDIA_CDN_ORIGIN || '')
+  .trim()
+  .replace(/\/$/, '');
+
+/** true cuando los assets se sirven desde un bucket/CDN externo (no desde /public). */
+export function usesExternalMediaCdn(): boolean {
+  return CDN_ORIGIN.length > 0;
+}
+
+/** Ruta pública del asset: local (/images/...) o CDN si VITE_MEDIA_CDN_ORIGIN está definido. */
+export function mediaUrl(path: string): string {
+  if (!path) return path;
+  if (/^https?:\/\//i.test(path)) return path;
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  if (!CDN_ORIGIN) return normalized;
+  return `${CDN_ORIGIN}${normalized}`;
+}
+
+/** URL absoluta para Open Graph, preload, etc. */
+export function absoluteMediaUrl(path: string, siteOrigin?: string): string {
+  if (!path) return path;
+  if (/^https?:\/\//i.test(path)) return path;
+  const normalized = path.startsWith('/') ? path : `/${path}`;
+  const origin =
+    CDN_ORIGIN ||
+    String(siteOrigin || import.meta.env.VITE_SITE_ORIGIN || '')
+      .trim()
+      .replace(/\/$/, '');
+  return origin ? `${origin}${normalized}` : normalized;
+}
+
+export function optimizedImageSet(baseId: string, width: number): string {
+  const webp = mediaUrl(`/images/optimized/${baseId}_${width}.webp`);
+  const jpg = mediaUrl(`/images/optimized/${baseId}_${width}.jpg`);
+  return `image-set(url("${webp}") type("image/webp"), url("${jpg}") type("image/jpeg"))`;
+}

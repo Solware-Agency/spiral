@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { mediaUrl } from '../../../utils/mediaCdn';
 import styles from '../styles/portfolio.module.css';
 
 const PortfolioPreFooter = () => {
@@ -34,7 +35,7 @@ const PortfolioPreFooter = () => {
             <div className={styles.testimonialsRight} aria-hidden="true">
               <img
                 className={styles.testimonialsAsset}
-                src="/images/photos/ENVELOPE.png"
+                src={mediaUrl('/images/photos/ENVELOPE.png')}
                 alt=""
                 width={1080}
                 height={1080}

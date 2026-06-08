@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import LogoPicture from '../../../components/LogoPicture';
 import ResponsiveImg from '../../../components/ResponsiveImg';
 import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
+import { optimizedImageSet } from '../../../utils/mediaCdn';
 import InstagramGrid from '../../home/components/InstagramGrid';
 import styles from '../styles/studio.module.css';
 
@@ -11,8 +12,7 @@ const GALLERY_SIZES = '(max-width: 900px) 94vw, min(1240px, 92vw)';
 const GALLERY_AUTO_MS = 4500;
 const RATES_POLAROID_SIZES = '(max-width: 900px) 72vw, min(420px, 38vw)';
 
-const bgSet = (id: string, w: number) =>
-  `image-set(url("/images/optimized/${id}_${w}.webp") type("image/webp"), url("/images/optimized/${id}_${w}.jpg") type("image/jpeg"))`;
+const bgSet = (id: string, w: number) => optimizedImageSet(id, w);
 const bgVars = (id: string): CSSProperties =>
   ({
     '--bg-960': bgSet(id, 960),

@@ -1,3 +1,5 @@
+import { mediaUrl } from '../../../utils/mediaCdn';
+
 export const portfolioData = [
   {
     id: 'p01',
@@ -71,7 +73,7 @@ type VideoCoverFolder = keyof typeof VIDEO_COVER_FILES;
 
 function videoCoverSrc(folder: VideoCoverFolder, index: number): string {
   const file = VIDEO_COVER_FILES[folder][index - 1];
-  return `${VIDEO_COVERS_BASE}/${encodeURIComponent(folder)}/${encodeURIComponent(file)}`;
+  return mediaUrl(`${VIDEO_COVERS_BASE}/${encodeURIComponent(folder)}/${encodeURIComponent(file)}`);
 }
 
 function videoItemsWithCovers(
@@ -81,7 +83,7 @@ function videoItemsWithCovers(
 ): PortfolioVideoItem[] {
   return videoSrcs.map((videoSrc, idx) => ({
     id: `${rowId}-${idx + 1}`,
-    videoSrc,
+    videoSrc: mediaUrl(videoSrc),
     posterSrc: videoCoverSrc(folder, idx + 1),
   }));
 }
@@ -140,7 +142,7 @@ function coverPhotoItems(
     id: `${rowId}-cover-${idx + 1}`,
     title: sectionLabel,
     alt: `${sectionLabel} portfolio cover ${idx + 1} from Spiral`,
-    src: `${VIDEO_COVERS_BASE}/${encodeURIComponent(folder)}/${encodeURIComponent(file)}`,
+    src: mediaUrl(`${VIDEO_COVERS_BASE}/${encodeURIComponent(folder)}/${encodeURIComponent(file)}`),
   }));
 }
 

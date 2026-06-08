@@ -12,6 +12,13 @@ const skip = onVercel
   ? process.env.RUN_SHARP_OPTIMIZE !== '1'
   : process.env.SKIP_IMAGE_OPTIMIZE === '1' || process.env.SKIP_IMAGE_OPTIMIZE === 'true';
 
+const strip = spawnSync(
+  process.execPath,
+  ['--experimental-strip-types', path.join(root, 'scripts', 'strip-local-media-for-cdn-build.ts')],
+  { cwd: root, stdio: 'inherit', env: process.env }
+);
+if (strip.status !== 0) process.exit(strip.status ?? 1);
+
 if (skip) {
   const reason = onVercel
     ? 'deploy en Vercel (defini RUN_SHARP_OPTIMIZE=1 para regenerar con Sharp).'

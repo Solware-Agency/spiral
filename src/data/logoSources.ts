@@ -2,6 +2,8 @@
  * Logos PNG de marca: variantes WebP en /images/optimized-logos/{slug}_{ancho}.webp
  * (scripts/optimize-logos.ts). Mantener rutas alineadas con public/images.
  */
+import { mediaUrl } from '../utils/mediaCdn';
+
 export const LOGO_WEBP_WIDTHS = [320, 640, 960, 1280];
 
 export const LOGO_OPTIMIZE_ENTRIES = [
@@ -12,9 +14,9 @@ export const LOGO_OPTIMIZE_ENTRIES = [
 
 /** URLs PNG (fallback dentro de picture) */
 export const SPIRAL_LOGO_PNG = {
-  fullWhite: '/images/spiral%20logos/SPIRAL%20Logos/Full/Spiral-logo-white.png',
-  iconWhite: '/images/spiral%20logos/SPIRAL%20Logos/Icon/Spiral-Icon-White.png',
-  casaWhite: '/images/spiral%20logos/SPIRAL%20Logos/Casa%20Spiral/Casa.spiral-white.png',
+  fullWhite: mediaUrl('/images/spiral%20logos/SPIRAL%20Logos/Full/Spiral-logo-white.png'),
+  iconWhite: mediaUrl('/images/spiral%20logos/SPIRAL%20Logos/Icon/Spiral-Icon-White.png'),
+  casaWhite: mediaUrl('/images/spiral%20logos/SPIRAL%20Logos/Casa%20Spiral/Casa.spiral-white.png'),
 };
 
 export const SPIRAL_LOGO_SLUG = {

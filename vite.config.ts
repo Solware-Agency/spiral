@@ -4,10 +4,31 @@ import react from '@vitejs/plugin-react';
 
 const DEFAULT_SITE_ORIGIN = 'https://spiralmstudio.com';
 
+function mediaCdnPlugin(cdnOrigin: string) {
+  const origin = cdnOrigin.replace(/\/$/, '');
+  if (!origin) return null;
+
+  const rewrite = (code: string) =>
+    code.replace(
+      /url\((['"]?)(\/(?:images|videos|Polaroids)(?:[^'")]|\\.)*)\1\)/gi,
+      (_match, quote: string, assetPath: string) => `url(${quote}${origin}${assetPath}${quote})`
+    );
+
+  return {
+    name: 'media-cdn-css',
+    transform(code: string, id: string) {
+      if (!/\.(css|module\.css)$/.test(id)) return null;
+      const next = rewrite(code);
+      return next === code ? null : next;
+    },
+  };
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const siteOrigin = (env.VITE_SITE_ORIGIN || DEFAULT_SITE_ORIGIN).replace(/\/$/, '');
+  const mediaCdnOrigin = String(env.VITE_MEDIA_CDN_ORIGIN || '').trim();
   const devHost = env.VITE_DEV_HOST || 'localhost';
   const devPort = Number(env.VITE_DEV_PORT || 5173);
   const hmrHost = env.VITE_HMR_HOST;
@@ -18,6 +39,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
+      mediaCdnPlugin(mediaCdnOrigin),
       {
         name: 'html-site-origin',
         transformIndexHtml(html: string) {
@@ -41,7 +63,7 @@ export default defineConfig(({ mode }) => {
           },
         },
       },
-    ],
+    ].filter(Boolean),
     build: {
       rollupOptions: {
         output: {

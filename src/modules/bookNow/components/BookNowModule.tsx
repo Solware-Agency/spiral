@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, Dispatch, RefCallback, SetStateAction } from 'react';
 import LogoPicture from '../../../components/LogoPicture';
 import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
+import { mediaUrl, optimizedImageSet } from '../../../utils/mediaCdn';
 import styles from '../styles/bookNow.module.css';
 import ElfsightInstagramFeed from '../../../components/ElfsightInstagramFeed';
 import {
@@ -63,8 +64,7 @@ type BookingSlideProps = {
   turnstileContainerRef: RefCallback<HTMLDivElement>;
 };
 
-const bgSet = (id: string, w: number) =>
-  `image-set(url("/images/optimized/${id}_${w}.webp") type("image/webp"), url("/images/optimized/${id}_${w}.jpg") type("image/jpeg"))`;
+const bgSet = (id: string, w: number) => optimizedImageSet(id, w);
 const bgVars = (id: string): CSSProperties =>
   ({
     '--bg-960': bgSet(id, 960),
@@ -75,7 +75,7 @@ const bgVars = (id: string): CSSProperties =>
   }) as CSSProperties;
 
 /** Single static hero image below the booking panel (no carousel). */
-const STUDIO_GALLERY_IMAGE = '/images/optimized/DSC02380_1280.jpg';
+const STUDIO_GALLERY_IMAGE = mediaUrl('/images/optimized/DSC02380_1280.jpg');
 
 const rates = [
   { hours: 2, weekday: 160, weekend: 170 },
@@ -721,7 +721,7 @@ const BookNowModule = () => {
   }, []);
 
   useEffect(() => {
-    preloadImage('/images/optimized/DSC01989_1600.jpg');
+    preloadImage(mediaUrl('/images/optimized/DSC01989_1600.jpg'));
     preloadImage(STUDIO_GALLERY_IMAGE);
   }, []);
 
