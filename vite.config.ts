@@ -5,6 +5,7 @@ import {
   buildMediaCdnUrl,
   isInvalidSupabaseDashboardCdnOrigin,
   normalizeMediaCdnOrigin,
+  resolveMediaCdnStripPrefix,
 } from './scripts/mediaCdnShared.ts';
 
 const DEFAULT_SITE_ORIGIN = 'https://spiralmstudio.com';
@@ -42,7 +43,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const siteOrigin = (env.VITE_SITE_ORIGIN || DEFAULT_SITE_ORIGIN).replace(/\/$/, '');
   const mediaCdnOrigin = String(env.VITE_MEDIA_CDN_ORIGIN || '').trim();
-  const mediaCdnStripPrefix = String(env.VITE_MEDIA_CDN_STRIP_PREFIX ?? '/images').trim();
+  const mediaCdnStripPrefix = resolveMediaCdnStripPrefix(env.VITE_MEDIA_CDN_STRIP_PREFIX);
   const devHost = env.VITE_DEV_HOST || 'localhost';
   const devPort = Number(env.VITE_DEV_PORT || 5173);
   const hmrHost = env.VITE_HMR_HOST;

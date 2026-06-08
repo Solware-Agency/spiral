@@ -10,9 +10,18 @@ export function isInvalidSupabaseDashboardCdnOrigin(origin: string): boolean {
 }
 
 /**
- * Si el bucket guarda `Spiral/optimized/...` en lugar de `Spiral/images/optimized/...`,
- * define VITE_MEDIA_CDN_STRIP_PREFIX=/images en Vercel.
+ * Prefijo a quitar de rutas `/images/...` al armar URLs del CDN.
+ * Por defecto `/images` (bucket con `Spiral/optimized/...` sin carpeta intermedia).
+ * Pon `VITE_MEDIA_CDN_STRIP_PREFIX=0` si subiste con `pnpm media:sync-supabase`
+ * (`Spiral/images/optimized/...`).
  */
+export function resolveMediaCdnStripPrefix(raw: unknown): string {
+  const value = raw === undefined || raw === null ? '' : String(raw).trim();
+  if (value === '0' || value.toLowerCase() === 'false') return '';
+  if (value === '') return '/images';
+  return value;
+}
+
 export function resolveCdnAssetPath(path: string, stripPrefix: string): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;
   const prefix = stripPrefix.trim();

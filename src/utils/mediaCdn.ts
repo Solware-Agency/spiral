@@ -1,9 +1,10 @@
+import { resolveMediaCdnStripPrefix } from '../../scripts/mediaCdnShared.ts';
+
 const CDN_ORIGIN = String(import.meta.env.VITE_MEDIA_CDN_ORIGIN || '')
   .trim()
   .replace(/\/$/, '');
 
-const CDN_STRIP_PREFIX = String(import.meta.env.VITE_MEDIA_CDN_STRIP_PREFIX ?? '/images')
-  .trim();
+const CDN_STRIP_PREFIX = resolveMediaCdnStripPrefix(import.meta.env.VITE_MEDIA_CDN_STRIP_PREFIX);
 
 function resolveCdnAssetPath(path: string): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;
