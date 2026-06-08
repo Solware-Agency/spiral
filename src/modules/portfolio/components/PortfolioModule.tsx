@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ResponsiveImg from '../../../components/ResponsiveImg';
 import styles from '../styles/portfolio.module.css';
 import {
@@ -10,7 +10,9 @@ import {
 } from '../data/portfolioData';
 
 const MEDIA_THUMB_SIZES = '(max-width: 640px) 100vw, (max-width: 1100px) 50vw, min(36vw, 720px)';
+const PHOTO_CAROUSEL_SIZES = '(max-width: 1100px) 100vw, min(92vw, 1240px)';
 const PHOTO_CAROUSEL_INTERVAL_MS = 3600;
+const VIDEO_VIEW_ROOT_MARGIN = '160px 0px';
 
 function cleanedPhotoCaption(title) {
   if (title == null || title === '') return '';
@@ -43,6 +45,36 @@ function videoPosterUrl(item: PortfolioVideoItem) {
   return null;
 }
 
+function useNearViewport<T extends Element>(rootMargin = VIDEO_VIEW_ROOT_MARGIN) {
+  const ref = useRef<T | null>(null);
+  const [isNear, setIsNear] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (!('IntersectionObserver' in window)) {
+      setIsNear(true);
+      return undefined;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => setIsNear(Boolean(entry?.isIntersecting)),
+      { rootMargin, threshold: 0.08 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [rootMargin]);
+
+  return { ref, isNear };
+}
+
+function VideoPlayBadge() {
+  return (
+    <span className={styles.mediaThumbPlayBadge} aria-hidden>
+      <span className={styles.mediaThumbPlayIcon} />
+    </span>
+  );
+}
+
 function PortfolioVideoThumb({
   item,
   row,
@@ -52,45 +84,31 @@ function PortfolioVideoThumb({
   row: PortfolioVideoRow;
   layoutIdx: number;
 }) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [isInView, setIsInView] = useState(false);
+  const { ref: containerRef, isNear } = useNearViewport<HTMLDivElement>();
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
   const [videoBroken, setVideoBroken] = useState(false);
   const [posterBroken, setPosterBroken] = useState(false);
-  const [posterImgBroken, setPosterImgBroken] = useState(false);
-  const [showPosterOverlay, setShowPosterOverlay] = useState(() => Boolean(videoPosterUrl(item)));
 
   const posterUrl = videoPosterUrl(item);
   const alt = videoFallbackImageAlt(item, row);
-  const showPosterOnly = (isInView ? videoBroken : true) && posterUrl && !posterBroken;
-  const showMissing = videoBroken && (!posterUrl || posterBroken);
+  const showPoster = Boolean(posterUrl) && !posterBroken && !shouldLoadVideo;
+  const showMissing = shouldLoadVideo && videoBroken;
 
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    if (!('IntersectionObserver' in window)) {
-      setIsInView(true);
+    if (!shouldLoadVideo) return;
+    const video = videoRef.current;
+    if (!video || !isNear) {
+      video?.pause();
       return;
     }
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setIsInView(true);
-          io.disconnect();
-        }
-      },
-      { rootMargin: '280px 0px' }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+    void video.play().catch(() => {});
+  }, [shouldLoadVideo, isNear]);
 
-  const syncPosterOverlay = (v) => {
-    if (!posterUrl || posterImgBroken) {
-      setShowPosterOverlay(false);
-      return;
-    }
-    setShowPosterOverlay(v.paused && v.currentTime < 0.25);
-  };
+  const activateVideo = useCallback(() => {
+    if (videoBroken) return;
+    setShouldLoadVideo(true);
+  }, [videoBroken]);
 
   return (
     <div
@@ -100,57 +118,39 @@ function PortfolioVideoThumb({
       data-layout={layoutIdx}
       data-video-missing={showMissing ? 'true' : undefined}
     >
-      {isInView && !videoBroken ? (
-        <div className={styles.mediaThumbVideoStack}>
-          <video
-            className={styles.mediaThumbVideo}
-            src={item.videoSrc}
-            poster={posterUrl || undefined}
-            preload="metadata"
-            playsInline
-            muted
-            loop
-            controls
-            onError={() => setVideoBroken(true)}
-            onLoadedMetadata={(e) => syncPosterOverlay(e.currentTarget)}
-            onLoadedData={(e) => syncPosterOverlay(e.currentTarget)}
-            onPlay={() => setShowPosterOverlay(false)}
-            onPause={(e) => syncPosterOverlay(e.currentTarget)}
-            onTimeUpdate={(e) => {
-              const v = e.currentTarget;
-              if (v.paused) syncPosterOverlay(v);
-            }}
-            onSeeked={(e) => syncPosterOverlay(e.currentTarget)}
-            onEnded={(e) => syncPosterOverlay(e.currentTarget)}
-          />
-          {posterUrl && !posterImgBroken ? (
-            <img
-              src={posterUrl}
-              alt=""
-              width={1080}
-              height={1920}
-              className={`${styles.mediaThumbPosterOverlay} ${
-                showPosterOverlay ? styles.mediaThumbPosterOverlayVisible : ''
-              }`}
-              aria-hidden
-              loading="lazy"
-              decoding="async"
-              draggable={false}
-              onError={() => setPosterImgBroken(true)}
-            />
-          ) : null}
-        </div>
-      ) : showPosterOnly ? (
-        <img
+      {shouldLoadVideo && !videoBroken ? (
+        <video
+          ref={videoRef}
           className={styles.mediaThumbVideo}
-          src={posterUrl}
-          alt={alt}
-          width={1080}
-          height={1920}
-          loading="lazy"
-          decoding="async"
-          onError={() => setPosterBroken(true)}
+          src={item.videoSrc}
+          poster={posterUrl || undefined}
+          preload="metadata"
+          playsInline
+          muted
+          loop
+          controls
+          onError={() => setVideoBroken(true)}
         />
+      ) : showPoster ? (
+        <button
+          type="button"
+          className={styles.mediaThumbPosterButton}
+          onClick={activateVideo}
+          aria-label={`Play video: ${alt}`}
+        >
+          <img
+            className={styles.mediaThumbVideo}
+            src={posterUrl}
+            alt=""
+            width={720}
+            height={1280}
+            loading={isNear ? 'eager' : 'lazy'}
+            decoding="async"
+            draggable={false}
+            onError={() => setPosterBroken(true)}
+          />
+          <VideoPlayBadge />
+        </button>
       ) : null}
       {showMissing ? (
         <div className={styles.videoMissing} role="status">
@@ -167,47 +167,43 @@ function PortfolioPhotoCarouselRow({
   row: (typeof portfolioPhotosRows)[number];
 }) {
   const slides = row.items;
+  const { ref: rowRef, isNear } = useNearViewport<HTMLDivElement>('240px 0px');
   const [activeIdx, setActiveIdx] = useState(0);
 
   useEffect(() => {
-    if (slides.length <= 1) return undefined;
+    if (!isNear || slides.length <= 1) return undefined;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduceMotion.matches) return undefined;
+
     const id = window.setInterval(() => {
       setActiveIdx((prev) => (prev + 1) % slides.length);
     }, PHOTO_CAROUSEL_INTERVAL_MS);
+
     return () => window.clearInterval(id);
-  }, [slides.length]);
+  }, [isNear, slides.length]);
 
   if (slides.length === 0) return null;
   const activeItem = slides[activeIdx];
   const activeCaption = activeItem?.title ? cleanedPhotoCaption(activeItem.title) : '';
+  const activeSrc = activeItem?.src || activeItem?.imageUrl;
 
   return (
-    <div key={row.id} className={styles.mediaRow}>
+    <div ref={rowRef} key={row.id} className={styles.mediaRow}>
       {row.label && <span className={styles.mediaRowLabel}>{row.label}</span>}
       <div className={styles.mediaGridPhotos}>
-        <div
-          className={styles.mediaGridPhotosTrack}
-          style={{ transform: `translateX(-${activeIdx * 100}%)` }}
-        >
-          {slides.map((item, idx) => (
-            <div
-              key={item.id}
-              className={styles.mediaThumb}
-              data-variant="photo"
-              data-layout={idx + 1}
-            >
-              {(item.src || item.imageUrl) && (
-                <ResponsiveImg
-                  className={styles.mediaThumbImage}
-                  src={item.src || item.imageUrl}
-                  alt={photoImageAlt(item)}
-                  loading={idx === 0 ? 'eager' : 'lazy'}
-                  decoding="async"
-                  sizes="100vw"
-                />
-              )}
-            </div>
-          ))}
+        <div className={styles.mediaThumb} data-variant="photo" data-layout={activeIdx + 1}>
+          {activeSrc ? (
+            <img
+              key={activeItem.id}
+              className={styles.mediaThumbImage}
+              src={activeSrc}
+              alt={photoImageAlt(activeItem)}
+              loading={isNear ? 'eager' : 'lazy'}
+              decoding="async"
+              sizes={PHOTO_CAROUSEL_SIZES}
+              draggable={false}
+            />
+          ) : null}
         </div>
       </div>
       {activeCaption ? (
@@ -297,4 +293,3 @@ const PortfolioModule = () => {
 };
 
 export default PortfolioModule;
-

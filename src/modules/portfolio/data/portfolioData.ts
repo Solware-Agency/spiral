@@ -58,110 +58,68 @@ export type PortfolioVideoRow = {
   items: PortfolioVideoItem[];
 };
 
+/** Carátulas en `public/images/video covers/{carpeta}/` — una por vídeo en cada sección. */
+const VIDEO_COVERS_BASE = '/images/video%20covers';
+
+const VIDEO_COVER_FILES = {
+  Padel: ['1.jpg', '2.jpg', '3.jpg', '4.jpg'],
+  Fashion: ['1.JPG', '2.jpg', '3.jpg', '4.JPG'],
+  Drinks: ['1.jpg', '2.jpg', '3.jpg', '4.jpg'],
+} as const;
+
+type VideoCoverFolder = keyof typeof VIDEO_COVER_FILES;
+
+function videoCoverSrc(folder: VideoCoverFolder, index: number): string {
+  const file = VIDEO_COVER_FILES[folder][index - 1];
+  return `${VIDEO_COVERS_BASE}/${encodeURIComponent(folder)}/${encodeURIComponent(file)}`;
+}
+
+function videoItemsWithCovers(
+  rowId: string,
+  folder: VideoCoverFolder,
+  videoSrcs: string[]
+): PortfolioVideoItem[] {
+  return videoSrcs.map((videoSrc, idx) => ({
+    id: `${rowId}-${idx + 1}`,
+    videoSrc,
+    posterSrc: videoCoverSrc(folder, idx + 1),
+  }));
+}
+
 /**
- * Vídeos: opcional `posterSrc` para carátula. Si falla el .mp4, se intenta la misma ruta con .jpg
- * (p. ej. 24.mp4 → 24.jpg). Sin carátula y sin vídeo → mensaje sobre fondo oscuro (no blanco).
+ * Vídeos: `posterSrc` apunta a `public/images/video covers/`.
+ * Sin carátula y sin vídeo → mensaje sobre fondo oscuro (no blanco).
  */
 export const portfolioVideosRows: PortfolioVideoRow[] = [
   {
     id: 'vrow-sports',
     label: 'SPORTS',
-    items: [
-      {
-        id: 'v-sports-24',
-        videoSrc: '/videos/videos/Sports/24.mp4',
-        posterSrc: '/videos/videos/Sports/24.jpg',
-      },
-      {
-        id: 'v-sports-26',
-        videoSrc: '/videos/videos/Sports/26.mp4',
-        posterSrc: '/videos/videos/Sports/26.jpg',
-      },
-      {
-        id: 'v-sports-27',
-        videoSrc: '/videos/videos/Sports/27.mp4',
-        posterSrc: '/videos/videos/Sports/27.jpg',
-      },
-      {
-        id: 'v-sports-28',
-        videoSrc: '/videos/videos/Sports/28.mp4',
-        posterSrc: '/videos/videos/Sports/28.jpg',
-      },
-    ],
+    items: videoItemsWithCovers('v-sports', 'Padel', [
+      '/videos/videos/Sports/24.mp4',
+      '/videos/videos/Sports/26.mp4',
+      '/videos/videos/Sports/27.mp4',
+      '/videos/videos/Sports/28.mp4',
+    ]),
   },
   {
     id: 'vrow-fashion',
     label: 'FASHION',
-    items: [
-      {
-        id: 'v-fashion-29',
-        videoSrc: '/videos/videos/Fashion/29.mp4',
-        posterSrc: '/videos/videos/Fashion/29.jpg',
-      },
-      {
-        id: 'v-fashion-30',
-        videoSrc: '/videos/videos/Fashion/30.mp4',
-        posterSrc: '/videos/videos/Fashion/30.jpg',
-      },
-      {
-        id: 'v-fashion-31',
-        videoSrc: '/videos/videos/Fashion/31.mp4',
-        posterSrc: '/videos/videos/Fashion/31.jpg',
-      },
-      {
-        id: 'v-fashion-32',
-        videoSrc: '/videos/videos/Fashion/32.mp4',
-        posterSrc: '/videos/videos/Fashion/32.jpg',
-      },
-    ],
+    items: videoItemsWithCovers('v-fashion', 'Fashion', [
+      '/videos/videos/Fashion/29.mp4',
+      '/videos/videos/Fashion/30.mp4',
+      '/videos/videos/Fashion/31.mp4',
+      '/videos/videos/Fashion/32.mp4',
+    ]),
   },
   {
     id: 'vrow-drinks',
     label: 'DRINKS',
-    items: [
-      {
-        id: 'v-drinks-33',
-        videoSrc: '/videos/videos/Drinks/33.mp4',
-        posterSrc: '/videos/videos/Drinks/33.jpg',
-      },
-      {
-        id: 'v-drinks-34',
-        videoSrc: '/videos/videos/Drinks/34.mp4',
-        posterSrc: '/videos/videos/Drinks/34.jpg',
-      },
-      {
-        id: 'v-drinks-35',
-        videoSrc: '/videos/videos/Drinks/35.mp4',
-        posterSrc: '/videos/videos/Drinks/35.jpg',
-      },
-      {
-        id: 'v-drinks-36',
-        videoSrc: '/videos/videos/Drinks/36.mp4',
-        posterSrc: '/videos/videos/Drinks/36.jpg',
-      },
-    ],
-  },
-];
-
-const PUBLIC_PHOTOS_BASE = '/images/photos/Portfolio%20Photos';
-
-// Lista explícita: Vite no puede auto-listar el directorio `public/` en runtime.
-// Si agregás más PNGs a esa carpeta, sumalos acá (o te lo automatizo moviéndolos a `src/assets`).
-const publicPortfolioPngFiles = [
-  {
-    name: '22.png',
-    title: 'Sports',
-    alt: 'Sports and athletic lifestyle photography from the Spiral portfolio',
-  },
-  {
-    name: '23.png',
-    title: 'Fashion',
-    alt: 'Fashion editorial and brand photography from the Spiral portfolio',
-  },
-  {
-    name: '24.png',
-    title: 'Drinks',
-    alt: 'Beverage and product photography for drinks brands, Spiral portfolio',
+    items: videoItemsWithCovers('v-drinks', 'Drinks', [
+      '/videos/videos/Drinks/33.mp4',
+      '/videos/videos/Drinks/34.mp4',
+      '/videos/videos/Drinks/35.mp4',
+      '/videos/videos/Drinks/36.mp4',
+    ]),
   },
 ];
 
@@ -173,14 +131,22 @@ export type PortfolioPhotoItem = {
   imageUrl?: string;
 };
 
-const publicPortfolioPngs: PortfolioPhotoItem[] = publicPortfolioPngFiles.map(({ name, title, alt }) => ({
-  id: `public:${name}`,
-  title,
-  alt,
-  src: `${PUBLIC_PHOTOS_BASE}/${encodeURIComponent(name)}`,
-}));
+function coverPhotoItems(
+  rowId: string,
+  folder: VideoCoverFolder,
+  sectionLabel: string
+): PortfolioPhotoItem[] {
+  return VIDEO_COVER_FILES[folder].map((file, idx) => ({
+    id: `${rowId}-cover-${idx + 1}`,
+    title: sectionLabel,
+    alt: `${sectionLabel} portfolio cover ${idx + 1} from Spiral`,
+    src: `${VIDEO_COVERS_BASE}/${encodeURIComponent(folder)}/${encodeURIComponent(file)}`,
+  }));
+}
 
 export const portfolioPhotosRows: { id: string; label: string; items: PortfolioPhotoItem[] }[] = [
-  { id: 'prow-photos', label: '', items: publicPortfolioPngs },
+  { id: 'prow-sports', label: 'SPORTS', items: coverPhotoItems('prow-sports', 'Padel', 'Sports') },
+  { id: 'prow-fashion', label: 'FASHION', items: coverPhotoItems('prow-fashion', 'Fashion', 'Fashion') },
+  { id: 'prow-drinks', label: 'DRINKS', items: coverPhotoItems('prow-drinks', 'Drinks', 'Drinks') },
 ];
 
