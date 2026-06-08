@@ -167,11 +167,10 @@ function PortfolioPhotoCarouselRow({
   row: (typeof portfolioPhotosRows)[number];
 }) {
   const slides = row.items;
-  const { ref: rowRef, isNear } = useNearViewport<HTMLDivElement>('240px 0px');
   const [activeIdx, setActiveIdx] = useState(0);
 
   useEffect(() => {
-    if (!isNear || slides.length <= 1) return undefined;
+    if (slides.length <= 1) return undefined;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (reduceMotion.matches) return undefined;
 
@@ -180,37 +179,43 @@ function PortfolioPhotoCarouselRow({
     }, PHOTO_CAROUSEL_INTERVAL_MS);
 
     return () => window.clearInterval(id);
-  }, [isNear, slides.length]);
+  }, [slides.length]);
 
   if (slides.length === 0) return null;
-  const activeItem = slides[activeIdx];
-  const activeCaption = activeItem?.title ? cleanedPhotoCaption(activeItem.title) : '';
-  const activeSrc = activeItem?.src || activeItem?.imageUrl;
 
   return (
-    <div ref={rowRef} key={row.id} className={styles.mediaRow}>
+    <div key={row.id} className={styles.mediaRow}>
       {row.label && <span className={styles.mediaRowLabel}>{row.label}</span>}
       <div className={styles.mediaGridPhotos}>
-        <div className={styles.mediaThumb} data-variant="photo" data-layout={activeIdx + 1}>
-          {activeSrc ? (
-            <img
-              key={activeItem.id}
-              className={styles.mediaThumbImage}
-              src={activeSrc}
-              alt={photoImageAlt(activeItem)}
-              loading={isNear ? 'eager' : 'lazy'}
-              decoding="async"
-              sizes={PHOTO_CAROUSEL_SIZES}
-              draggable={false}
-            />
-          ) : null}
+        <div
+          className={styles.mediaGridPhotosTrack}
+          style={{ transform: `translateX(-${activeIdx * 100}%)` }}
+        >
+          {slides.map((item, idx) => {
+            const caption = cleanedPhotoCaption(item.title);
+            return (
+              <div
+                key={item.id}
+                className={styles.mediaThumb}
+                data-variant="photo"
+                data-layout={idx + 1}
+              >
+                {caption ? <span className={styles.mediaPhotoCaption}>{caption}</span> : null}
+                {(item.src || item.imageUrl) && (
+                  <ResponsiveImg
+                    className={styles.mediaThumbImage}
+                    src={item.src || item.imageUrl}
+                    alt={photoImageAlt(item)}
+                    loading={idx === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    sizes={PHOTO_CAROUSEL_SIZES}
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
-      {activeCaption ? (
-        <span key={`${row.id}-${activeIdx}`} className={styles.mediaPhotoCaptionActive}>
-          {activeCaption}
-        </span>
-      ) : null}
     </div>
   );
 }

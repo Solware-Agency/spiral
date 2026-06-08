@@ -133,22 +133,35 @@ export type PortfolioPhotoItem = {
   imageUrl?: string;
 };
 
-function coverPhotoItems(
-  rowId: string,
-  folder: VideoCoverFolder,
-  sectionLabel: string
-): PortfolioPhotoItem[] {
-  return VIDEO_COVER_FILES[folder].map((file, idx) => ({
-    id: `${rowId}-cover-${idx + 1}`,
-    title: sectionLabel,
-    alt: `${sectionLabel} portfolio cover ${idx + 1} from Spiral`,
-    src: mediaUrl(`${VIDEO_COVERS_BASE}/${encodeURIComponent(folder)}/${encodeURIComponent(file)}`),
-  }));
-}
+/** PNGs en `public/images/photos/Portfolio Photos/` — una fila en carrusel con leyenda por slide. */
+const PUBLIC_PHOTOS_BASE = '/images/photos/Portfolio%20Photos';
+
+const publicPortfolioPngFiles = [
+  {
+    name: '22.png',
+    title: 'Sports',
+    alt: 'Sports and athletic lifestyle photography from the Spiral portfolio',
+  },
+  {
+    name: '23.png',
+    title: 'Fashion',
+    alt: 'Fashion editorial and brand photography from the Spiral portfolio',
+  },
+  {
+    name: '24.png',
+    title: 'Drinks',
+    alt: 'Beverage and product photography for drinks brands, Spiral portfolio',
+  },
+] as const;
+
+const publicPortfolioPngs: PortfolioPhotoItem[] = publicPortfolioPngFiles.map(({ name, title, alt }) => ({
+  id: `public:${name}`,
+  title,
+  alt,
+  src: mediaUrl(`${PUBLIC_PHOTOS_BASE}/${encodeURIComponent(name)}`),
+}));
 
 export const portfolioPhotosRows: { id: string; label: string; items: PortfolioPhotoItem[] }[] = [
-  { id: 'prow-sports', label: 'SPORTS', items: coverPhotoItems('prow-sports', 'Padel', 'Sports') },
-  { id: 'prow-fashion', label: 'FASHION', items: coverPhotoItems('prow-fashion', 'Fashion', 'Fashion') },
-  { id: 'prow-drinks', label: 'DRINKS', items: coverPhotoItems('prow-drinks', 'Drinks', 'Drinks') },
+  { id: 'prow-photos', label: '', items: publicPortfolioPngs },
 ];
 
