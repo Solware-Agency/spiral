@@ -11,6 +11,7 @@
     "optimize:logos": "node --experimental-strip-types scripts/optimize-logos.ts",
     "build": "node --experimental-strip-types scripts/build.ts",
     "media:sync-supabase": "node --experimental-strip-types scripts/sync-media-to-supabase.ts",
+    "media:sync-polaroids": "node --experimental-strip-types scripts/sync-polaroids-to-supabase.ts",
     "optimize:all": "node --experimental-strip-types scripts/optimize-all.ts",
     "keys:checkout-contact": "node scripts/generate-checkout-contact-keys.mjs",
     "lint": "eslint .",

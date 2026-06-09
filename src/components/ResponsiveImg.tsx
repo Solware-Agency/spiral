@@ -3,6 +3,7 @@ import {
   buildUnsplashSrcSet,
   isUnsplashUrl,
 } from '../utils/responsiveImage';
+import { mediaUrl } from '../utils/mediaCdn';
 import styles from './ResponsiveImg.module.css';
 
 const defaultSizes = '100vw';
@@ -68,7 +69,7 @@ export default function ResponsiveImg({
   return (
     <img
       className={className}
-      src={src}
+      src={mediaUrl(src)}
       alt={alt}
       loading={loading}
       decoding={decoding}

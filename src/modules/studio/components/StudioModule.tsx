@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import LogoPicture from '../../../components/LogoPicture';
 import ResponsiveImg from '../../../components/ResponsiveImg';
+import { POLAROID_FRAME_SRC } from '../../../data/polaroidSources';
 import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
 import { optimizedImageSet } from '../../../utils/mediaCdn';
 import InstagramGrid from '../../home/components/InstagramGrid';
@@ -330,7 +331,7 @@ const StudioModule = () => {
             <div className={styles.polaroidPngWrap}>
               <ResponsiveImg
                 className={styles.polaroidPngImg}
-                src="/Polaroids/3.png"
+                src={POLAROID_FRAME_SRC.three}
                 alt=""
                 loading="lazy"
                 decoding="async"

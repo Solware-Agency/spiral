@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import LogoPicture from '../../../components/LogoPicture';
 import ResponsiveImg from '../../../components/ResponsiveImg';
 import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
+import { POLAROID_FRAME_SRC } from '../../../data/polaroidSources';
 import styles from '../styles/about.module.css';
 
 const POLAROID_SIZES = '(max-width: 900px) 72vw, min(42vw, 820px)';
@@ -78,7 +79,7 @@ const AboutModule = () => {
           <div className={styles.specializePolaroidCard} aria-hidden>
             <ResponsiveImg
               className={`${styles.polaroidPngImage} ${styles.specializePolaroidImage}`}
-              src="/Polaroids/3.png"
+              src={POLAROID_FRAME_SRC.three}
               alt=""
               loading="eager"
               decoding="async"
@@ -142,7 +143,7 @@ const AboutModule = () => {
             <div className={styles.polaroidLeft}>
               <ResponsiveImg
                 className={styles.polaroidPngImage}
-                src="/Polaroids/1.png"
+                src={POLAROID_FRAME_SRC.one}
                 alt="Foto del equipo"
                 loading="lazy"
                 decoding="async"
@@ -153,7 +154,7 @@ const AboutModule = () => {
             <div className={styles.polaroidRight}>
               <ResponsiveImg
                 className={styles.polaroidPngImage}
-                src="/Polaroids/2.png"
+                src={POLAROID_FRAME_SRC.two}
                 alt="Foto del equipo"
                 loading="lazy"
                 decoding="async"
