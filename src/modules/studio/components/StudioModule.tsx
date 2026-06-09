@@ -68,11 +68,6 @@ const galleryPhotos = [
     objectPosition: '50% 20%',
   },
   {
-    src: '/images/photos/DSC02545.jpg',
-    alt: 'Studio creative corner',
-    objectPosition: '50% 26%',
-  },
-  {
     src: '/images/photos/DSC02285.jpg',
     alt: 'Espacio y estética del estudio',
     objectPosition: '50% 69%',
