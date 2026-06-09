@@ -637,7 +637,7 @@
 }
 
 .rates {
-  background: #dcdcdc;
+  background: #fff;
   color: #111;
   padding: clamp(2rem, 4.2vh, 3rem) clamp(1.6rem, 5.5vw, 4rem) clamp(1.4rem, 3.2vh, 2.1rem);
 }
