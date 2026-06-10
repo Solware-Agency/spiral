@@ -7,6 +7,7 @@ import {
   normalizeMediaCdnOrigin,
   resolveMediaCdnStripPrefix,
 } from './scripts/mediaCdnShared.ts';
+import { getSecurityHeadersRecord } from './server/securityHeaders.ts';
 
 const DEFAULT_SITE_ORIGIN = 'https://spiralmstudio.com';
 
@@ -97,12 +98,16 @@ export default defineConfig(({ mode }) => {
       host: devHost,
       port: devPort,
       strictPort: true,
+      headers: getSecurityHeadersRecord(),
       hmr: {
         ...(hmrHost ? { host: hmrHost } : {}),
         ...(hmrPort ? { port: hmrPort } : {}),
         ...(hmrClientPort ? { clientPort: hmrClientPort } : {}),
         ...(hmrProtocol ? { protocol: hmrProtocol } : {}),
       },
+    },
+    preview: {
+      headers: getSecurityHeadersRecord(),
     },
   };
 });

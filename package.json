@@ -14,6 +14,7 @@
     "media:sync-polaroids": "node --experimental-strip-types scripts/sync-polaroids-to-supabase.ts",
     "optimize:all": "node --experimental-strip-types scripts/optimize-all.ts",
     "keys:checkout-contact": "node scripts/generate-checkout-contact-keys.mjs",
+    "security:sync-vercel": "node --experimental-strip-types scripts/sync-vercel-security-headers.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview"
