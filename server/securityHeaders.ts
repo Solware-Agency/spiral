@@ -59,7 +59,7 @@ const CONTENT_SECURITY_POLICY = [...CSP_DIRECTIVES, 'upgrade-insecure-requests']
 const CONTENT_SECURITY_POLICY_DEV = CSP_DIRECTIVES.join('; ');
 
 /** Cambia a `true` para probar la CSP en Vercel sin bloquear recursos (solo reporta en consola). */
-const CSP_REPORT_ONLY = true;
+const CSP_REPORT_ONLY = false;
 
 const CSP_HEADER_NAME = CSP_REPORT_ONLY ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
 
