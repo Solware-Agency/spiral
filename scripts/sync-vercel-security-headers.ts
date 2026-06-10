@@ -10,6 +10,7 @@ const vercelPath = path.join(root, 'vercel.json');
 const config = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
 const securityHeaders = getVercelHeaderEntries();
 
+// Fusiona solo el bloque headers; conserva framework, build, routes (SPA), etc.
 config.headers = [
   {
     source: '/(.*)',
@@ -18,4 +19,4 @@ config.headers = [
 ];
 
 fs.writeFileSync(vercelPath, `${JSON.stringify(config, null, 2)}\n`);
-console.log('[sync-vercel-security-headers] vercel.json actualizado.');
+console.log('[sync-vercel-security-headers] vercel.json actualizado (headers fusionados).');

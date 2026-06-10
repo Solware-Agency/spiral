@@ -1,10 +1,14 @@
 /**
  * HTTP security headers for static pages, API routes, and local Vite dev/preview.
- * Keep in sync with vercel.json (production) — values are exported from here.
+ * Keep in sync with vercel.json (production) — run `pnpm security:sync-vercel` after edits.
+ *
+ * Para probar la CSP sin bloquear recursos, cambia temporalmente la key exportada en
+ * getVercelHeaderEntries() de "Content-Security-Policy" a "Content-Security-Policy-Report-Only".
  */
 
 const CSP_DIRECTIVES = [
   "default-src 'self'",
+  // 'unsafe-inline' requerido por scripts inline en index.html (gtag, LCP, carrusel) y onload de fuentes.
   [
     "script-src 'self' 'unsafe-inline'",
     'https://www.googletagmanager.com',
@@ -44,7 +48,7 @@ const CSP_DIRECTIVES = [
     'https://challenges.cloudflare.com',
     'https://*.elfsight.com',
   ].join(' '),
-  "frame-ancestors 'self'",
+  "frame-ancestors 'none'",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
@@ -57,15 +61,16 @@ const CONTENT_SECURITY_POLICY_DEV = CSP_DIRECTIVES.join('; ');
 const BASE_SECURITY_HEADERS = Object.freeze({
   'Content-Security-Policy': CONTENT_SECURITY_POLICY,
   'Cross-Origin-Resource-Policy': 'same-origin',
-  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=()',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'X-Content-Type-Options': 'nosniff',
-  'X-Frame-Options': 'SAMEORIGIN',
+  'X-Frame-Options': 'DENY',
 });
 
 export const SECURITY_HEADERS = Object.freeze({
   ...BASE_SECURITY_HEADERS,
-  'Strict-Transport-Security': 'max-age=63072000; includeSubDomains; preload',
+  // includeSubDomains sin preload (reversible; preload exige HTTPS en todos los subdominios).
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
 });
 
 const DEV_SECURITY_HEADERS = Object.freeze({
@@ -89,5 +94,14 @@ export function getSecurityHeadersRecord() {
 
 /** Vercel `headers` array entries derived from {@link SECURITY_HEADERS}. */
 export function getVercelHeaderEntries() {
-  return Object.entries(SECURITY_HEADERS).map(([key, value]) => ({ key, value }));
+  const order = [
+    'Content-Security-Policy-Report-Only',
+    'Strict-Transport-Security',
+    'X-Content-Type-Options',
+    'X-Frame-Options',
+    'Referrer-Policy',
+    'Permissions-Policy',
+    'Cross-Origin-Resource-Policy',
+  ];
+  return order.map((key) => ({ key, value: SECURITY_HEADERS[key] }));
 }
