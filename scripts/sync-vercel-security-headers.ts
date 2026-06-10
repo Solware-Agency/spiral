@@ -8,7 +8,14 @@ const root = path.resolve(__dirname, '..');
 const vercelPath = path.join(root, 'vercel.json');
 
 const config = JSON.parse(fs.readFileSync(vercelPath, 'utf8'));
-const securityHeaders = getVercelHeaderEntries();
+const securityHeaders = getVercelHeaderEntries().filter(
+  (entry) => typeof entry.value === 'string' && entry.value.length > 0,
+);
+
+if (securityHeaders.length !== getVercelHeaderEntries().length) {
+  console.error('[sync-vercel-security-headers] Hay headers sin value. Revisa server/securityHeaders.ts');
+  process.exit(1);
+}
 
 // Fusiona solo el bloque headers; conserva framework, build, routes (SPA), etc.
 config.headers = [

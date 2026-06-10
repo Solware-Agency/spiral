@@ -2,8 +2,8 @@
  * HTTP security headers for static pages, API routes, and local Vite dev/preview.
  * Keep in sync with vercel.json (production) — run `pnpm security:sync-vercel` after edits.
  *
- * Para probar la CSP sin bloquear recursos, cambia temporalmente la key exportada en
- * getVercelHeaderEntries() de "Content-Security-Policy" a "Content-Security-Policy-Report-Only".
+ * Para probar la CSP sin bloquear recursos, pon `CSP_REPORT_ONLY = true` abajo y ejecuta
+ * `pnpm security:sync-vercel` antes del deploy.
  */
 
 const CSP_DIRECTIVES = [
@@ -58,8 +58,13 @@ const CONTENT_SECURITY_POLICY = [...CSP_DIRECTIVES, 'upgrade-insecure-requests']
 
 const CONTENT_SECURITY_POLICY_DEV = CSP_DIRECTIVES.join('; ');
 
+/** Cambia a `true` para probar la CSP en Vercel sin bloquear recursos (solo reporta en consola). */
+const CSP_REPORT_ONLY = true;
+
+const CSP_HEADER_NAME = CSP_REPORT_ONLY ? 'Content-Security-Policy-Report-Only' : 'Content-Security-Policy';
+
 const BASE_SECURITY_HEADERS = Object.freeze({
-  'Content-Security-Policy': CONTENT_SECURITY_POLICY,
+  [CSP_HEADER_NAME]: CONTENT_SECURITY_POLICY,
   'Cross-Origin-Resource-Policy': 'same-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=()',
   'Referrer-Policy': 'strict-origin-when-cross-origin',
@@ -75,7 +80,7 @@ export const SECURITY_HEADERS = Object.freeze({
 
 const DEV_SECURITY_HEADERS = Object.freeze({
   ...BASE_SECURITY_HEADERS,
-  'Content-Security-Policy': CONTENT_SECURITY_POLICY_DEV,
+  [CSP_HEADER_NAME]: CONTENT_SECURITY_POLICY_DEV,
 });
 
 /** @param {import('node:http').ServerResponse} res */
@@ -95,7 +100,7 @@ export function getSecurityHeadersRecord() {
 /** Vercel `headers` array entries derived from {@link SECURITY_HEADERS}. */
 export function getVercelHeaderEntries() {
   const order = [
-    'Content-Security-Policy-Report-Only',
+    CSP_HEADER_NAME,
     'Strict-Transport-Security',
     'X-Content-Type-Options',
     'X-Frame-Options',
