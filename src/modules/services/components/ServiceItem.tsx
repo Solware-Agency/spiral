@@ -1,6 +1,9 @@
 import React, { useEffect, useId, useState } from 'react';
 import ResponsiveImg from '../../../components/ResponsiveImg';
 import styles from '../styles/services.module.css';
+import SocialMediaPackageTabs from './SocialMediaPackageTabs';
+import ContentDaysPackageCards from './ContentDaysPackageCards';
+import GraphicDesignPackagePills from './GraphicDesignPackagePills';
 
 const SERVICE_IMAGE_SIZES = '(max-width: 900px) 100vw, min(42vw, 720px)';
 
@@ -9,7 +12,7 @@ const titleForPackagesPanel = (t) => t.replace(/\n/g, ' ');
 const PACKAGES_CONTACT_URL =
   'https://spiralstudio.hbportal.co/public/66343620b1546100287cdd19';
 
-const ServiceItem = ({ id, title, description, imageUrl, packageDetail }) => {
+const ServiceItem = ({ id, title, description, imageUrl, packageDetail, packageTiers, packageCards, packageCategories }) => {
   const [isPackageOpen, setIsPackageOpen] = useState(false);
   const detailsId = useId();
 
@@ -22,7 +25,11 @@ const ServiceItem = ({ id, title, description, imageUrl, packageDetail }) => {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isPackageOpen]);
 
-  const hasPackages = Boolean(packageDetail?.length);
+  const hasPackageTiers = Boolean(packageTiers?.length);
+  const hasPackageCards = Boolean(packageCards?.length);
+  const hasPackageCategories = Boolean(packageCategories?.length);
+  const hasCustomPackages = hasPackageTiers || hasPackageCards || hasPackageCategories;
+  const hasPackages = hasCustomPackages || Boolean(packageDetail?.length);
 
   return (
     <article className={styles.serviceItem}>
@@ -66,46 +73,56 @@ const ServiceItem = ({ id, title, description, imageUrl, packageDetail }) => {
           <div className={styles.packageSlideInner}>
             <div
               id={detailsId}
-              className={styles.packageSlidePanel}
+              className={`${styles.packageSlidePanel} ${hasCustomPackages ? styles.packageSlidePanelTabs : ''}`}
               role="region"
-              aria-labelledby={`${detailsId}-heading`}
+              aria-labelledby={hasCustomPackages ? undefined : `${detailsId}-heading`}
               aria-hidden={!isPackageOpen}
               inert={!isPackageOpen}
             >
-              <div className={styles.packageSlideHeader}>
-                <span className={styles.packageSlideKicker}>Package details</span>
-                <h3
-                  id={`${detailsId}-heading`}
-                  className={styles.packageSlideTitle}
-                  data-service-id={id}
-                >
-                  {titleForPackagesPanel(title)}
-                </h3>
-              </div>
-              <div className={styles.packageSlideBody}>
-                {packageDetail.map((paragraph, i) => (
-                  <p key={i} className={styles.packageSlideParagraph}>
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-              <div className={styles.packageSlideFooter}>
-                <a
-                  href={PACKAGES_CONTACT_URL}
-                  className={styles.packageSlideBook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Contact us
-                </a>
-                <button
-                  type="button"
-                  className={styles.packageSlideCollapse}
-                  onClick={() => setIsPackageOpen(false)}
-                >
-                  Close
-                </button>
-              </div>
+              {hasPackageTiers ? (
+                <SocialMediaPackageTabs tiers={packageTiers} panelId={detailsId} />
+              ) : hasPackageCards ? (
+                <ContentDaysPackageCards cards={packageCards} />
+              ) : hasPackageCategories ? (
+                <GraphicDesignPackagePills categories={packageCategories} />
+              ) : (
+                <>
+                  <div className={styles.packageSlideHeader}>
+                    <span className={styles.packageSlideKicker}>Package details</span>
+                    <h3
+                      id={`${detailsId}-heading`}
+                      className={styles.packageSlideTitle}
+                      data-service-id={id}
+                    >
+                      {titleForPackagesPanel(title)}
+                    </h3>
+                  </div>
+                  <div className={styles.packageSlideBody}>
+                    {packageDetail.map((paragraph, i) => (
+                      <p key={i} className={styles.packageSlideParagraph}>
+                        {paragraph}
+                      </p>
+                    ))}
+                  </div>
+                  <div className={styles.packageSlideFooter}>
+                    <a
+                      href={PACKAGES_CONTACT_URL}
+                      className={styles.packageSlideBook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Contact us
+                    </a>
+                    <button
+                      type="button"
+                      className={styles.packageSlideCollapse}
+                      onClick={() => setIsPackageOpen(false)}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

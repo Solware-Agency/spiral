@@ -33,27 +33,14 @@ const BrandShowcase = () => {
       <div className={styles.brandMaroon}>
         {polaroids.map((p, idx) => (
           <figure key={idx} className={`${styles.polaroid} ${p.className}`} aria-hidden>
-            {idx === 0 ? (
-              <div className={styles.polaroidImageSlot}>
-                <ResponsiveImg
-                  className={styles.polaroidImageSlotInner}
-                  src={p.src}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  sizes={POLAROID_SIZES}
-                />
-              </div>
-            ) : (
-              <ResponsiveImg
-                className={styles.polaroidImage}
-                src={p.src}
-                alt=""
-                loading="lazy"
-                decoding="async"
-                sizes={POLAROID_SIZES}
-              />
-            )}
+            <ResponsiveImg
+              className={styles.polaroidImage}
+              src={p.src}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              sizes={POLAROID_SIZES}
+            />
           </figure>
         ))}
 

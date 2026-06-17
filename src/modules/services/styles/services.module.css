@@ -525,6 +525,257 @@
   border-radius: 4px;
 }
 
+/* Social Media Management — tabbed package slider */
+.packageSlidePanelTabs {
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.packageTabs {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+}
+
+.packageTabList {
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  width: 100%;
+}
+
+.packageTab {
+  flex: 1;
+  margin: 0;
+  padding: 0.85rem 0.5rem;
+  border: none;
+  border-radius: 14px 14px 0 0;
+  background: #d9d9d9;
+  color: #111;
+  font-family: 'Andale Mono', var(--font-mono), ui-monospace, monospace;
+  font-size: clamp(0.58rem, 1.4vw, 0.72rem);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+
+.packageTab:hover:not(.packageTabActive) {
+  background: #e6e6e6;
+}
+
+.packageTab:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.75);
+  outline-offset: 2px;
+  z-index: 2;
+}
+
+.packageTabActive {
+  position: relative;
+  z-index: 1;
+  background: #fff;
+  padding-bottom: calc(0.85rem + 2px);
+  margin-bottom: -2px;
+}
+
+.packageTabPanel {
+  position: relative;
+  z-index: 0;
+  padding: clamp(1.35rem, 3vw, 2rem) clamp(1.25rem, 3vw, 2rem);
+  background: #fff;
+  color: #111;
+  border-radius: 0 16px 16px 16px;
+}
+
+.packageTabPanel[data-active-tab='1'] {
+  border-radius: 16px;
+}
+
+.packageTabPanel[data-active-tab='2'] {
+  border-radius: 16px 0 16px 16px;
+}
+
+.packageTabDescription {
+  margin: 0 0 1.25rem 0;
+  max-width: 62ch;
+  font-family: var(--font-primary);
+  font-size: clamp(0.875rem, 1.8vw, 0.95rem);
+  line-height: 1.6;
+  color: #111;
+}
+
+.packageTabFeatures {
+  margin: 0;
+  padding: 0 0 0 1.15rem;
+  list-style: disc;
+  font-family: 'Andale Mono', var(--font-mono), ui-monospace, monospace;
+  font-size: clamp(0.72rem, 1.5vw, 0.82rem);
+  line-height: 1.85;
+  color: #111;
+}
+
+.packageTabFeatures li {
+  margin-bottom: 0.15rem;
+}
+
+.packageTabCta {
+  align-self: center;
+  margin-top: clamp(1.15rem, 2.5vw, 1.5rem);
+  padding: 0.7rem 1.75rem;
+  border-radius: 12px;
+  background: #d9d9d9;
+  color: #111;
+  font-family: 'Andale Mono', var(--font-mono), ui-monospace, monospace;
+  font-size: clamp(0.62rem, 1.4vw, 0.72rem);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.packageTabCta:hover {
+  background: #e6e6e6;
+  transform: scale(1.02);
+}
+
+.packageTabCta:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.75);
+  outline-offset: 3px;
+}
+
+/* All Access Content Days — side-by-side package cards */
+.packageCards {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+}
+
+.packageCardsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+}
+
+.packageCard {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1rem, 2.2vw, 1.5rem);
+  color: #111;
+}
+
+.packageCardGray {
+  background: #d9d9d9;
+  border-radius: 16px 0 0 16px;
+}
+
+.packageCardWhite {
+  background: #fff;
+  border-radius: 0 16px 16px 0;
+}
+
+.packageCardTitle {
+  margin: 0 0 0.85rem 0;
+  font-family: 'Andale Mono', var(--font-mono), ui-monospace, monospace;
+  font-size: clamp(0.72rem, 1.6vw, 0.85rem);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-align: center;
+  text-transform: uppercase;
+  color: #111;
+}
+
+.packageCardDivider {
+  width: 100%;
+  margin: 0 0 1rem 0;
+  border: none;
+  border-top: 1px solid #111;
+}
+
+.packageCardFeatures {
+  margin: 0;
+  padding: 0 0 0 1.1rem;
+  list-style: disc;
+  font-family: 'Andale Mono', var(--font-mono), ui-monospace, monospace;
+  font-size: clamp(0.68rem, 1.4vw, 0.78rem);
+  line-height: 1.85;
+  color: #111;
+}
+
+.packageCardFeatures li {
+  margin-bottom: 0.1rem;
+}
+
+@media (max-width: 640px) {
+  .packageCardsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .packageCardGray {
+    border-radius: 16px 16px 0 0;
+  }
+
+  .packageCardWhite {
+    border-radius: 0 0 16px 16px;
+  }
+}
+
+/* Graphic Design — category pills */
+.packagePills {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.packagePillsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.5rem, 1.5vw, 0.85rem);
+  width: 100%;
+}
+
+.packagePill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3.25rem;
+  padding: 0.85rem clamp(0.65rem, 1.5vw, 1rem);
+  border-radius: 999px;
+  font-family: 'Andale Mono', var(--font-mono), ui-monospace, monospace;
+  font-size: clamp(0.52rem, 1.2vw, 0.68rem);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  color: #111;
+  line-height: 1.35;
+}
+
+.packagePillWhite {
+  background: #fff;
+}
+
+.packagePillGray {
+  background: #d9d9d9;
+}
+
+@media (max-width: 640px) {
+  .packagePillsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .packagePill {
+    min-height: 2.75rem;
+    font-size: clamp(0.58rem, 2.8vw, 0.68rem);
+  }
+}
+
 @media (max-width: 900px) {
   .serviceItemMain {
     grid-template-columns: 1fr;
@@ -670,28 +921,8 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-/* DSC01393 horizontal → vertical en marco con rotate(-90deg) */
-.polaroidImageSlot {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1 / 1.18;
-  overflow: hidden;
-  border-radius: 1px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.polaroidImageSlotInner {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: auto;
-  height: 98%;
-  max-width: none;
-  margin: 0;
-  display: block;
-  transform: translate(-50%, -50%) rotate(-90deg);
-  object-fit: cover;
-  object-position: center center;
+.polaroidTopLeft .polaroidImage {
+  object-position: center 35%;
 }
 
 .polaroidTopRight .polaroidImage,
