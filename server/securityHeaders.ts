@@ -19,6 +19,10 @@ const CSP_DIRECTIVES = [
   ["style-src 'self' 'unsafe-inline'", 'https://fonts.googleapis.com'].join(' '),
   ["font-src 'self'", 'https://fonts.gstatic.com', 'data:'].join(' '),
   [
+    "media-src 'self' blob:",
+    'https://*.supabase.co',
+  ].join(' '),
+  [
     "img-src 'self' data: blob:",
     'https://*.supabase.co',
     'https://images.unsplash.com',
