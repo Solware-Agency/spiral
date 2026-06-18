@@ -1,7 +1,7 @@
 import React from 'react';
 import { CONTACT_PORTAL_URL } from '../../../data/contactPortalUrl';
-import { mediaUrl } from '../../../utils/mediaCdn';
 import styles from '../styles/portfolio.module.css';
+import ClientMessagesCarousel from './ClientMessagesCarousel';
 
 const PortfolioPreFooter = () => {
   return (
@@ -38,15 +38,7 @@ const PortfolioPreFooter = () => {
             </div>
 
             <div className={styles.testimonialsRight} aria-hidden="true">
-              <img
-                className={styles.testimonialsAsset}
-                src={mediaUrl('/images/photos/ENVELOPE.png')}
-                alt=""
-                width={1080}
-                height={1080}
-                loading="eager"
-                decoding="async"
-              />
+              <ClientMessagesCarousel />
             </div>
           </div>
         </div>

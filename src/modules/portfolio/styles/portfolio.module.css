@@ -1043,6 +1043,31 @@
   min-width: 0;
 }
 
+.testimonialsAssetStack {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.testimonialsAssetStack .testimonialsAsset {
+  transition: opacity 650ms ease;
+}
+
+.testimonialsAssetInactive {
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.testimonialsAssetActive {
+  position: relative;
+  opacity: 1;
+}
+
 .testimonialsAsset {
   width: auto;
   height: clamp(740px, 114vh, 2100px);
