@@ -1,5 +1,5 @@
 /**
- * Sube public/images/photos/client-messages/ a Supabase Storage.
+ * Sube public/photos/client-messages/ a Supabase Storage.
  * Requiere SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY y opcionalmente
  * SUPABASE_STORAGE_BUCKET=imagenes, SUPABASE_STORAGE_PREFIX=Spiral
  *
@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
-const messagesDir = path.join(root, 'public', 'images', 'photos', 'client-messages');
+const messagesDir = path.join(root, 'public', 'photos', 'client-messages');
 
 const SUPABASE_URL = String(process.env.SUPABASE_URL || '').trim().replace(/\/$/, '');
 const SERVICE_KEY = String(process.env.SUPABASE_SERVICE_ROLE_KEY || '').trim();
@@ -63,7 +63,7 @@ async function main() {
 
   const files = fs.readdirSync(messagesDir).filter((f) => fs.statSync(path.join(messagesDir, f)).isFile());
   if (files.length === 0) {
-    console.error('No hay archivos en public/images/photos/client-messages/');
+    console.error('No hay archivos en public/photos/client-messages/');
     process.exit(1);
   }
 
