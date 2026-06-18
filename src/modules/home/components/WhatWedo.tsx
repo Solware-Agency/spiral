@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { CONTACT_PORTAL_URL } from '../../../data/contactPortalUrl';
 import { hydrateStudioCarouselImages } from '../../../data/studioCarouselPhotos';
 import styles from '../styles/home.module.css';
 import PhotoCarousel from './PhotoCarousel';
@@ -80,9 +80,14 @@ const WhatWeDo = () => {
           <br />
           Spiral, we don&apos;t just create content—we create <strong>meaning</strong>.
         </p>
-        <Link to="/#contact-us" className={styles.workWithUsBtn}>
+        <a
+          href={CONTACT_PORTAL_URL}
+          className={styles.workWithUsBtn}
+          target="_blank"
+          rel="noreferrer"
+        >
           WORK WITH US
-        </Link>
+        </a>
       </div>
       <div ref={studioMarqueesRef} className={styles.studioMarquees}>
         <PhotoCarousel />

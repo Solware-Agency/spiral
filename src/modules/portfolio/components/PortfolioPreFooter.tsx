@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { CONTACT_PORTAL_URL } from '../../../data/contactPortalUrl';
 import { mediaUrl } from '../../../utils/mediaCdn';
 import styles from '../styles/portfolio.module.css';
 
@@ -14,9 +14,14 @@ const PortfolioPreFooter = () => {
             <br />
             BRAND STAND OUT?
           </h2>
-          <Link to="/#contact-us" className={styles.preFooterCtaBtn}>
+          <a
+            href={CONTACT_PORTAL_URL}
+            className={styles.preFooterCtaBtn}
+            target="_blank"
+            rel="noreferrer"
+          >
             LET&apos;S TALK
-          </Link>
+          </a>
         </div>
       </section>
 

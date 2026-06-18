@@ -1,7 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import LogoPicture from '../../../components/LogoPicture';
 import ResponsiveImg from '../../../components/ResponsiveImg';
+import { CONTACT_PORTAL_URL } from '../../../data/contactPortalUrl';
 import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
 import { POLAROID_FRAME_SRC } from '../../../data/polaroidSources';
 import styles from '../styles/about.module.css';
@@ -66,9 +66,14 @@ const AboutModule = () => {
                 {/* spacer line via <br/> requirement */}
               </p>
 
-              <Link to="/#contact-us" className={styles.cta}>
+              <a
+                href={CONTACT_PORTAL_URL}
+                className={styles.cta}
+                target="_blank"
+                rel="noreferrer"
+              >
                 WORK WITH US
-              </Link>
+              </a>
             </div>
 
             <div className={styles.specializeSpacer} aria-hidden="true" />
