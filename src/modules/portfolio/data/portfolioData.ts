@@ -1,4 +1,4 @@
-import { mediaUrl } from '../../../utils/mediaCdn';
+import { mediaUrl, videoUrl } from '../../../utils/mediaCdn';
 
 export const portfolioData = [
   {
@@ -83,7 +83,7 @@ function videoItemsWithCovers(
 ): PortfolioVideoItem[] {
   return videoSrcs.map((videoSrc, idx) => ({
     id: `${rowId}-${idx + 1}`,
-    videoSrc: mediaUrl(videoSrc),
+    videoSrc: videoUrl(videoSrc),
     posterSrc: videoCoverSrc(folder, idx + 1),
   }));
 }

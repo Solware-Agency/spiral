@@ -22,6 +22,17 @@ export function resolveMediaCdnStripPrefix(raw: unknown): string {
   return value;
 }
 
+/**
+ * Prefijo a quitar de rutas `/videos/...` al armar URLs del CDN de vídeo.
+ * Por defecto vacío (mantiene `/videos/videos/Sports/24.mp4` tal cual).
+ * Pon `/videos` si en el bucket los archivos viven en `videos/Sports/24.mp4`.
+ */
+export function resolveVideoCdnStripPrefix(raw: unknown): string {
+  const value = raw === undefined || raw === null ? '' : String(raw).trim();
+  if (value === '0' || value.toLowerCase() === 'false') return '';
+  return value;
+}
+
 export function resolveCdnAssetPath(path: string, stripPrefix: string): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;
   const prefix = stripPrefix.trim();

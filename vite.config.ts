@@ -6,27 +6,45 @@ import {
   isInvalidSupabaseDashboardCdnOrigin,
   normalizeMediaCdnOrigin,
   resolveMediaCdnStripPrefix,
+  resolveVideoCdnStripPrefix,
 } from './scripts/mediaCdnShared.ts';
 import { getSecurityHeadersRecord } from './server/securityHeaders.ts';
 
 const DEFAULT_SITE_ORIGIN = 'https://spiralmstudio.com';
 
-function mediaCdnPlugin(cdnOrigin: string, stripPrefix: string) {
-  const origin = normalizeMediaCdnOrigin(cdnOrigin);
-  if (!origin) return null;
-
+function assertValidCdnOrigin(origin: string, envName: string) {
   if (isInvalidSupabaseDashboardCdnOrigin(origin)) {
     throw new Error(
-      'VITE_MEDIA_CDN_ORIGIN apunta al dashboard de Supabase, no al CDN público. ' +
+      `${envName} apunta al dashboard de Supabase, no al CDN público. ` +
         'Usa: https://TU-PROJECT.supabase.co/storage/v1/object/public/NOMBRE-BUCKET/Spiral'
     );
   }
+}
+
+function mediaCdnPlugin(
+  imageOrigin: string,
+  imageStripPrefix: string,
+  videoOrigin: string,
+  videoStripPrefix: string
+) {
+  const normalizedImageOrigin = normalizeMediaCdnOrigin(imageOrigin);
+  const normalizedVideoOrigin = normalizeMediaCdnOrigin(videoOrigin);
+  if (!normalizedImageOrigin && !normalizedVideoOrigin) return null;
+
+  if (normalizedImageOrigin) assertValidCdnOrigin(normalizedImageOrigin, 'VITE_MEDIA_CDN_ORIGIN');
+  if (normalizedVideoOrigin) assertValidCdnOrigin(normalizedVideoOrigin, 'VITE_VIDEO_CDN_ORIGIN');
 
   const rewrite = (code: string) =>
     code.replace(
       /url\((['"]?)(\/(?:images|videos|Polaroids)(?:[^'")]|\\.)*)\1\)/gi,
-      (_match, quote: string, assetPath: string) =>
-        `url(${quote}${buildMediaCdnUrl(assetPath, origin, stripPrefix)}${quote})`
+      (_match, quote: string, assetPath: string) => {
+        const isVideo = assetPath === '/videos' || assetPath.startsWith('/videos/');
+        if (isVideo && normalizedVideoOrigin) {
+          return `url(${quote}${buildMediaCdnUrl(assetPath, normalizedVideoOrigin, videoStripPrefix)}${quote})`;
+        }
+        if (!normalizedImageOrigin) return _match;
+        return `url(${quote}${buildMediaCdnUrl(assetPath, normalizedImageOrigin, imageStripPrefix)}${quote})`;
+      }
     );
 
   return {
@@ -45,6 +63,8 @@ export default defineConfig(({ mode }) => {
   const siteOrigin = (env.VITE_SITE_ORIGIN || DEFAULT_SITE_ORIGIN).replace(/\/$/, '');
   const mediaCdnOrigin = String(env.VITE_MEDIA_CDN_ORIGIN || '').trim();
   const mediaCdnStripPrefix = resolveMediaCdnStripPrefix(env.VITE_MEDIA_CDN_STRIP_PREFIX);
+  const videoCdnOrigin = String(env.VITE_VIDEO_CDN_ORIGIN || '').trim();
+  const videoCdnStripPrefix = resolveVideoCdnStripPrefix(env.VITE_VIDEO_CDN_STRIP_PREFIX);
   const devHost = env.VITE_DEV_HOST || 'localhost';
   const devPort = Number(env.VITE_DEV_PORT || 5173);
   const hmrHost = env.VITE_HMR_HOST;
@@ -55,7 +75,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [
       react(),
-      mediaCdnPlugin(mediaCdnOrigin, mediaCdnStripPrefix),
+      mediaCdnPlugin(mediaCdnOrigin, mediaCdnStripPrefix, videoCdnOrigin, videoCdnStripPrefix),
       {
         name: 'html-site-origin',
         transformIndexHtml(html: string) {
