@@ -26,6 +26,8 @@
   background-repeat: no-repeat;
   opacity: 1;
   filter: saturate(0.94) contrast(1.02) brightness(0.9);
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 @supports (background-image: image-set(url('/x.webp') type('image/webp'))) {
@@ -246,6 +248,8 @@
   border-top-left-radius: 28px;
   border-top-right-radius: 28px;
   content-visibility: auto;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 @supports (background-image: image-set(url('/x.webp') type('image/webp'))) {
@@ -839,7 +843,8 @@
   background-size: cover;
   background-repeat: no-repeat;
   filter: saturate(0.85) contrast(1.05) brightness(0.68);
-  transform: scale(1.12);
+  transform: scale(1.12) translateZ(0);
+  will-change: transform;
 }
 
 @supports (background-image: image-set(url('/x.webp') type('image/webp'))) {
@@ -1076,6 +1081,7 @@
   display: block;
   filter: drop-shadow(0 22px 55px rgba(0, 0, 0, 0.22)) saturate(0.95) contrast(1.02);
   transform: translateX(250px) translateY(-90px) rotate(-2deg);
+  will-change: transform;
 }
 
 /*

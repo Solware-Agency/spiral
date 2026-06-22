@@ -25,6 +25,8 @@
   background-repeat: no-repeat;
   filter: brightness(0.5);
   pointer-events: none;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 @supports (background-image: image-set(url('/x.webp') type('image/webp'))) {
@@ -314,8 +316,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.03);
+  transform: scale(1.03) translateZ(0);
   filter: contrast(1.05) saturate(0.95) brightness(0.85);
+  will-change: transform;
 }
 
 .packagesBtn {
@@ -906,6 +909,7 @@
   transform-origin: center;
   border-radius: 2px;
   z-index: 1;
+  will-change: transform;
 }
 
 .polaroidImage {

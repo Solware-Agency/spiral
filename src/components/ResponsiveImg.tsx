@@ -16,6 +16,9 @@ export type ResponsiveImgProps = {
   decoding?: 'async' | 'auto' | 'sync';
   sizes?: string;
   fetchPriority?: 'high' | 'low' | 'auto';
+  width?: number | string;
+  height?: number | string;
+  style?: React.CSSProperties;
 };
 
 /** Picture+srcset para /images/photos optimizadas; srcset w para Unsplash; resto img simple. */
@@ -27,12 +30,15 @@ export default function ResponsiveImg({
   decoding = 'async',
   sizes = defaultSizes,
   fetchPriority,
+  width,
+  height,
+  style,
 }: ResponsiveImgProps) {
   const opt = buildOptimizedPictureProps(src);
 
   if (opt) {
     return (
-      <picture className={styles.picture}>
+      <picture className={styles.picture} style={style}>
         <source type="image/webp" srcSet={opt.webpSrcSet} sizes={sizes} />
         <img
           className={className}
@@ -43,6 +49,9 @@ export default function ResponsiveImg({
           loading={loading}
           decoding={decoding}
           fetchPriority={fetchPriority}
+          width={width}
+          height={height}
+          style={style}
         />
       </picture>
     );
@@ -61,6 +70,9 @@ export default function ResponsiveImg({
           loading={loading}
           decoding={decoding}
           fetchPriority={fetchPriority}
+          width={width}
+          height={height}
+          style={style}
         />
       );
     }
@@ -74,6 +86,9 @@ export default function ResponsiveImg({
       loading={loading}
       decoding={decoding}
       fetchPriority={fetchPriority}
+      width={width}
+      height={height}
+      style={style}
     />
   );
 }

@@ -307,6 +307,8 @@
   background-repeat: no-repeat;
   opacity: 1;
   filter: brightness(0.5);
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 @supports (background-image: image-set(url('/x.webp') type('image/webp'))) {
@@ -522,6 +524,7 @@
 .photoCarouselMarquee {
   display: flex;
   width: max-content;
+  will-change: transform;
 }
 
 .photoCarouselGroup {
@@ -543,8 +546,9 @@
   display: block;
   object-fit: cover;
   object-position: center;
-  transform: none;
+  transform: translateZ(0);
   filter: contrast(1.02) saturate(0.98);
+  will-change: transform;
 }
 
 @keyframes photoCarouselScroll {
@@ -1067,9 +1071,10 @@
   mask-position: center;
   -webkit-mask-size: contain;
   mask-size: contain;
-  transform: scale(var(--client-logo-scale, 1));
+  transform: scale(var(--client-logo-scale, 1)) translateZ(0);
   transform-origin: center;
   filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.08));
+  will-change: transform;
 }
 
 @keyframes clientsMarqueeScroll {
