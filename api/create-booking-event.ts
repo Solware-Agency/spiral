@@ -1,9 +1,8 @@
 /* eslint-env node */
 /* global process, Buffer */
-import { google } from 'googleapis';
 import { DateTime } from 'luxon';
 import { isAllowedRequestOrigin } from '../server/origin.js';
-import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
+import { getCalendarClient, getCalendarEnv, insertCalendarEvent, queryCalendarFreeBusy, validatePrivateKey } from '../server/googleCalendar.js';
 import { resolveBookingCalendarViewLink } from '../server/bookingCalendarLink.js';
 import {
   buildBookingCalendarDescription,
@@ -165,22 +164,20 @@ export default async function handler(req, res) {
 
   try {
     // Hard block: don't allow overlaps with existing events.
-    const fb = await calendar.freebusy.query({
-      requestBody: {
-        timeMin: start.toUTC().toISO(),
-        timeMax: end.toUTC().toISO(),
-        timeZone: TZ,
-        items: [{ id: calendarId }],
-      },
+    const fb = await queryCalendarFreeBusy(calendar, {
+      timeMin: start.toUTC().toISO(),
+      timeMax: end.toUTC().toISO(),
+      timeZone: TZ,
+      items: [{ id: calendarId }],
     });
-    const busy = fb.data?.calendars?.[calendarId]?.busy ?? [];
+    const busy = fb?.calendars?.[calendarId]?.busy ?? [];
     if (Array.isArray(busy) && busy.length > 0) {
       return json(res, 409, { ok: false, error: 'Ese horario ya está reservado.' });
     }
 
     // Service accounts cannot set `attendees` (Calendar invites) without Google
     // Workspace domain-wide delegation. Contact data stays in `description`.
-    const resp = await calendar.events.insert({
+    const resp = await insertCalendarEvent(calendar, {
       calendarId,
       sendUpdates: 'none',
       requestBody: {
@@ -213,7 +210,7 @@ export default async function handler(req, res) {
           hours,
           date,
           time,
-          calendarLink: resolveBookingCalendarViewLink(resp.data.htmlLink),
+          calendarLink: resolveBookingCalendarViewLink(resp?.htmlLink),
           paidViaStripe: false,
         });
         if (emailResult.errors && emailResult.errors.length > 0) {
@@ -230,8 +227,8 @@ export default async function handler(req, res) {
 
     return json(res, 200, {
       ok: true,
-      eventId: resp.data.id,
-      htmlLink: resp.data.htmlLink,
+      eventId: resp?.id,
+      htmlLink: resp?.htmlLink,
       calendarTemplateLink,
     });
   } catch (e) {

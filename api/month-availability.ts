@@ -1,7 +1,6 @@
-import { google } from 'googleapis';
 import { DateTime } from 'luxon';
 import { isAllowedRequestOrigin } from '../server/origin.js';
-import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
+import { getCalendarClient, getCalendarEnv, queryCalendarFreeBusy, validatePrivateKey } from '../server/googleCalendar.js';
 
 const TZ = 'America/New_York';
 const BOOKING_CLOSE_HOUR = 22; // 10:00 PM
@@ -105,16 +104,14 @@ export default async function handler(req, res) {
   const calendar = getCalendarClient({ clientEmail, privateKey });
 
   try {
-    const fb = await calendar.freebusy.query({
-      requestBody: {
-        timeMin: monthStart.toUTC().toISO(),
-        timeMax: monthEndExclusive.toUTC().toISO(),
-        timeZone: TZ,
-        items: [{ id: calendarId }],
-      },
+    const fb = await queryCalendarFreeBusy(calendar, {
+      timeMin: monthStart.toUTC().toISO(),
+      timeMax: monthEndExclusive.toUTC().toISO(),
+      timeZone: TZ,
+      items: [{ id: calendarId }],
     });
 
-    const busy = fb.data?.calendars?.[calendarId]?.busy ?? [];
+    const busy = fb?.calendars?.[calendarId]?.busy ?? [];
     const busyIntervals = busy
       .map((b) => {
         const s = DateTime.fromISO(b.start).setZone(TZ);

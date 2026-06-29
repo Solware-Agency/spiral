@@ -1,6 +1,13 @@
 import { calendar_v3, google } from 'googleapis';
 import { createPrivateKey } from 'node:crypto';
 
+type CalendarClient = calendar_v3.Calendar;
+type FreeBusyRequest = calendar_v3.Schema$FreeBusyRequest;
+type FreeBusyResponse = calendar_v3.Schema$FreeBusyResponse;
+type EventInsertParams = calendar_v3.Params$Resource$Events$Insert;
+type CalendarEvent = calendar_v3.Schema$Event;
+type GoogleApiDataResponse<T> = { data?: T | null };
+
 function stripWrappingQuotes(s) {
   const str = String(s ?? '').trim();
   if (
@@ -130,12 +137,32 @@ export function validatePrivateKey(privateKey) {
   }
 }
 
-export function getCalendarClient({ clientEmail, privateKey }) {
+export function getCalendarClient({ clientEmail, privateKey }): CalendarClient {
   const auth = new google.auth.JWT({
     email: clientEmail,
     key: privateKey,
     scopes: ['https://www.googleapis.com/auth/calendar'],
   });
   return new calendar_v3.Calendar({ auth });
+}
+
+/** Typed wrapper: googleapis overloads make `query()` resolve to `void` under Vercel's TS check. */
+export async function queryCalendarFreeBusy(
+  calendar: CalendarClient,
+  requestBody: FreeBusyRequest,
+): Promise<FreeBusyResponse | null | undefined> {
+  const response = (await calendar.freebusy.query({
+    requestBody,
+  })) as GoogleApiDataResponse<FreeBusyResponse>;
+  return response?.data;
+}
+
+/** Typed wrapper for `events.insert` (same overload issue as freebusy). */
+export async function insertCalendarEvent(
+  calendar: CalendarClient,
+  params: EventInsertParams,
+): Promise<CalendarEvent | null | undefined> {
+  const response = (await calendar.events.insert(params)) as GoogleApiDataResponse<CalendarEvent>;
+  return response?.data;
 }
 

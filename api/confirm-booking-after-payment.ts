@@ -2,7 +2,7 @@
 /* global Buffer */
 import { DateTime } from 'luxon';
 import { isAllowedRequestOrigin } from '../server/origin.js';
-import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
+import { getCalendarClient, getCalendarEnv, insertCalendarEvent, queryCalendarFreeBusy, validatePrivateKey } from '../server/googleCalendar.js';
 import { resolveBookingCalendarViewLink } from '../server/bookingCalendarLink.js';
 import {
   buildBookingCalendarDescription,
@@ -209,15 +209,13 @@ export async function confirmBookingFromSessionId(sessionId) {
   });
 
   // Hard block: don't allow overlaps with existing events.
-  const fb = await calendar.freebusy.query({
-    requestBody: {
-      timeMin: start.toUTC().toISO(),
-      timeMax: end.toUTC().toISO(),
-      timeZone: TZ,
-      items: [{ id: calendarId }],
-    },
+  const fb = await queryCalendarFreeBusy(calendar, {
+    timeMin: start.toUTC().toISO(),
+    timeMax: end.toUTC().toISO(),
+    timeZone: TZ,
+    items: [{ id: calendarId }],
   });
-  const busy = fb.data?.calendars?.[calendarId]?.busy ?? [];
+  const busy = fb?.calendars?.[calendarId]?.busy ?? [];
   const hasOverlap = Array.isArray(busy)
     ? busy.some((b) => {
         const s = DateTime.fromISO(b.start).setZone(TZ);
@@ -230,7 +228,7 @@ export async function confirmBookingFromSessionId(sessionId) {
     fail(409, { ok: false, error: 'Ese horario ya está reservado.' });
   }
 
-  const resp = await calendar.events.insert({
+  const resp = await insertCalendarEvent(calendar, {
     calendarId,
     sendUpdates: 'none',
     requestBody: {
@@ -250,8 +248,8 @@ export async function confirmBookingFromSessionId(sessionId) {
     start,
     end,
   });
-  const htmlLink = resp?.data?.htmlLink || null;
-  const eventId = resp?.data?.id || null;
+  const htmlLink = resp?.htmlLink || null;
+  const eventId = resp?.id || null;
 
   const resendEnv = getResendEnv();
   if (!resendEnv.missing.length) {

@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import { isAllowedRequestOrigin } from '../server/origin.js';
-import { getCalendarClient, getCalendarEnv, validatePrivateKey } from '../server/googleCalendar.js';
+import { getCalendarClient, getCalendarEnv, insertCalendarEvent, queryCalendarFreeBusy, validatePrivateKey } from '../server/googleCalendar.js';
 
 const TZ = 'America/New_York';
 
@@ -107,13 +107,11 @@ export default async function handler(req, res) {
   const timeMax = timeMin.plus({ minutes: 30 });
 
   try {
-    await calendar.freebusy.query({
-      requestBody: {
-        timeMin: timeMin.toUTC().toISO(),
-        timeMax: timeMax.toUTC().toISO(),
-        timeZone: TZ,
-        items: [{ id: calendarId }],
-      },
+    await queryCalendarFreeBusy(calendar, {
+      timeMin: timeMin.toUTC().toISO(),
+      timeMax: timeMax.toUTC().toISO(),
+      timeZone: TZ,
+      items: [{ id: calendarId }],
     });
     diagnostics.freebusy.ok = true;
   } catch (err) {
@@ -136,7 +134,7 @@ export default async function handler(req, res) {
     try {
       const start = timeMin.plus({ minutes: 2 });
       const end = start.plus({ minutes: 5 });
-      const createResp = await calendar.events.insert({
+      const createdEvent = await insertCalendarEvent(calendar, {
         calendarId,
         sendUpdates: 'none',
         requestBody: {
@@ -147,7 +145,7 @@ export default async function handler(req, res) {
           end: { dateTime: end.toISO(), timeZone: TZ },
         },
       });
-      createdEventId = createResp?.data?.id || null;
+      createdEventId = createdEvent?.id || null;
       diagnostics.writeCheck.createdEventId = createdEventId;
       diagnostics.writeCheck.ok = true;
 
