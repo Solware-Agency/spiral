@@ -7,7 +7,7 @@ import './styles/global.css';
 
 const path = window.location.pathname.replace(/\/+$/, '') || '/';
 if (path === '/') {
-  void import('./data/studioCarouselPhotos').then((m) => m.hydrateStudioCarouselImages());
+  void import('./data/studioCarouselPhotos');
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

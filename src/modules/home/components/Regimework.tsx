@@ -1,18 +1,24 @@
 import React, { useEffect } from 'react';
 import type { CSSProperties } from 'react';
 import { clientLogos, preloadClientLogos } from '../../../data/clientLogos';
+import { usePauseCssAnimationWhenHidden } from '../../../hooks/usePauseCssAnimationWhenHidden';
 import styles from '../styles/home.module.css';
 import useMarqueeDrag from '../../../hooks/useMarqueeDrag';
 
 const RegimeWork = () => {
   const { bind, dragStyle, isDragging, contentRef } = useMarqueeDrag();
+  const { ref: pauseRef, paused } = usePauseCssAnimationWhenHidden<HTMLElement>('200px 0px');
 
   useEffect(() => {
     preloadClientLogos();
   }, []);
 
   return (
-    <section className={styles.clientsSection}>
+    <section
+      ref={pauseRef}
+      className={styles.clientsSection}
+      data-marquee-paused={paused || undefined}
+    >
       <div
         className={`${styles.clientsTrack} ${isDragging ? styles.trackDragging : ''}`}
         aria-label="Client logos"

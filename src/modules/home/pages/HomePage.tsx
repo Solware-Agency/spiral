@@ -1,5 +1,5 @@
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
-import { hydrateStudioCarouselImages } from '../../../data/studioCarouselPhotos';
+import React, { Suspense, lazy } from 'react';
+import DeferredSection from '../../../components/DeferredSection';
 import Navigation from '../components/Navigation';
 import Hero from '../components/Hero';
 import WhatWeDo from '../components/WhatWedo';
@@ -11,60 +11,7 @@ const RegimeWork = lazy(() => import('../components/Regimework'));
 const InstagramGrid = lazy(() => import('../components/InstagramGrid'));
 const Footer = lazy(() => import('../components/Footer'));
 
-function DeferredSection({
-  children,
-  minHeight,
-}: {
-  children: React.ReactNode;
-  minHeight: string;
-}) {
-  const [shouldRender, setShouldRender] = useState(false);
-  const hostRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (shouldRender) return;
-    const el = hostRef.current;
-    if (!el) return;
-
-    if (!('IntersectionObserver' in window)) {
-      setShouldRender(true);
-      return;
-    }
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          setShouldRender(true);
-          io.disconnect();
-        });
-      },
-      { rootMargin: '320px 0px' },
-    );
-
-    io.observe(el);
-    return () => io.disconnect();
-  }, [shouldRender]);
-
-  return (
-    <div
-      ref={hostRef}
-      style={
-        shouldRender
-          ? { contentVisibility: 'auto', containIntrinsicSize: minHeight }
-          : { minHeight, contentVisibility: 'auto', containIntrinsicSize: minHeight }
-      }
-    >
-      {shouldRender ? children : null}
-    </div>
-  );
-}
-
 const HomePage = () => {
-  useEffect(() => {
-    hydrateStudioCarouselImages();
-  }, []);
-
   return (
     <>
       <Navigation />

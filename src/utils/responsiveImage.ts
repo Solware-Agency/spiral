@@ -19,14 +19,21 @@ export function optimizedSrcSet(baseId, ext) {
   return RESPONSIVE_WIDTHS.map((w) => `${optimizedUrl(baseId, w, ext)} ${w}w`).join(', ');
 }
 
-/** Base id desde URL local tipo /images/photos/... o null */
+/** Base id desde URL local o CDN (`.../photos/ID.jpg` o `.../optimized/ID_960.webp`). */
 export function optimizedBaseIdFromSrc(src) {
   if (!src || typeof src !== 'string' || src.startsWith('data:')) return null;
-  if (/^https?:\/\//i.test(src)) return null;
-  if (!src.includes('/images/photos/')) return null;
+
+  const pathOnly = src.split('?')[0];
   try {
-    const pathOnly = src.split('?')[0];
     const decoded = decodeURIComponent(pathOnly);
+    const optimizedMatch = decoded.match(/\/optimized\/([^/_]+)_\d+\.(?:webp|jpe?g)$/i);
+    if (optimizedMatch) return optimizedMatch[1];
+
+    const photosMatch = decoded.match(/\/photos\/([^/?#]+)\.[^/.]+$/i);
+    if (photosMatch) return photosMatch[1].replace(/\.[^.]+$/, '');
+
+    if (/^https?:\/\//i.test(src)) return null;
+    if (!src.includes('/images/photos/')) return null;
     const file = decoded.split('/').pop();
     if (!file) return null;
     return file.replace(/\.[^.]+$/, '');

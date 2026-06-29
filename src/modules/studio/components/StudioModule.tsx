@@ -1,13 +1,15 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Link } from 'react-router-dom';
 import LogoPicture from '../../../components/LogoPicture';
 import ResponsiveImg from '../../../components/ResponsiveImg';
 import { POLAROID_FRAME_SRC } from '../../../data/polaroidSources';
 import { LOGO_SIZES, SPIRAL_LOGO_PNG, SPIRAL_LOGO_SLUG } from '../../../data/logoSources';
+import { optimizedUrl } from '../../../utils/responsiveImage';
 import { optimizedImageSet } from '../../../utils/mediaCdn';
-import InstagramGrid from '../../home/components/InstagramGrid';
 import styles from '../styles/studio.module.css';
+
+const InstagramGrid = lazy(() => import('../../home/components/InstagramGrid'));
 
 const GALLERY_SIZES = '(max-width: 900px) 94vw, min(1240px, 92vw)';
 const GALLERY_AUTO_MS = 4500;
@@ -82,6 +84,18 @@ const StudioGalleryCarousel = () => {
   const activePhoto = galleryPhotos[index];
 
   useEffect(() => {
+    if (n < 2) return undefined;
+    const nextPhoto = galleryPhotos[(index + 1) % n];
+    const base = nextPhoto.src.split('/').pop()?.replace(/\.[^.]+$/, '');
+    if (!base) return undefined;
+    const width = window.matchMedia('(max-width: 900px)').matches ? 960 : 1280;
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = optimizedUrl(base, width, 'webp');
+    return undefined;
+  }, [index, n]);
+
+  useEffect(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
     if (reduce.matches || n < 2) return undefined;
     const id = window.setInterval(advance, GALLERY_AUTO_MS);
@@ -92,7 +106,6 @@ const StudioGalleryCarousel = () => {
     <div className={styles.galleryViewport} aria-roledescription="carousel" aria-label="Studio photo gallery">
       <div className={styles.galleryTrack}>
         <figure
-          key={activePhoto.src}
           className={styles.gallerySlide}
           style={{ '--gallery-object-position': activePhoto.objectPosition || '50% 50%' } as CSSProperties}
         >
@@ -103,7 +116,7 @@ const StudioGalleryCarousel = () => {
             loading={index === 0 ? 'eager' : 'lazy'}
             decoding="async"
             sizes={GALLERY_SIZES}
-            fetchPriority={index === 0 ? 'high' : 'auto'}
+            fetchPriority={index === 0 ? 'high' : 'low'}
           />
         </figure>
       </div>
@@ -353,7 +366,9 @@ const StudioModule = () => {
         </div>
       </section>
 
-      <InstagramGrid />
+      <Suspense fallback={null}>
+        <InstagramGrid />
+      </Suspense>
     </section>
   );
 };

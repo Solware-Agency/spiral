@@ -57,7 +57,10 @@ function useNearViewport<T extends Element>(rootMargin = VIDEO_VIEW_ROOT_MARGIN)
       return undefined;
     }
     const io = new IntersectionObserver(
-      ([entry]) => setIsNear(Boolean(entry?.isIntersecting)),
+      ([entry]) => {
+        const next = Boolean(entry?.isIntersecting);
+        setIsNear((prev) => (prev === next ? prev : next));
+      },
       { rootMargin, threshold: 0.08 }
     );
     io.observe(el);

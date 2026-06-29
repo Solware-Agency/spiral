@@ -58,3 +58,11 @@ export function buildMediaCdnUrl(
   const assetPath = resolveCdnAssetPath(path, stripPrefix);
   return `${origin}${assetPath}`;
 }
+
+/** Base URL para preloads inline (`.../optimized/` o `/images/optimized/`). */
+export function buildOptimizedMediaBase(cdnOrigin: string, stripPrefix: string): string {
+  const origin = normalizeMediaCdnOrigin(cdnOrigin);
+  if (!origin) return '/images/optimized/';
+  const folder = resolveCdnAssetPath('/images/optimized/', stripPrefix);
+  return `${origin}${folder}`;
+}

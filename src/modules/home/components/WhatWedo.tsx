@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { CONTACT_PORTAL_URL } from '../../../data/contactPortalUrl';
-import { hydrateStudioCarouselImages } from '../../../data/studioCarouselPhotos';
+import { usePauseCssAnimationWhenHidden } from '../../../hooks/usePauseCssAnimationWhenHidden';
 import styles from '../styles/home.module.css';
 import PhotoCarousel from './PhotoCarousel';
 import GalleryCarousel from './GalleryCarousel';
@@ -10,10 +10,12 @@ const STUDIO_MARQUEE_BASE_SEC = 26;
 
 const WhatWeDo = () => {
   const studioMarqueesRef = useRef<HTMLDivElement>(null);
+  const { ref: pauseRef, paused } = usePauseCssAnimationWhenHidden<HTMLDivElement>('200px 0px');
 
-  useEffect(() => {
-    hydrateStudioCarouselImages();
-  }, []);
+  const setMarqueeHostRef = (node: HTMLDivElement | null) => {
+    studioMarqueesRef.current = node;
+    pauseRef.current = node;
+  };
 
   useEffect(() => {
     const root = studioMarqueesRef.current;
@@ -89,7 +91,11 @@ const WhatWeDo = () => {
           WORK WITH US
         </a>
       </div>
-      <div ref={studioMarqueesRef} className={styles.studioMarquees}>
+      <div
+        ref={setMarqueeHostRef}
+        className={styles.studioMarquees}
+        data-marquee-paused={paused || undefined}
+      >
         <PhotoCarousel />
         <GalleryCarousel />
       </div>
