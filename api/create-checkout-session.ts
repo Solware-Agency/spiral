@@ -113,7 +113,7 @@ export default async function handler(req, res) {
   }
   try {
     const access = await validateCheckoutAccess(req);
-    if (!access.ok) {
+    if (access.ok === false) {
       return json(res, access.status || 401, { ok: false, error: access.error || 'Unauthorized' });
     }
   } catch (accessErr) {

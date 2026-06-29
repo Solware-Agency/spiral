@@ -1,4 +1,4 @@
-import { google } from 'googleapis';
+import { calendar_v3, google } from 'googleapis';
 import { createPrivateKey } from 'node:crypto';
 
 function stripWrappingQuotes(s) {
@@ -136,6 +136,6 @@ export function getCalendarClient({ clientEmail, privateKey }) {
     key: privateKey,
     scopes: ['https://www.googleapis.com/auth/calendar'],
   });
-  return google.calendar({ version: 'v3', auth });
+  return new calendar_v3.Calendar({ auth });
 }
 

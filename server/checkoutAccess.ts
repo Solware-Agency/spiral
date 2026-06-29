@@ -30,7 +30,11 @@ function readBearerToken(req) {
   return m ? String(m[1] || '').trim() : '';
 }
 
-async function verifySupabaseToken(accessToken) {
+type CheckoutAccessResult =
+  | { ok: false; status: number; error: string }
+  | { ok: true; status: number; userId?: string };
+
+async function verifySupabaseToken(accessToken): Promise<CheckoutAccessResult> {
   const supabaseUrl = String(process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '').trim();
   const supabaseAnonKey = String(
     process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY || ''
@@ -61,7 +65,7 @@ async function verifySupabaseToken(accessToken) {
   return { ok: true, status: 200, userId: String(data.id) };
 }
 
-export async function validateCheckoutAccess(req) {
+export async function validateCheckoutAccess(req): Promise<CheckoutAccessResult> {
   const requireSupabaseAuth = isEnabled(
     process.env.REQUIRE_BOOKING_SUPABASE_AUTH || process.env.REQUIRE_BOOKING_AUTH
   );
