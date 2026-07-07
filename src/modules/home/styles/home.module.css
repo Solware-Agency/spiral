@@ -444,10 +444,11 @@
 }
 
 .studioMarquees {
-  /* Texto y fotos: misma duración por vuelta (26s, fijada en WhatWedo.tsx) */
+  /* Velocidad lineal compartida; duraciones calculadas en WhatWedo.tsx según ancho de cada banda */
   --studio-marquee-duration: 26s;
   --studio-marquee-duration-gallery: var(--studio-marquee-duration);
   --studio-marquee-duration-photo: var(--studio-marquee-duration);
+  --studio-marquee-shift-photo: 50%;
   width: 100%;
   padding-bottom: 0;
 }
@@ -549,10 +550,10 @@
 
 @keyframes photoCarouselScroll {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translate3d(calc(-1 * var(--studio-marquee-shift-photo, 50%)), 0, 0);
   }
 }
 

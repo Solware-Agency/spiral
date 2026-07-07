@@ -5,7 +5,7 @@ import styles from '../styles/home.module.css';
 import PhotoCarousel from './PhotoCarousel';
 import GalleryCarousel from './GalleryCarousel';
 
-/** Segundos de una vuelta completa (texto y fotos; misma velocidad en móvil y desktop). */
+/** Segundos de una vuelta de la banda de texto; el carrusel de fotos escala su duración para igualar px/s. */
 const STUDIO_MARQUEE_BASE_SEC = 26;
 
 const WhatWeDo = () => {
@@ -21,27 +21,46 @@ const WhatWeDo = () => {
     const root = studioMarqueesRef.current;
     if (!root) return;
     const galleryEl = root.querySelector<HTMLElement>('[data-marquee-gallery-segment]');
-    if (!galleryEl) return;
+    const photoEl = root.querySelector<HTMLElement>('[data-marquee-photo-group]');
+    if (!galleryEl || !photoEl) return;
 
     let rafId = 0;
-    let prevDurations = '';
     let prevGalleryShift = '';
+    let prevPhotoShift = '';
+    let prevGalleryDuration = '';
+    let prevPhotoDuration = '';
 
     const measureAndApply = () => {
       const wGallery = galleryEl.offsetWidth;
-      if (wGallery >= 1) {
-        const nextShift = `${wGallery}px`;
-        if (nextShift !== prevGalleryShift) {
-          prevGalleryShift = nextShift;
-          root.style.setProperty('--studio-marquee-shift-gallery', nextShift);
-        }
+      const wPhoto = photoEl.offsetWidth;
+      if (wGallery < 1 || wPhoto < 1) return;
+
+      const nextGalleryShift = `${wGallery}px`;
+      if (nextGalleryShift !== prevGalleryShift) {
+        prevGalleryShift = nextGalleryShift;
+        root.style.setProperty('--studio-marquee-shift-gallery', nextGalleryShift);
       }
 
-      const sameSec = `${STUDIO_MARQUEE_BASE_SEC}s`;
-      if (sameSec === prevDurations) return;
-      prevDurations = sameSec;
-      root.style.setProperty('--studio-marquee-duration-gallery', sameSec);
-      root.style.setProperty('--studio-marquee-duration-photo', sameSec);
+      const nextPhotoShift = `${wPhoto}px`;
+      if (nextPhotoShift !== prevPhotoShift) {
+        prevPhotoShift = nextPhotoShift;
+        root.style.setProperty('--studio-marquee-shift-photo', nextPhotoShift);
+      }
+
+      // Misma velocidad lineal (px/s): la banda de texto es la referencia.
+      const gallerySec = STUDIO_MARQUEE_BASE_SEC;
+      const photoSec = gallerySec * (wPhoto / wGallery);
+      const nextGalleryDuration = `${gallerySec}s`;
+      const nextPhotoDuration = `${photoSec}s`;
+
+      if (nextGalleryDuration !== prevGalleryDuration) {
+        prevGalleryDuration = nextGalleryDuration;
+        root.style.setProperty('--studio-marquee-duration-gallery', nextGalleryDuration);
+      }
+      if (nextPhotoDuration !== prevPhotoDuration) {
+        prevPhotoDuration = nextPhotoDuration;
+        root.style.setProperty('--studio-marquee-duration-photo', nextPhotoDuration);
+      }
     };
 
     const queueMeasure = () => {
@@ -52,6 +71,7 @@ const WhatWeDo = () => {
     const ro = new ResizeObserver(queueMeasure);
     ro.observe(root);
     ro.observe(galleryEl);
+    ro.observe(photoEl);
 
     queueMeasure();
 
